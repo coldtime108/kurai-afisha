@@ -136,7 +136,7 @@ export function SubscriptionPanel({
           <Bell size={27} strokeWidth={1.4} />
         </span>
         <div>
-          <p className="eyebrow">ВАШ ГОРОД. ВАШ РИТМ.</p>
+          <p className="eyebrow">Афиша вашего города</p>
           <h3>
             {subscription
               ? `Ваша афиша · ${subscription.filters.city}`

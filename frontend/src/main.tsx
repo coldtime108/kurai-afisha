@@ -5,13 +5,11 @@ import {
   ArrowUpRight,
   Bookmark,
   CalendarDays,
-  Check,
   ChevronDown,
   Flower2,
   MapPin,
   Search,
   SlidersHorizontal,
-  Sparkles,
 } from "lucide-react";
 import { api } from "./api";
 import { EventCard, EventDetail, KuraiMark, Modal } from "./components";
@@ -267,6 +265,8 @@ function App() {
   const activeCount = Object.entries(applied).filter(
     ([k, v]) => v && k !== "sort",
   ).length;
+  const coveredCities =
+    meta?.cities.slice(0, 3).join(" · ") || "Афиша республики";
   return (
     <>
       <a className="skip-link" href="#catalog">
@@ -339,26 +339,27 @@ function App() {
               <div className="hero-copy">
                 <p className="eyebrow">
                   <span className="tiny-diamond" />
-                  РЕСПУБЛИКА БАШКОРТОСТАН
+                  Республика Башкортостан
                 </p>
                 <h1>
                   Ближе к своим. <br />
                   <em>Открытее</em> <br />к новому.
                 </h1>
                 <p className="hero-description">
-                  Места, в которые хочется вернуться.
+                  Найдите событие по городу, дате и бюджету.
                   <br />
-                  События, которые хочется разделить.
+                  Сведения — из афиш учреждений.
                 </p>
                 <a className="button primary" href="#catalog">
                   Найти своё событие
                   <ArrowUpRight size={20} />
                 </a>
                 <div className="hero-foot">
-                  <span className="little-star">✳</span>
+                  <KuraiMark className="hero-kurai" />
                   <p>
-                    Культура родного края —<br />
-                    <strong>в ритме вашей жизни</strong>
+                    Афиша родного края
+                    <br />
+                    <strong>{coveredCities}</strong>
                   </p>
                 </div>
               </div>
@@ -377,18 +378,9 @@ function App() {
               </figure>
             </section>
             <div className="values-strip">
-              <span>
-                <Check size={15} />
-                События из афиш учреждений
-              </span>
-              <span>
-                <Flower2 size={17} />
-                Культура с местным характером
-              </span>
-              <span>
-                <MapPin size={16} />
-                От знакомых сцен к новым открытиям
-              </span>
+              <span>События из афиш учреждений</span>
+              <span>{coveredCities}</span>
+              <span>Время Башкортостана · UTC+5</span>
             </div>
           </>
         )}
@@ -426,13 +418,13 @@ function App() {
           >
             <div className="section-heading">
               <div>
-                <p className="eyebrow">01 / ОТКРЫВАЙТЕ БАШКОРТОСТАН</p>
+                <p className="eyebrow">Культура республики</p>
                 <h2 id="catalog-title">
-                  {savedOnly ? "Сохранено для вас" : "Ваша следующая история"}
+                  {savedOnly ? "Сохранено для вас" : "Афиша Башкортостана"}
                 </h2>
               </div>
               <span className="section-note">
-                {savedOnly ? "На этом устройстве" : "Выбирайте по настроению"}
+                {savedOnly ? "На этом устройстве" : "По городу, дате и бюджету"}
               </span>
             </div>
             {!savedOnly && (
@@ -649,10 +641,9 @@ function App() {
                   </div>
                 ) : data?.items.length ? (
                   <div className="event-grid">
-                    {data.items.map((item, i) => (
+                    {data.items.map((item) => (
                       <EventCard
                         key={item.id}
-                        index={i}
                         event={item}
                         saved={saved.includes(item.id)}
                         onSave={() => save(item.id)}
@@ -710,10 +701,10 @@ function App() {
               <aside className="trust-panel">
                 <KuraiMark />
                 <div>
-                  <h3>У каждой истории есть источник</h3>
+                  <h3>Сначала проверяем источник</h3>
                   <p>
-                    Сверяем сведения с афишами учреждений и сохраняем ссылки.
-                    Если данных недостаточно, говорим об этом прямо.
+                    У каждой карточки есть ссылка на афишу учреждения.
+                    Неизвестные цену, возраст и длительность отмечаем отдельно.
                   </p>
                 </div>
                 <button

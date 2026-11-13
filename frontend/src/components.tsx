@@ -1,15 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import {
-  ArrowUpRight,
-  Bookmark,
-  Check,
-  Clock,
-  MapPin,
-  Music2,
-  Theater,
-  Wind,
-  X,
-} from "lucide-react";
+import { ArrowUpRight, Bookmark, Check, Clock, MapPin, X } from "lucide-react";
 import type { CultureEvent } from "./types";
 
 export const labels: Record<string, string> = {
@@ -108,48 +98,43 @@ export function Modal({
 }
 export function EventCard({
   event,
-  index,
   saved,
   onSave,
   onOpen,
 }: {
   event: CultureEvent;
-  index: number;
   saved: boolean;
   onSave: () => void;
   onOpen: () => void;
 }) {
-  const Icon =
-    event.category === "festival"
-      ? Wind
+  const genre = event.tags.includes("опера")
+    ? "Опера"
+    : event.tags.includes("балет")
+      ? "Балет"
       : event.category === "theatre"
-        ? Theater
-        : Music2;
-  const variant =
-    event.category === "festival"
-      ? "forest"
-      : event.category === "theatre"
-        ? index % 2
-          ? "blue"
-          : "rose"
-        : "sand";
+        ? "Спектакль"
+        : labels[event.category] || "Событие";
+  const variant = event.tags.includes("балет") ? "ballet" : event.category;
+  const dateParts = new Intl.DateTimeFormat("ru-RU", {
+    day: "numeric",
+    month: "long",
+    timeZone: "Asia/Yekaterinburg",
+  }).formatToParts(new Date(event.date_start));
+  const sourceHost = new URL(event.source_url).hostname.replace(/^www\./, "");
   return (
     <article className="event-card">
-      <div className={`event-art ${variant}`} aria-hidden="true">
-        <div className="art-orbit" />
-        <span className="art-label">
-          {event.tags.includes("опера")
-            ? "ОПЕРА"
-            : event.tags.includes("балет")
-              ? "БАЛЕТ"
-              : event.category === "festival"
-                ? "МУЗЫКА ВЕТРА"
-                : "ЖИВОЙ ЗВУК"}
-        </span>
-        <Icon className="art-symbol" strokeWidth={0.65} />
-        <span className="art-number">
-          {String(index + 1).padStart(2, "0")} / КУРАЙ
-        </span>
+      <div className={`event-art poster-${variant}`} aria-hidden="true">
+        <span className="poster-genre">{genre}</span>
+        <div className="poster-date">
+          <span className="poster-day">
+            {dateParts.find((part) => part.type === "day")?.value}
+          </span>
+          <span className="poster-month">
+            {dateParts.find((part) => part.type === "month")?.value}
+            <span>{event.city}</span>
+          </span>
+        </div>
+        <KuraiMark className="poster-seal" />
       </div>
       <button
         className={`save-button ${saved ? "saved" : ""}`}
@@ -161,7 +146,7 @@ export function EventCard({
       </button>
       <div className="event-body">
         <div className="event-kicker">
-          <span>{labels[event.category]}</span>
+          <span>{genre}</span>
           <span>
             {event.age_limit === null
               ? "Возраст уточняется"
@@ -192,17 +177,22 @@ export function EventCard({
         <div className="event-bottom">
           <span>{price(event)}</span>
           <button
-            className="round-arrow"
+            className="event-open"
             onClick={onOpen}
-            aria-label={`Подробнее: ${event.title}`}
+            aria-label={`О событии: ${event.title}`}
           >
-            <ArrowUpRight size={20} />
+            О событии
           </button>
         </div>
-        <div className="source-note">
-          <Check size={12} />
-          Есть ссылка на источник
-        </div>
+        <a
+          className="source-note"
+          href={event.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Источник · {sourceHost}
+          <ArrowUpRight size={13} />
+        </a>
       </div>
     </article>
   );

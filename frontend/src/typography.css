@@ -35,14 +35,23 @@
   font-size: 12px;
 }
 .event-kicker {
-  font-size: 10px;
-  letter-spacing: 0.7px;
+  font-size: 12px;
+  letter-spacing: 0;
 }
 .event-kicker > span:last-child {
-  font-size: 10px;
+  font-size: 12px;
 }
 .source-note {
-  font-size: 10px;
+  font-size: 12px;
+}
+.eyebrow,
+.hero-copy .eyebrow,
+.section-heading .eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+.hero-foot p {
+  font-size: 12px;
 }
 .hero-description {
   font-size: 16px;
@@ -153,7 +162,7 @@
     font-size: 11px;
   }
   .event-kicker {
-    font-size: 10px;
+    font-size: 12px;
   }
   .trust-panel p {
     font-size: 12px;

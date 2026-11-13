@@ -236,8 +236,8 @@ p {
 .hero-foot {
   display: flex;
   align-items: center;
-  gap: 13px;
-  margin-top: 31px;
+  gap: 12px;
+  margin-top: 32px;
 }
 .hero-foot p {
   font-size: 10px;
@@ -249,10 +249,11 @@ p {
   font-weight: 500;
   color: var(--ink);
 }
-.little-star {
-  font-size: 37px;
-  line-height: 1;
-  color: #b28e48;
+.hero-kurai {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  color: var(--gold);
 }
 .hero-art {
   margin: 0;
@@ -511,92 +512,95 @@ p {
 .event-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 26px;
+  gap: 24px;
 }
 .event-card {
   border: 1px solid var(--line);
   position: relative;
   background: #fffefa;
-  border-radius: 5px;
+  border-radius: 8px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition:
-    box-shadow 0.2s,
-    transform 0.2s;
+    box-shadow 0.15s,
+    border-color 0.15s;
 }
 .event-card:hover {
-  box-shadow: 0 12px 24px #153b3110;
-  transform: translateY(-3px);
+  box-shadow: 0 4px 12px #172d2412;
+  border-color: #9eafa5;
 }
 .event-art {
   position: relative;
   height: 172px;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 24px;
+  background: #ede9de;
+  color: #244d43;
   isolation: isolate;
 }
-.event-art.rose {
-  background: #ead6c7;
-  color: #693e38;
+.event-art.poster-theatre {
+  background: #204f61;
+  color: #fff7e7;
 }
-.event-art.blue {
-  background: #224857;
-  color: #e4e0cf;
+.event-art.poster-concert {
+  background: #e9dec6;
+  color: #244d43;
 }
-.event-art.sand {
-  background: #dfceab;
-  color: #514d30;
+.event-art.poster-festival {
+  background: #285747;
+  color: #fff5dc;
 }
-.event-art.forest {
-  background: #1d574b;
-  color: #e8d89b;
+.event-art.poster-ballet {
+  background: #e8e5d9;
+  color: #244f50;
 }
-.art-orbit {
-  position: absolute;
-  top: -48px;
-  right: 19%;
-  width: 210px;
-  height: 210px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  opacity: 0.23;
-  box-shadow:
-    0 0 0 17px transparent,
-    0 0 0 18px currentColor,
-    0 0 0 35px transparent,
-    0 0 0 36px currentColor;
-}
-.art-symbol {
-  width: 95px;
-  height: 95px;
+.poster-genre {
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
   z-index: 1;
-  transform: rotate(-12deg);
 }
-.art-label {
+.poster-date {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  letter-spacing: 2.8px;
-  font-size: 8px;
+  bottom: 20px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1;
 }
-.art-number {
+.poster-day {
+  font-size: 64px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+.poster-month {
+  font-size: 18px;
+  line-height: 1.3;
+}
+.poster-month > span {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+}
+.poster-seal {
   position: absolute;
-  bottom: 17px;
+  width: 104px;
+  height: 104px;
   right: 20px;
-  font-size: 8px;
-  letter-spacing: 1.4px;
-  opacity: 0.8;
+  bottom: 16px;
+  opacity: 0.12;
 }
 .save-button {
   position: absolute;
-  top: 13px;
-  right: 13px;
+  top: 12px;
+  right: 12px;
   border-radius: 50%;
-  width: 35px;
-  height: 35px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   background: #fffef0e6;
@@ -608,7 +612,7 @@ p {
   color: white;
 }
 .event-body {
-  padding: 20px 21px 14px;
+  padding: 24px 24px 16px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -617,7 +621,7 @@ p {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  text-transform: uppercase;
+  text-transform: none;
   font-size: 8px;
   letter-spacing: 1px;
   color: var(--muted);
@@ -635,7 +639,7 @@ p {
   font-weight: 400;
   letter-spacing: -0.55px;
   min-height: 58px;
-  margin: 0 0 17px;
+  margin: 0 0 16px;
 }
 .event-body h3 a:hover {
   text-decoration: underline;
@@ -647,9 +651,9 @@ p {
   font-size: 10px;
   color: var(--muted);
   display: flex;
-  gap: 7px;
+  gap: 8px;
   align-items: center;
-  margin-bottom: 9px;
+  margin-bottom: 8px;
   line-height: 1.6;
 }
 .event-venue {
@@ -666,28 +670,36 @@ p {
   align-items: center;
   border-top: 1px solid #e6e6dd;
   margin-top: auto;
-  padding-top: 13px;
+  padding-top: 16px;
   font-size: 12px;
   font-weight: 500;
 }
-.round-arrow {
-  border: 1px solid #cdd5c8;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
+.event-open {
+  min-height: 40px;
+  padding: 8px 0 8px 12px;
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  flex-shrink: 0;
 }
-.round-arrow:hover {
-  background: #e9eee1;
+.event-open:hover {
+  color: #175746;
 }
 .source-note {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  min-height: 24px;
+  overflow-wrap: anywhere;
   font-size: 8px;
   color: #536b56;
   margin-top: 12px;
+}
+.source-note:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .trust-panel {
   margin: 43px 0 0;
@@ -1394,13 +1406,13 @@ p {
   }
   .event-grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 23px;
+    gap: 24px;
   }
   .event-art {
     height: 188px;
   }
   .event-body {
-    padding: 21px;
+    padding: 24px;
   }
   .event-body h3 {
     font-size: 29px;
