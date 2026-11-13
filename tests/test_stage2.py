@@ -183,6 +183,7 @@ def test_bot_start_search_card_and_pagination_share_real_catalog(client, app):
         for row in bot.handle(101, text="/start").buttons
         for _, action in row
     )
+    assert "Найдено:" in bot.handle(101, text="/catalog").text
     result = bot.handle(101, text="Травиата")
     assert "Травиата" in result.text and "Цена уточняется" in result.text
     cards = [a for row in result.buttons for _, a in row if a.startswith("e:")]

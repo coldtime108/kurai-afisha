@@ -26,6 +26,10 @@ from .subscriptions import cleanup, delete_subscription, subscription_filters
 logger = logging.getLogger("kurai.bot")
 
 
+def log_status(event):
+    logger.info(json.dumps({"event": event, "request_id": str(uuid4())}))
+
+
 def log_failure(event):
     logger.warning(json.dumps({"event": event, "request_id": str(uuid4())}))
 
@@ -62,6 +66,7 @@ def build_router(controller: BotController):
                 controller.handle, message.from_user.id, text=text
             )
             await message.answer(reply.text, reply_markup=markup(reply))
+            log_status("bot_message_delivered")
         except Exception:
             log_failure("bot_request_failed")
             await message.answer(
@@ -81,6 +86,7 @@ def build_router(controller: BotController):
                 controller.handle, callback.from_user.id, callback=callback.data or ""
             )
             await callback.message.answer(reply.text, reply_markup=markup(reply))
+            log_status("bot_callback_delivered")
         except Exception:
             log_failure("bot_callback_failed")
             await callback.message.answer(
@@ -131,6 +137,7 @@ async def dispatch_digests(bot, sessions):
                     ]
                 ),
             )
+            log_status("digest_delivered")
             with sessions() as session:
                 job = session.get(DigestDelivery, identifier)
                 if job:
@@ -170,10 +177,11 @@ async def digest_loop(bot, sessions):
 
 
 async def run():
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     token = os.getenv("TELEGRAM_BOT_TOKEN", "")
     if not token:
         raise SystemExit(
-            "Задайте TELEGRAM_BOT_TOKEN локально в окружении. Не присылайте токен в чат."
+            "Задайте TELEGRAM_BOT_TOKEN в локальных настройках запуска."
         )
     engine = make_engine()
     sessions = session_factory(engine)
@@ -188,6 +196,11 @@ async def run():
             raise SystemExit(
                 "У бота настроен webhook. Используйте отдельного бота для polling или переключите режим вручную."
             )
+        # Fail before announcing readiness if credentials or the shared DB are unavailable.
+        await bot.get_me()
+        with sessions() as session:
+            session.execute(select(Event.id).limit(1))
+        log_status("bot_polling_starting")
         digest_task = asyncio.create_task(digest_loop(bot, sessions))
         try:
             await dispatcher.start_polling(
@@ -206,4 +219,11 @@ async def run():
 
 
 if __name__ == "__main__":
-    asyncio.run(run())
+    try:
+        asyncio.run(run())
+    except KeyboardInterrupt:
+        pass
+    except Exception:
+        # Third-party exception messages can include API URLs containing the token.
+        log_failure("bot_worker_stopped")
+        raise SystemExit(1) from None

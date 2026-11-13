@@ -167,6 +167,9 @@ class BotController:
                         ],
                     )
                 )
+            if text == "/catalog":
+                data.pop("awaiting", None)
+                return finish(catalog())
             if text == "/unsubscribe":
                 delete_subscription(session, owner, "telegram")
                 # delete_subscription removes the private dialog too.
