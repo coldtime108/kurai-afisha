@@ -1,0 +1,23 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="112"
+  height="112"
+  viewBox="0 0 112 112"
+>
+  <filter id="grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence
+      type="fractalNoise"
+      baseFrequency=".82"
+      numOctaves="3"
+      seed="17"
+      stitchTiles="stitch"
+    />
+    <feColorMatrix type="saturate" values="0" />
+  </filter>
+  <path
+    fill="#173c36"
+    opacity=".065"
+    filter="url(#grain)"
+    d="M0 0h112v112H0z"
+  />
+</svg>

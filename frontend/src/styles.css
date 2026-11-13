@@ -26,6 +26,67 @@ html {
 body {
   margin: 0;
 }
+.site-shell {
+  --muted: #47584e;
+  --line: #d2d5c6;
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background-color: #eeece2;
+  background-image:
+    url("/assets/linen-grain.svg"),
+    linear-gradient(180deg, transparent 650px, #eeece2 940px),
+    linear-gradient(115deg, #e3e9db 0%, #f2ead8 62%, #dfe8df 100%);
+  background-size:
+    112px 112px,
+    100% 940px,
+    100% 940px;
+  background-repeat: repeat, no-repeat, no-repeat;
+}
+.site-shell::before,
+.site-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+.site-shell::before {
+  top: 180px;
+  left: 0;
+  right: 0;
+  height: 760px;
+  background: url("/assets/ural-contours.svg") center top / max(1440px, 100%)
+    auto no-repeat;
+  opacity: 0.13;
+}
+.site-shell::after {
+  top: 142px;
+  left: 16px;
+  right: 16px;
+  height: 650px;
+  background-image:
+    url("/assets/steppe-ornament.svg"), url("/assets/steppe-ornament.svg");
+  background-position:
+    left top,
+    right top;
+  background-size: 18px 144px;
+  background-repeat: repeat-y;
+  opacity: 0.18;
+  mask-image: linear-gradient(
+    180deg,
+    transparent,
+    #000 24px,
+    #000 80%,
+    transparent
+  );
+}
+.site-shell.site-shell-widget {
+  background: var(--paper);
+}
+.site-shell-widget::before,
+.site-shell-widget::after {
+  display: none;
+}
 button,
 input,
 select,
@@ -783,7 +844,7 @@ p {
 .trust-panel p {
   font-size: 11px;
   line-height: 1.7;
-  color: #52664e;
+  color: var(--muted);
   margin-bottom: 0;
   max-width: 590px;
 }
@@ -824,7 +885,7 @@ p {
   font-size: 20px;
   line-height: 1.5;
   margin: 0;
-  color: #5c6d60;
+  color: var(--muted);
 }
 .footer-top > div {
   display: flex;
@@ -1347,6 +1408,25 @@ p {
   }
 }
 @media (max-width: 740px) {
+  .site-shell {
+    background-size:
+      112px 112px,
+      100% 1120px,
+      100% 1120px;
+    background-image:
+      url("/assets/linen-grain.svg"),
+      linear-gradient(180deg, transparent 800px, #eeece2 1120px),
+      linear-gradient(115deg, #e3e9db 0%, #f2ead8 62%, #dfe8df 100%);
+  }
+  .site-shell::before {
+    top: 300px;
+    height: 700px;
+    background-size: 1200px auto;
+    opacity: 0.09;
+  }
+  .site-shell::after {
+    display: none;
+  }
   .hero {
     display: flex;
     flex-direction: column;

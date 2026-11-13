@@ -294,7 +294,7 @@ function App() {
     Object.keys(filterLabels) as (keyof FormFilters)[]
   ).filter((key) => applied[key]);
   return (
-    <>
+    <div className={widget ? "site-shell site-shell-widget" : "site-shell"}>
       <a className="skip-link" href="#catalog">
         Перейти к событиям
       </a>
@@ -894,7 +894,7 @@ function App() {
           </form>
         </Modal>
       )}
-    </>
+    </div>
   );
 }
 
