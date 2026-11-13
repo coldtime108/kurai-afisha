@@ -1,9 +1,9 @@
 .subscription-panel {
   margin-top: 38px;
-  padding: 30px;
-  border: 1px solid #d5decd;
+  padding: 32px;
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: #edf2e6;
+  background: #f0efe7;
 }
 .subscription-intro {
   display: flex;
@@ -11,13 +11,13 @@
   gap: 24px;
 }
 .subscription-symbol {
-  color: #28644d;
+  color: #77591f;
   display: grid;
   place-items: center;
   width: 56px;
   height: 56px;
-  border: 1px solid #9eb896;
-  border-radius: 50%;
+  background: #eae0c6;
+  border-radius: 8px;
   flex-shrink: 0;
 }
 .subscription-intro > div {
@@ -27,7 +27,7 @@
   font-size: 12px;
   letter-spacing: 0.5px;
   margin-bottom: 10px;
-  color: #526c4d;
+  color: var(--muted);
 }
 .subscription-intro h3 {
   font-size: 26px;
@@ -37,11 +37,11 @@
   margin-bottom: 10px;
 }
 .subscription-intro p:last-child {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.7;
   max-width: 590px;
   margin: 0;
-  color: #53684e;
+  color: var(--muted);
 }
 .subscription-intro .button {
   white-space: nowrap;
@@ -54,8 +54,8 @@
   flex-wrap: wrap;
 }
 .subscription-actions small {
-  font-size: 11px;
-  color: #53684e;
+  font-size: 12px;
+  color: var(--muted);
 }
 .subscription-telegram {
   display: flex;
@@ -65,16 +65,16 @@
   gap: 12px 24px;
   margin-top: 22px;
   padding-top: 18px;
-  border-top: 1px solid #c9d5bf;
+  border-top: 1px solid #d4d5c8;
 }
 .subscription-telegram p {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
-  color: #425b40;
+  color: var(--muted);
 }
 .subscription-telegram a {
-  font-size: 13px;
+  font-size: 14px;
 }
 .subscription-explanation a {
   text-decoration: underline;
@@ -86,7 +86,7 @@
   gap: 18px;
 }
 .subscription-form label {
-  font-size: 13px;
+  font-size: 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -98,13 +98,13 @@
   background: white;
   color: #173c36;
   width: 100%;
-  font-size: 14px;
+  font-size: 16px;
 }
 .subscription-form .confirm-subscription {
   display: flex;
   flex-direction: row;
   align-items: start;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   gap: 10px;
 }
@@ -131,8 +131,8 @@
   flex: 1;
 }
 .subscription-events small {
-  font-size: 11px;
-  color: #53684e;
+  font-size: 12px;
+  color: var(--muted);
 }
 .subscription-events p {
   font-size: 13px;

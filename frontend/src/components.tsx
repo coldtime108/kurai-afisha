@@ -221,11 +221,90 @@ export function EventDetail({
         </div>
       )}
       <div className="detail-grid">
-        <div>
+        <div className="detail-heading">
           <p className="eyebrow">
             {labels[event.category]} · {event.city}
+            {event.age_limit !== null && (
+              <span className="detail-age">{event.age_limit}+</span>
+            )}
           </p>
           <h1>{event.title}</h1>
+        </div>
+        <aside className="detail-aside" aria-label="План посещения">
+          <p className="eyebrow">Когда и где</p>
+          <h2>{fmtDate(event.date_start)}</h2>
+          <p className="detail-time">
+            {fmtTime(event.date_start)}{" "}
+            <small>время Башкортостана, UTC+5</small>
+          </p>
+          <p className="detail-venue">
+            <MapPin size={18} />
+            <span>{event.venue}</span>
+          </p>
+          <div className="detail-booking">
+            <span>Стоимость билета</span>
+            <strong>
+              {event.is_free
+                ? "Бесплатно"
+                : event.price_min === null
+                  ? "Уточните у организатора"
+                  : event.price_max && event.price_max !== event.price_min
+                    ? `${event.price_min.toLocaleString("ru-RU")}–${event.price_max.toLocaleString("ru-RU")} ₽`
+                    : price(event)}
+            </strong>
+          </div>
+          <a
+            className="button primary"
+            href={event.org_link || event.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            К организатору
+            <ArrowUpRight size={18} />
+          </a>
+          <button
+            className="button secondary"
+            onClick={onSave}
+            aria-pressed={saved}
+          >
+            <Bookmark size={18} fill={saved ? "currentColor" : "none"} />
+            {saved ? "Сохранено" : "Сохранить событие"}
+          </button>
+          <dl>
+            <div className="detail-address">
+              <dt>Адрес</dt>
+              <dd>
+                {event.city}, {event.address}
+              </dd>
+            </div>
+            <div>
+              <dt>Возраст</dt>
+              <dd>
+                {event.age_limit === null
+                  ? "Не указан в источнике"
+                  : `${event.age_limit}+`}
+              </dd>
+            </div>
+            <div>
+              <dt>Продолжительность</dt>
+              <dd>
+                {event.duration_min
+                  ? `${event.duration_min} мин`
+                  : "Не указана в источнике"}
+              </dd>
+            </div>
+            <div className="detail-language">
+              <dt>Язык</dt>
+              <dd>{event.language || "Не указан в источнике"}</dd>
+            </div>
+          </dl>
+          <p className="fine-print">
+            Цена и наличие билетов могут измениться. Покупка — на сайте
+            организатора.
+          </p>
+        </aside>
+        <div className="detail-content">
+          <h2>О событии</h2>
           <p className="detail-description">{event.description}</p>
           <div className="tags">
             {event.tags.map((t) => (
@@ -260,63 +339,6 @@ export function EventDetail({
             Сообщить об изменении или ошибке
           </button>
         </div>
-        <aside className="detail-aside">
-          <p className="eyebrow">ВАШ ПЛАН</p>
-          <h2>{fmtDate(event.date_start)}</h2>
-          <p className="detail-time">
-            {fmtTime(event.date_start)}{" "}
-            <small>время Башкортостана, UTC+5</small>
-          </p>
-          <dl>
-            <dt>Площадка</dt>
-            <dd>{event.venue}</dd>
-            <dt>Адрес</dt>
-            <dd>
-              {event.city}, {event.address}
-            </dd>
-            <dt>Возраст</dt>
-            <dd>
-              {event.age_limit === null
-                ? "Не указан в источнике"
-                : `${event.age_limit}+`}
-            </dd>
-            <dt>Продолжительность</dt>
-            <dd>
-              {event.duration_min
-                ? `${event.duration_min} мин`
-                : "Не указана в источнике"}
-            </dd>
-            <dt>Язык</dt>
-            <dd>{event.language || "Не указан в источнике"}</dd>
-            <dt>Стоимость</dt>
-            <dd className="detail-price">
-              {event.is_free
-                ? "Бесплатно"
-                : event.price_min === null
-                  ? "Уточните у организатора"
-                  : event.price_max && event.price_max !== event.price_min
-                    ? `${event.price_min}–${event.price_max} ₽`
-                    : price(event)}
-            </dd>
-          </dl>
-          <a
-            className="button primary"
-            href={event.org_link || event.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            К организатору
-            <ArrowUpRight size={18} />
-          </a>
-          <button className="button secondary" onClick={onSave}>
-            <Bookmark size={18} />
-            {saved ? "Сохранено" : "Сохранить событие"}
-          </button>
-          <p className="fine-print">
-            Цена и наличие билетов могут измениться. Покупка — на сайте
-            организатора.
-          </p>
-        </aside>
       </div>
     </section>
   );

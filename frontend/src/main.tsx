@@ -10,6 +10,7 @@ import {
   MapPin,
   Search,
   SlidersHorizontal,
+  X,
 } from "lucide-react";
 import { api } from "./api";
 import { EventCard, EventDetail, KuraiMark, Modal } from "./components";
@@ -222,7 +223,7 @@ function App() {
         : [...values, id].slice(-100),
     );
   }
-  function period(kind: string) {
+  function periodDates(kind: string) {
     const today = meta?.today || new Date().toLocaleDateString("sv-SE");
     const d = new Date(today + "T12:00:00Z");
     let start = today,
@@ -237,7 +238,16 @@ function App() {
       d.setUTCDate(d.getUTCDate() + 6);
       end = d.toISOString().slice(0, 10);
     }
-    apply({ ...filters, date_from: start, date_to: end });
+    return { date_from: start, date_to: end };
+  }
+  function period(kind: string) {
+    apply({ ...filters, ...periodDates(kind) });
+  }
+  function periodSelected(kind: string) {
+    const range = periodDates(kind);
+    return (
+      applied.date_from === range.date_from && applied.date_to === range.date_to
+    );
   }
   async function sendFeedback(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -267,6 +277,22 @@ function App() {
   ).length;
   const coveredCities =
     meta?.cities.slice(0, 3).join(" · ") || "Афиша республики";
+  const filterLabels: Partial<Record<keyof FormFilters, string>> = {
+    q: `Поиск: ${applied.q}`,
+    city: applied.city,
+    date_from: `С ${applied.date_from.split("-").reverse().join(".")}`,
+    date_to: `По ${applied.date_to.split("-").reverse().join(".")}`,
+    price_max: `До ${Number(applied.price_max).toLocaleString("ru-RU")} ₽`,
+    age: `Возраст ребёнка: ${applied.age}`,
+    category:
+      meta?.categories.find((c) => c.id === applied.category)?.label ||
+      applied.category,
+    is_free: "Бесплатные",
+    venue: applied.venue,
+  };
+  const activeFilters = (
+    Object.keys(filterLabels) as (keyof FormFilters)[]
+  ).filter((key) => applied[key]);
   return (
     <>
       <a className="skip-link" href="#catalog">
@@ -314,6 +340,7 @@ function App() {
             </nav>
             <button
               className="favorites"
+              aria-label={`Избранное: ${saved.length} ${eventWord(saved.length)}`}
               onClick={() => {
                 const next = !savedOnly;
                 go("/");
@@ -321,7 +348,7 @@ function App() {
                 setPage(1);
                 document
                   .getElementById("catalog")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                  ?.scrollIntoView({ behavior: "auto" });
               }}
               aria-pressed={savedOnly}
             >
@@ -354,14 +381,6 @@ function App() {
                   Найти своё событие
                   <ArrowUpRight size={20} />
                 </a>
-                <div className="hero-foot">
-                  <KuraiMark className="hero-kurai" />
-                  <p>
-                    Афиша родного края
-                    <br />
-                    <strong>{coveredCities}</strong>
-                  </p>
-                </div>
               </div>
               <figure className="hero-art">
                 <img
@@ -434,6 +453,10 @@ function App() {
                   onSubmit={(e) => {
                     e.preventDefault();
                     apply();
+                    setMore(false);
+                    document
+                      .getElementById("catalog")
+                      ?.scrollIntoView({ behavior: "auto" });
                   }}
                 >
                   <div className="search-main">
@@ -485,13 +508,25 @@ function App() {
                   </div>
                   <div className="search-bottom">
                     <div className="quick-dates">
-                      <button type="button" onClick={() => period("today")}>
+                      <button
+                        type="button"
+                        aria-pressed={periodSelected("today")}
+                        onClick={() => period("today")}
+                      >
                         Сегодня
                       </button>
-                      <button type="button" onClick={() => period("weekend")}>
+                      <button
+                        type="button"
+                        aria-pressed={periodSelected("weekend")}
+                        onClick={() => period("weekend")}
+                      >
                         В выходные
                       </button>
-                      <button type="button" onClick={() => period("week")}>
+                      <button
+                        type="button"
+                        aria-pressed={periodSelected("week")}
+                        onClick={() => period("week")}
+                      >
                         На неделе
                       </button>
                     </div>
@@ -500,14 +535,15 @@ function App() {
                       type="button"
                       onClick={() => setMore((v) => !v)}
                       aria-expanded={more}
+                      aria-controls="extra-filters"
                     >
                       <SlidersHorizontal size={15} />
-                      Все фильтры
+                      {more ? "Свернуть фильтры" : "Все фильтры"}
                       <ChevronDown size={14} />
                     </button>
                   </div>
                   {more && (
-                    <div className="extra-filters">
+                    <div className="extra-filters" id="extra-filters">
                       <label>
                         <span>По какой день</span>
                         <input
@@ -565,12 +601,19 @@ function App() {
                         Если цена или возраст не указаны источником, событие не
                         проходит соответствующий фильтр.
                       </p>
+                      <button
+                        className="button primary filter-apply"
+                        type="submit"
+                      >
+                        Применить фильтры <ArrowRight size={18} />
+                      </button>
                     </div>
                   )}
                 </form>
                 <div className="category-tabs" aria-label="Категории">
                   <button
                     className={!applied.category ? "selected" : ""}
+                    aria-pressed={!applied.category}
                     onClick={() => apply({ ...filters, category: "" })}
                   >
                     Всё интересное
@@ -579,12 +622,30 @@ function App() {
                     <button
                       key={c.id}
                       className={applied.category === c.id ? "selected" : ""}
+                      aria-pressed={applied.category === c.id}
                       onClick={() => apply({ ...filters, category: c.id })}
                     >
                       {c.label}
                     </button>
                   ))}
                 </div>
+                {activeFilters.length > 0 && (
+                  <div
+                    className="active-filters"
+                    aria-label="Применённые фильтры"
+                  >
+                    <span>Выбрано</span>
+                    {activeFilters.map((key) => (
+                      <button
+                        key={key}
+                        aria-label={`Убрать фильтр: ${filterLabels[key]}`}
+                        onClick={() => apply({ ...applied, [key]: "" })}
+                      >
+                        {filterLabels[key]} <X size={14} />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </>
             )}
             <div className="results-header">
@@ -666,7 +727,17 @@ function App() {
                         ? "Нажмите на закладку понравившегося события — оно появится здесь."
                         : data?.suggestions.join(". ")}
                     </p>
-                    {!savedOnly && (
+                    {savedOnly ? (
+                      <button
+                        className="button primary"
+                        onClick={() => {
+                          go("/");
+                          document.getElementById("catalog")?.scrollIntoView();
+                        }}
+                      >
+                        Выбрать событие <ArrowRight size={18} />
+                      </button>
+                    ) : (
                       <button
                         className="button secondary"
                         onClick={() => apply(empty)}
