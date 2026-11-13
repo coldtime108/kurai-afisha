@@ -1,0 +1,23 @@
+{
+  "captured_at": "2026-11-13T16:11:25+00:00",
+  "method": "Ручная сверка общедоступных страниц. Не автоматический сборщик.",
+  "dataset": "reviewed-events-extra.json",
+  "input_records": 6,
+  "distinct_sessions": 5,
+  "notes": [
+    "У Макбета две подготовленные записи, которые объединяются в одну карточку с двумя источниками. Дата, возраст, длительность и адрес сверены с театром, диапазон цены — с билетной страницей. Данные вручную сведены; JSON импорта не выдаётся за исходный HTML сайта.",
+    "Малый (органный) зал филармонии нормализован к существующему названию Малый зал.",
+    "Цена обозначает опубликованный диапазон, а не гарантию доступности конкретного места.",
+    "Неизвестные возраст и длительность не угаданы. Время окончания, равное началу на сайте филармонии, не используется как длительность.",
+    "Надпись Бесплатно на общей странице без подтверждения в карточке не использовалась для добавления других событий.",
+    "Сайт театра оперы и балета использует /affiche/; этот адрес доступен для будущего адаптера."
+  ],
+  "sources": [
+    "https://bashgf.ru/afisha/event/muzyka-rozhdennaja-vetrom-vi-mezhdunarodnyj-jetnicheskij-festival-2/",
+    "https://bashgf.ru/afisha/event/a-kapella-gruppa-pljusfajv/",
+    "https://bashgf.ru/afisha/event/lilija-ishemjarova-jubilejnyj-koncert/",
+    "https://bashgf.ru/afisha/event/aleksej-ljudevig-i-kamernyj-orkestr/",
+    "https://rusdramteatr.ru/afisha/makbet-14-11-2026",
+    "https://sterlitamak.kassy.ru/events/teatr/2-25365/"
+  ]
+}

@@ -6,15 +6,26 @@ from .db import make_engine, session_factory
 from .ingestion import import_rows
 
 
+def reviewed_rows():
+    directory = Path(__file__).resolve().parents[2] / "data"
+    return [
+        row
+        for filename in ("reviewed-events.json", "reviewed-events-extra.json")
+        for row in json.loads((directory / filename).read_text(encoding="utf-8"))
+    ]
+
+
 def main():
-    path = Path(__file__).resolve().parents[2] / "data" / "reviewed-events.json"
-    rows = json.loads(path.read_text(encoding="utf-8"))
-    with session_factory(make_engine())() as session:
-        print(
-            json.dumps(
-                import_rows(session, rows, actor="reviewed_seed"), ensure_ascii=False
+    engine = make_engine()
+    try:
+        with session_factory(engine)() as session:
+            print(
+                json.dumps(
+                    import_rows(session, reviewed_rows(), actor="reviewed_seed"), ensure_ascii=False
+                )
             )
-        )
+    finally:
+        engine.dispose()
 
 
 if __name__ == "__main__":
