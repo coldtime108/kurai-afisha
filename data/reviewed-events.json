@@ -1,0 +1,145 @@
+[
+  {
+    "title": "Травиата",
+    "category": "theatre",
+    "date_start": "2026-11-13T19:00:00+05:00",
+    "city": "Уфа",
+    "venue": "Башкирский театр оперы и балета · Большой зал",
+    "address": "ул. Ленина, 5/1",
+    "description": "Опера Джузеппе Верди. Исполняется на итальянском языке с русскими титрами.",
+    "source_url": "https://www.bashopera.ru/repertoire/opera/15866/",
+    "source_type": "page",
+    "verified_at": "2026-11-13T09:02:41.269152+00:00",
+    "confidence": 1,
+    "status": "published",
+    "duration_min": 170,
+    "age_limit": 16,
+    "language": "Итальянский, русские титры",
+    "tags": [
+      "опера",
+      "премьера"
+    ]
+  },
+  {
+    "title": "Травиата",
+    "category": "theatre",
+    "date_start": "2026-11-14T18:00:00+05:00",
+    "city": "Уфа",
+    "venue": "Башкирский театр оперы и балета · Большой зал",
+    "address": "ул. Ленина, 5/1",
+    "description": "Опера Джузеппе Верди. Исполняется на итальянском языке с русскими титрами.",
+    "source_url": "https://www.bashopera.ru/repertoire/opera/15866/",
+    "source_type": "page",
+    "verified_at": "2026-11-13T09:02:41.269152+00:00",
+    "confidence": 1,
+    "status": "published",
+    "duration_min": 170,
+    "age_limit": 16,
+    "language": "Итальянский, русские титры",
+    "tags": [
+      "опера",
+      "премьера"
+    ]
+  },
+  {
+    "title": "Освобождение звука",
+    "category": "concert",
+    "date_start": "2026-11-14T18:00:00+05:00",
+    "city": "Уфа",
+    "venue": "Башкирская филармония им. Х. Ахметова · Малый зал",
+    "address": "ул. Гоголя, 58",
+    "description": "Авторский вечер Азамата Хасаншина. Ансамбль OPUS.",
+    "source_url": "https://bashgf.ru/afisha/event/jubilejnyj-koncert-azamata-hasanshina/",
+    "source_type": "page",
+    "verified_at": "2026-11-13T09:02:41.269152+00:00",
+    "confidence": 1,
+    "status": "published",
+    "price_min": 600,
+    "price_max": 800,
+    "is_free": false,
+    "tags": [
+      "классическая музыка"
+    ]
+  },
+  {
+    "title": "Лебединое озеро",
+    "category": "theatre",
+    "date_start": "2026-11-15T18:00:00+05:00",
+    "city": "Уфа",
+    "venue": "Башкирский театр оперы и балета · Большой зал",
+    "address": "ул. Ленина, 5/1",
+    "description": "Балет Петра Чайковского. Сеанс указан в афише театра.",
+    "source_url": "https://www.bashopera.ru/affiche/",
+    "source_type": "page",
+    "verified_at": "2026-11-13T09:02:41.269152+00:00",
+    "confidence": 1,
+    "status": "published",
+    "age_limit": 12,
+    "tags": [
+      "балет"
+    ]
+  },
+  {
+    "title": "Музыка, рожденная ветром. VI Международный этнический фестиваль",
+    "category": "festival",
+    "date_start": "2026-11-18T19:00:00+05:00",
+    "city": "Уфа",
+    "venue": "Башкирская филармония им. Х. Ахметова · Большой зал",
+    "address": "ул. Гоголя, 58",
+    "description": "Этническая музыка и народные инструменты. В программе — исполнители на курае.",
+    "source_url": "https://bashgf.ru/afisha/event/muzyka-rozhdennaja-vetrom-vi-mezhdunarodnyj-jetnicheskij-festival/",
+    "source_type": "page",
+    "verified_at": "2026-11-13T09:02:41.269152+00:00",
+    "confidence": 1,
+    "status": "published",
+    "price_min": 600,
+    "price_max": 1200,
+    "is_free": false,
+    "age_limit": 6,
+    "tags": [
+      "курай",
+      "этническая музыка"
+    ]
+  },
+  {
+    "title": "Музыку слушаем вместе",
+    "category": "concert",
+    "date_start": "2026-11-21T11:00:00+05:00",
+    "city": "Уфа",
+    "venue": "Башкирская филармония им. Х. Ахметова · Малый зал",
+    "address": "ул. Гоголя, 58",
+    "description": "Интерактивное музыкальное занятие для детей от 0 до 3 лет.",
+    "source_url": "https://bashgf.ru/afisha/event/muzyku-slushaem-vmeste-89/",
+    "source_type": "page",
+    "verified_at": "2026-11-13T09:02:41.269152+00:00",
+    "confidence": 1,
+    "status": "published",
+    "price_min": 1500,
+    "is_free": false,
+    "tags": [
+      "для малышей",
+      "0–3 года"
+    ]
+  },
+  {
+    "title": "Годы, дороги, песни…",
+    "age_limit": 6,
+    "category": "concert",
+    "date_start": "2026-11-21T18:00:00+05:00",
+    "city": "Уфа",
+    "venue": "Башкирская филармония им. Х. Ахметова · Большой зал",
+    "address": "ул. Гоголя, 58",
+    "description": "Юбилейный вечер Гали Алтынбаева и Назифы Кадыровой.",
+    "source_url": "https://bashgf.ru/afisha/event/jubilejnyj-koncert-gali-altynbaeva-i-nazify-kadyrovoj/",
+    "source_type": "page",
+    "verified_at": "2026-11-13T09:02:41.269152+00:00",
+    "confidence": 1,
+    "status": "published",
+    "price_min": 600,
+    "price_max": 1200,
+    "is_free": false,
+    "tags": [
+      "эстрада"
+    ]
+  }
+]

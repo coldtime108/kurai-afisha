@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-11-13T09:02:41.269152+00:00",
+  "method": "Ручная сверка метаданных публичных афиш. Не автоматический сборщик.",
+  "unknown_fields": "null — данные не указаны. Время окончания, равное времени начала в источнике, не переносится как длительность.",
+  "sources": [
+    "https://bashgf.ru/afisha/event/jubilejnyj-koncert-azamata-hasanshina/",
+    "https://bashgf.ru/afisha/event/jubilejnyj-koncert-gali-altynbaeva-i-nazify-kadyrovoj/",
+    "https://bashgf.ru/afisha/event/muzyka-rozhdennaja-vetrom-vi-mezhdunarodnyj-jetnicheskij-festival/",
+    "https://bashgf.ru/afisha/event/muzyku-slushaem-vmeste-89/",
+    "https://www.bashopera.ru/affiche/",
+    "https://www.bashopera.ru/repertoire/opera/15866/"
+  ]
+}

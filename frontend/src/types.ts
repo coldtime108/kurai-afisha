@@ -1,0 +1,38 @@
+export type CultureEvent = {
+  id: string;
+  title: string;
+  category: string;
+  tags: string[];
+  date_start: string;
+  date_end: string | null;
+  duration_min: number | null;
+  city: string;
+  venue: string;
+  address: string;
+  description: string;
+  price_min: number | null;
+  price_max: number | null;
+  is_free: boolean | null;
+  age_limit: number | null;
+  language: string | null;
+  source_url: string;
+  org_link: string | null;
+  verified_at: string | null;
+  sources: { url: string; verified_at: string | null; type: string }[];
+  status: "published" | "draft" | "cancelled";
+};
+export type Meta = {
+  cities: string[];
+  venues: string[];
+  categories: { id: string; label: string }[];
+  today: string;
+  timezone: string;
+  service_notice: string;
+};
+export type EventPage = {
+  items: CultureEvent[];
+  total: number;
+  page: number;
+  size: number;
+  suggestions: string[];
+};

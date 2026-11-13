@@ -1,0 +1,112 @@
+.admin {
+  max-width: 1140px;
+  margin: auto;
+  padding: 35px 24px;
+}
+.admin header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #d9ded1;
+  padding-bottom: 25px;
+  margin-bottom: 30px;
+}
+.admin h1 {
+  font-family: Georgia, serif;
+  font-size: 36px;
+  font-weight: 400;
+}
+.admin p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #5e6d67;
+}
+.admin-login {
+  max-width: 500px;
+  margin: 80px auto;
+}
+.admin label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+.admin input,
+.admin textarea {
+  display: block;
+  border: 1px solid #b4c0ad;
+  padding: 12px;
+  width: 100%;
+  background: #fffefa;
+  border-radius: 4px;
+  margin: 10px 0 18px;
+  font-size: 13px;
+}
+.admin textarea {
+  min-height: 200px;
+  resize: vertical;
+  font-family: monospace;
+}
+.admin section {
+  padding: 25px 0;
+  border-bottom: 1px solid #d9ded1;
+}
+.admin h2 {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  font-weight: 400;
+}
+.admin-table-wrap {
+  overflow: auto;
+}
+.admin table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 650px;
+}
+.admin th,
+.admin td {
+  text-align: left;
+  border-bottom: 1px solid #d9ded1;
+  padding: 12px 8px;
+  vertical-align: top;
+}
+.admin td > button {
+  padding: 6px 9px;
+  margin: 3px;
+  border: 1px solid #b4c0ad;
+  border-radius: 4px;
+  font-size: 10px;
+}
+.admin td > small {
+  display: block;
+  margin-top: 6px;
+  color: #5e6d67;
+}
+.admin .admin-error {
+  color: #842e1a;
+  border: 1px solid #bd8970;
+  background: #f7e5d9;
+  padding: 12px;
+}
+.admin pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #eeeee3;
+  padding: 16px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+.admin-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.admin input[type="file"] {
+  max-width: 450px;
+}
+.admin .admin-section-note {
+  font-size: 11px;
+}

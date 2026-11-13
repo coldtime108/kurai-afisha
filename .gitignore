@@ -1,5 +1,6 @@
 .venv/
 node_modules/
+.pnpm-store/
 dist/
 __pycache__/
 *.py[cod]
