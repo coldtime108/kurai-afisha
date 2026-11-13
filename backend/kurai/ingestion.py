@@ -9,11 +9,19 @@ from .schemas import EventInput
 
 
 def normalize(value: str) -> str:
-    return re.sub(r"[^\w]+", " ", unicodedata.normalize("NFKC", value).casefold().replace("ё", "е")).strip()
+    return re.sub(
+        r"[^\w]+",
+        " ",
+        unicodedata.normalize("NFKC", value).casefold().replace("ё", "е"),
+    ).strip()
 
 
 def sha(value) -> str:
-    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    return hashlib.sha256(
+        json.dumps(
+            value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode()
+    ).hexdigest()
 
 
 def import_rows(session, rows: list[dict], actor="moderator"):
@@ -23,21 +31,84 @@ def import_rows(session, rows: list[dict], actor="moderator"):
             item = EventInput.model_validate(raw)
         except ValidationError as error:
             report["rejected"] += 1
-            report["errors"].append({"row": index, "reason": "; ".join(f"{'.'.join(map(str,e['loc'])) or 'запись'}: {e['msg']}" for e in error.errors(include_input=False))})
+            report["errors"].append(
+                {
+                    "row": index,
+                    "reason": "; ".join(
+                        f"{'.'.join(map(str,e['loc'])) or 'запись'}: {e['msg']}"
+                        for e in error.errors(include_input=False)
+                    ),
+                }
+            )
             continue
         source_hash = sha(raw)
-        if session.scalar(select(RawRecord).where(RawRecord.source_hash == source_hash)):
+        if session.scalar(
+            select(RawRecord).where(RawRecord.source_hash == source_hash)
+        ):
             report["skipped"] += 1
             continue
         values = item.model_dump(mode="json")
-        key = sha([normalize(item.title), values["date_start"], normalize(item.city), normalize(item.venue)])
+        key = sha(
+            [
+                normalize(item.title),
+                values["date_start"],
+                normalize(item.city),
+                normalize(item.venue),
+            ]
+        )
         existing = session.scalar(select(Event).where(Event.dedup_key == key))
-        source = {"url": values["source_url"], "verified_at": values["verified_at"], "type": values["source_type"]}
-        values.update({field: getattr(item, field) for field in ("date_start", "date_end", "verified_at")})
+        source = {
+            "url": values["source_url"],
+            "verified_at": values["verified_at"],
+            "type": values["source_type"],
+        }
+        values.update(
+            {
+                field: getattr(item, field)
+                for field in ("date_start", "date_end", "verified_at")
+            }
+        )
         if existing:
-            sources = [s for s in existing.sources if s["url"] != source["url"]] + [source]
+            if existing.moderated_at:
+                session.add(
+                    RawRecord(
+                        source_hash=source_hash, payload=raw, event_id=existing.id
+                    )
+                )
+                session.add(
+                    AuditEntry(
+                        actor=actor,
+                        action="import_proposal",
+                        entity_id=existing.id,
+                        changes={
+                            "proposed": raw,
+                            "reason": "Карточка защищена после ручной проверки",
+                        },
+                    )
+                )
+                report["rejected"] += 1
+                report["errors"].append(
+                    {
+                        "row": index,
+                        "reason": "Карточка проверена модератором. Новые сведения сохранены в журнале для сверки; используйте редактор",
+                    }
+                )
+                session.flush()
+                continue
+            sources = [s for s in existing.sources if s["url"] != source["url"]] + [
+                source
+            ]
             # A second source may add provenance, but cannot silently overwrite facts/status.
-            conflict = any(values[field] != getattr(existing, field) for field in ("price_min", "price_max", "age_limit", "date_end", "address"))
+            conflict = any(
+                values[field] != getattr(existing, field)
+                for field in (
+                    "price_min",
+                    "price_max",
+                    "age_limit",
+                    "date_end",
+                    "address",
+                )
+            )
             same_source = existing.source_url == values["source_url"]
             before = {"status": existing.status, "sources": existing.sources}
             if same_source:
@@ -50,14 +121,38 @@ def import_rows(session, rows: list[dict], actor="moderator"):
             elif conflict:
                 existing.status = "draft"
             existing.sources = sources
-            session.add(AuditEntry(actor=actor, action="import_update", entity_id=existing.id, changes={"before": before, "after": {"status": existing.status, "sources": sources}, "conflict": conflict}))
+            session.add(
+                AuditEntry(
+                    actor=actor,
+                    action="import_update",
+                    entity_id=existing.id,
+                    changes={
+                        "before": before,
+                        "after": {"status": existing.status, "sources": sources},
+                        "conflict": conflict,
+                    },
+                )
+            )
             target = existing
             report["updated"] += 1
         else:
-            target = Event(**values, normalized_title=normalize(item.title), dedup_key=key, source_hash=source_hash, sources=[source])
+            target = Event(
+                **values,
+                normalized_title=normalize(item.title),
+                dedup_key=key,
+                source_hash=source_hash,
+                sources=[source],
+            )
             session.add(target)
             session.flush()
-            session.add(AuditEntry(actor=actor, action="import_create", entity_id=target.id, changes={"status": target.status, "source_url": target.source_url}))
+            session.add(
+                AuditEntry(
+                    actor=actor,
+                    action="import_create",
+                    entity_id=target.id,
+                    changes={"status": target.status, "source_url": target.source_url},
+                )
+            )
             report["added"] += 1
         session.add(RawRecord(source_hash=source_hash, payload=raw, event_id=target.id))
         session.flush()

@@ -1,7 +1,14 @@
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Annotated, Literal
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    HttpUrl,
+    field_validator,
+    model_validator,
+)
 
 
 class Category(str, Enum):
@@ -14,7 +21,15 @@ class Category(str, Enum):
     other = "other"
 
 
-CATEGORIES = {"concert": "Концерты", "theatre": "Театр", "exhibition": "Выставки", "festival": "Фестивали", "cinema": "Кино", "excursion": "Экскурсии", "other": "Другое"}
+CATEGORIES = {
+    "concert": "Концерты",
+    "theatre": "Театр",
+    "exhibition": "Выставки",
+    "festival": "Фестивали",
+    "cinema": "Кино",
+    "excursion": "Экскурсии",
+    "other": "Другое",
+}
 
 
 class EventInput(BaseModel):
@@ -61,7 +76,19 @@ class EventInput(BaseModel):
     def consistent(self):
         if self.date_end and self.date_end <= self.date_start:
             raise ValueError("Окончание должно быть позже начала")
-        if self.price_max is not None and (self.price_min is None or self.price_max < self.price_min):
+        if (
+            self.date_end
+            and self.duration_min is not None
+            and abs(
+                (self.date_end - self.date_start).total_seconds() / 60
+                - self.duration_min
+            )
+            > 1
+        ):
+            raise ValueError("Длительность противоречит времени окончания")
+        if self.price_max is not None and (
+            self.price_min is None or self.price_max < self.price_min
+        ):
             raise ValueError("Проверьте диапазон цены")
         if self.is_free is True and (self.price_min != 0 or self.price_max != 0):
             raise ValueError("Для бесплатного входа обе цены должны быть равны 0")
@@ -105,3 +132,32 @@ class FeedbackInput(BaseModel):
     event_id: str | None = Field(default=None, max_length=36)
     message: str = Field(min_length=10, max_length=2000)
     website: str = Field(default="", max_length=200)
+
+
+class SubscriptionFilter(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    city: str = Field(min_length=1, max_length=120)
+    category: Category | None = None
+    period: Literal["week", "weekend"] = "week"
+
+
+class SubscriptionInput(SubscriptionFilter):
+    confirmed: Literal[True]
+
+
+class SubscriptionOut(BaseModel):
+    id: str
+    filters: SubscriptionFilter
+    expires_at: datetime
+
+
+class EditEventInput(BaseModel):
+    event: EventInput
+    expected_updated_at: datetime
+
+    @field_validator("expected_updated_at")
+    @classmethod
+    def version_aware(cls, value):
+        if value.tzinfo is None:
+            raise ValueError("Укажите часовой пояс версии карточки")
+        return value.astimezone(timezone.utc)

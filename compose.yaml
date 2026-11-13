@@ -29,5 +29,16 @@ services:
       timeout: 3s
       retries: 10
     restart: unless-stopped
+  bot:
+    build: .
+    profiles: ["telegram"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://kurai:${POSTGRES_PASSWORD:-kurai-local}@db:5432/kurai
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+    command: ["python", "-m", "kurai.telegram_worker"]
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
 volumes:
   postgres_data:
