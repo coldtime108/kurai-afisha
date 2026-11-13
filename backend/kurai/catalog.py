@@ -81,10 +81,14 @@ def search(session, filters: Filters, page=1, size=12, sort="date"):
             ),
             ("city", "Посмотрите события в других городах"),
             ("category", "Попробуйте другую категорию"),
+            ("venue", "Посмотрите события на других площадках"),
+            ("is_free", "Уберите условие бесплатного входа: в каталоге есть платные события"),
             ("q", "Попробуйте более короткое название"),
         ):
-            if getattr(filters, field) is not None and getattr(filters, field) != "":
-                relaxed = replace(filters, **{field: "" if field == "q" else None})
+            value = getattr(filters, field)
+            if value is not None and value != "" and not (field == "is_free" and not value):
+                empty_value = "" if field == "q" else False if field == "is_free" else None
+                relaxed = replace(filters, **{field: empty_value})
                 if session.scalar(
                     select(func.count()).select_from(query_for(relaxed).subquery())
                 ):

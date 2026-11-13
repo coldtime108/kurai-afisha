@@ -1,0 +1,490 @@
+{
+  "generated_at": "2026-11-13T16:00:43.100638+00:00",
+  "reference_time": "2026-11-13T09:00:00+00:00",
+  "corpus_sha256": "71ada25c8f9ed3880509f1bfd324ca138e3350c598ebd12a4bdb5b186f3cb838",
+  "suite_sha256": "0404399ffe53edd522e80cbeb521a246420ca5f7c74547e8175ee7541adf8ac1",
+  "event_count": 7,
+  "duplicate_key_count": 0,
+  "known_price_count": 4,
+  "known_age_count": 5,
+  "api": {
+    "cases": 21,
+    "exact_matches": 21,
+    "positive_cases": 15,
+    "relevant_found_pct": 100.0,
+    "false_empty_pct": 0.0,
+    "p95_ms": 43.529
+  },
+  "bot": {
+    "cases": 13,
+    "exact_matches": 13,
+    "positive_cases": 9,
+    "relevant_found_pct": 100.0,
+    "false_empty_pct": 0.0,
+    "p95_ms": 56.158
+  },
+  "passed": true,
+  "measurement_scope": "In-process FastAPI TestClient and bot controller; SQLite; fixed reference date; seven reviewed sessions. Not production HTTP latency, LLM evaluation or independent acceptance.",
+  "results": [
+    {
+      "id": "api-title",
+      "surface": "api",
+      "expected": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "actual": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 75.163,
+      "passed": true
+    },
+    {
+      "id": "api-case",
+      "surface": "api",
+      "expected": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "actual": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 15.564,
+      "passed": true
+    },
+    {
+      "id": "api-partial-title",
+      "surface": "api",
+      "expected": [
+        "Лебединое озеро@2026-11-15"
+      ],
+      "actual": [
+        "Лебединое озеро@2026-11-15"
+      ],
+      "status": 200,
+      "duration_ms": 11.558,
+      "passed": true
+    },
+    {
+      "id": "api-concerts",
+      "surface": "api",
+      "expected": [
+        "Освобождение звука@2026-11-14",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 12.187,
+      "passed": true
+    },
+    {
+      "id": "api-festival",
+      "surface": "api",
+      "expected": [
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18"
+      ],
+      "actual": [
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18"
+      ],
+      "status": 200,
+      "duration_ms": 6.957,
+      "passed": true
+    },
+    {
+      "id": "api-city",
+      "surface": "api",
+      "expected": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14",
+        "Освобождение звука@2026-11-14",
+        "Лебединое озеро@2026-11-15",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14",
+        "Освобождение звука@2026-11-14",
+        "Лебединое озеро@2026-11-15",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 11.499,
+      "passed": true
+    },
+    {
+      "id": "api-uncovered-city",
+      "surface": "api",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 8.603,
+      "passed": true
+    },
+    {
+      "id": "api-one-day",
+      "surface": "api",
+      "expected": [
+        "Травиата@2026-11-14",
+        "Освобождение звука@2026-11-14"
+      ],
+      "actual": [
+        "Травиата@2026-11-14",
+        "Освобождение звука@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 9.957,
+      "passed": true
+    },
+    {
+      "id": "api-weekend",
+      "surface": "api",
+      "expected": [
+        "Травиата@2026-11-14",
+        "Освобождение звука@2026-11-14",
+        "Лебединое озеро@2026-11-15"
+      ],
+      "actual": [
+        "Травиата@2026-11-14",
+        "Освобождение звука@2026-11-14",
+        "Лебединое озеро@2026-11-15"
+      ],
+      "status": 200,
+      "duration_ms": 7.413,
+      "passed": true
+    },
+    {
+      "id": "api-many-constraints",
+      "surface": "api",
+      "expected": [
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 11.16,
+      "passed": true
+    },
+    {
+      "id": "api-budget",
+      "surface": "api",
+      "expected": [
+        "Освобождение звука@2026-11-14",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 10.694,
+      "passed": true
+    },
+    {
+      "id": "api-low-budget",
+      "surface": "api",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 7.55,
+      "passed": true
+    },
+    {
+      "id": "api-child-six",
+      "surface": "api",
+      "expected": [
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 8.775,
+      "passed": true
+    },
+    {
+      "id": "api-child-twelve",
+      "surface": "api",
+      "expected": [
+        "Лебединое озеро@2026-11-15",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Лебединое озеро@2026-11-15",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 8.874,
+      "passed": true
+    },
+    {
+      "id": "api-unknown-price-excluded",
+      "surface": "api",
+      "expected": [
+        "Освобождение звука@2026-11-14",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14",
+        "Музыка, рожденная ветром. VI Международный этнический фестиваль@2026-11-18",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 7.51,
+      "passed": true
+    },
+    {
+      "id": "api-no-free-events",
+      "surface": "api",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 7.911,
+      "passed": true
+    },
+    {
+      "id": "api-venue",
+      "surface": "api",
+      "expected": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14",
+        "Лебединое озеро@2026-11-15"
+      ],
+      "actual": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14",
+        "Лебединое озеро@2026-11-15"
+      ],
+      "status": 200,
+      "duration_ms": 9.472,
+      "passed": true
+    },
+    {
+      "id": "api-unknown-venue",
+      "surface": "api",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 6.974,
+      "passed": true
+    },
+    {
+      "id": "api-empty-date",
+      "surface": "api",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 6.108,
+      "passed": true
+    },
+    {
+      "id": "api-cyrillic-tag",
+      "surface": "api",
+      "expected": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "actual": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 10.041,
+      "passed": true
+    },
+    {
+      "id": "api-unknown-title",
+      "surface": "api",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 43.529,
+      "passed": true
+    },
+    {
+      "id": "bot-title",
+      "surface": "bot",
+      "expected": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "actual": [
+        "Травиата@2026-11-13",
+        "Травиата@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 25.229,
+      "passed": true
+    },
+    {
+      "id": "bot-spaced-budget",
+      "surface": "bot",
+      "expected": [
+        "Освобождение звука@2026-11-14",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 10.252,
+      "passed": true
+    },
+    {
+      "id": "bot-weekday",
+      "surface": "bot",
+      "expected": [
+        "Освобождение звука@2026-11-14"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 8.824,
+      "passed": true
+    },
+    {
+      "id": "bot-weekend-plural",
+      "surface": "bot",
+      "expected": [
+        "Травиата@2026-11-14",
+        "Лебединое озеро@2026-11-15"
+      ],
+      "actual": [
+        "Травиата@2026-11-14",
+        "Лебединое озеро@2026-11-15"
+      ],
+      "status": 200,
+      "duration_ms": 10.158,
+      "passed": true
+    },
+    {
+      "id": "bot-date-numeric",
+      "surface": "bot",
+      "expected": [
+        "Освобождение звука@2026-11-14"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 9.282,
+      "passed": true
+    },
+    {
+      "id": "bot-date-named",
+      "surface": "bot",
+      "expected": [
+        "Освобождение звука@2026-11-14"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14"
+      ],
+      "status": 200,
+      "duration_ms": 7.977,
+      "passed": true
+    },
+    {
+      "id": "bot-no-free-exhibitions",
+      "surface": "bot",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 14.797,
+      "passed": true
+    },
+    {
+      "id": "bot-city-typo",
+      "surface": "bot",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 12.184,
+      "passed": true
+    },
+    {
+      "id": "bot-invalid-calendar-date",
+      "surface": "bot",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 5.968,
+      "passed": true
+    },
+    {
+      "id": "bot-invalid-iso-date",
+      "surface": "bot",
+      "expected": [],
+      "actual": [],
+      "status": 200,
+      "duration_ms": 8.787,
+      "passed": true
+    },
+    {
+      "id": "bot-title-words",
+      "surface": "bot",
+      "expected": [
+        "Музыку слушаем вместе@2026-11-21"
+      ],
+      "actual": [
+        "Музыку слушаем вместе@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 55.9,
+      "passed": true
+    },
+    {
+      "id": "bot-punctuation",
+      "surface": "bot",
+      "expected": [
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 56.158,
+      "passed": true
+    },
+    {
+      "id": "bot-large-spaced-budget",
+      "surface": "bot",
+      "expected": [
+        "Освобождение звука@2026-11-14",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "actual": [
+        "Освобождение звука@2026-11-14",
+        "Музыку слушаем вместе@2026-11-21",
+        "Годы, дороги, песни…@2026-11-21"
+      ],
+      "status": 200,
+      "duration_ms": 13.432,
+      "passed": true
+    }
+  ]
+}

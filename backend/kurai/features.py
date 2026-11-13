@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from .catalog import search
 from .ingestion import normalize, sha
-from .models import AuditEntry, Event, RawRecord, Subscription, utcnow
+from .models import AuditEntry, Event, RawRecord, Subscription, record_publication, utcnow
 from .schemas import (
     EditEventInput,
     EventInput,
@@ -160,6 +160,7 @@ def install_features(app, db, admin, limit):
             sources=[source],
             moderated_at=utcnow(),
         )
+        record_publication(item, None)
         session.add(item)
         session.flush()
         if not session.scalar(
@@ -207,6 +208,7 @@ def install_features(app, db, admin, limit):
         before = EventOut.model_validate(item).model_dump(mode="json")
         for field, value in values.items():
             setattr(item, field, value)
+        record_publication(item, before["status"])
         item.normalized_title, item.dedup_key, item.source_hash = (
             normalize(data.event.title),
             key,

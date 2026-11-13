@@ -56,6 +56,29 @@
   font-size: 11px;
   color: #53684e;
 }
+.subscription-telegram {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #c9d5bf;
+}
+.subscription-telegram p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #425b40;
+}
+.subscription-telegram a {
+  font-size: 13px;
+}
+.subscription-explanation a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .subscription-form {
   display: flex;
   flex-direction: column;

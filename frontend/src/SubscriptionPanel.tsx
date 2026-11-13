@@ -10,6 +10,7 @@ type Subscription = {
   expires_at: string;
 };
 const keyName = "kurai-subscription-key";
+const telegramUrl = "https://t.me/kurai_afisha_rb_bot";
 function deviceKey(create = false): string | null {
   const existing = localStorage.getItem(keyName);
   if (existing && /^[a-f0-9]{64}$/.test(existing)) return existing;
@@ -56,7 +57,9 @@ export function SubscriptionPanel({
     setError("");
     setConfirmed(false);
     setChosenCity(subscription?.filters.city || city || meta?.cities[0] || "");
-    setChosenCategory(subscription?.filters.category || category || "");
+    setChosenCategory(
+      subscription ? (subscription.filters.category ?? "") : category,
+    );
     setPeriod(subscription?.filters.period || "week");
     setOpen(true);
   }
@@ -150,6 +153,20 @@ export function SubscriptionPanel({
           <ArrowUpRight size={17} />
         </button>
       </div>
+      <div className="subscription-telegram">
+        <p>
+          Получайте новые события в Telegram. Город и категорию выбирайте в
+          боте.
+        </p>
+        <a
+          className="text-button"
+          href={telegramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Открыть бота «Курай» <ArrowUpRight size={16} />
+        </a>
+      </div>
       {subscription && (
         <div className="subscription-actions">
           <button className="text-button" onClick={view} disabled={busy}>
@@ -191,9 +208,13 @@ export function SubscriptionPanel({
           }
           onClose={() => setOpen(false)}
         >
-          <p>
-            Подписка сохраняет подборку на этом устройстве. Для уведомлений в
-            Telegram потребуется отдельно подключённый бот.
+          <p className="subscription-explanation">
+            Подписка сохраняет подборку на этом устройстве. Уведомления можно
+            отдельно включить в{" "}
+            <a href={telegramUrl} target="_blank" rel="noopener noreferrer">
+              нашем Telegram-боте
+            </a>
+            .
           </p>
           <form className="subscription-form" onSubmit={save}>
             <label>

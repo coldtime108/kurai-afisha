@@ -110,6 +110,7 @@ class EventOut(EventInput):
     sources: list[dict]
     created_at: datetime
     updated_at: datetime
+    published_at: datetime | None = None
 
 
 class ImportBatch(BaseModel):

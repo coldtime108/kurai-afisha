@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config, pool
 from kurai.models import Base
 
 config = context.config
-if os.getenv("DATABASE_URL"):
+if os.getenv("DATABASE_URL") and not config.attributes.get("ignore_database_env"):
     config.set_main_option(
         "sqlalchemy.url", os.environ["DATABASE_URL"].replace("%", "%%")
     )

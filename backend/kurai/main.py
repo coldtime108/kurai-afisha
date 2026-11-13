@@ -37,7 +37,7 @@ from .db import make_engine, session_factory
 from .ingestion import import_rows
 from .features import install_features
 from .subscriptions import cleanup
-from .models import AuditEntry, Event, Feedback
+from .models import AuditEntry, Event, Feedback, record_publication
 from .schemas import (
     CATEGORIES,
     Category,
@@ -449,6 +449,7 @@ def create_app(database_url=None, admin_token=None, web_dir=None):
             raise HTTPException(422, "Сначала проверьте источник")
         before = item.status
         item.status = data.status
+        record_publication(item, before)
         item.moderated_at = datetime.now(timezone.utc)
         session.add(
             AuditEntry(

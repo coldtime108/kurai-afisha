@@ -29,8 +29,12 @@ def enqueue_digests(session, now=None):
         ids = list(
             session.scalars(
                 query_for(subscription_filters(sub, now))
-                .where(Event.created_at > sub.last_digest_at, Event.date_start > now)
-                .order_by(Event.date_start)
+                .where(
+                    Event.published_at > sub.last_digest_at,
+                    Event.published_at <= now,
+                    Event.date_start > now,
+                )
+                .order_by(Event.date_start, Event.id)
                 .limit(3)
             )
         )

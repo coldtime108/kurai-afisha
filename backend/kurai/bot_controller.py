@@ -7,7 +7,7 @@ from uuid import UUID
 from sqlalchemy import select
 from .catalog import Filters, LOCAL_TZ, search
 from .models import BotDialog, Event, Feedback, Subscription, utcnow
-from .query_parser import CITIES, parse_query
+from .query_parser import CITIES, QueryParseError, parse_query
 from .schemas import CATEGORIES, SubscriptionFilter
 from .subscriptions import (
     delete_subscription,
@@ -366,5 +366,11 @@ class BotController:
                             [[("К афише", "catalog")]],
                         )
                     )
-                filters = parse_query(text[:500], filters, now)
+                known_cities = set(CITIES) | set(session.scalars(
+                    select(Event.city).where(Event.status == "published").distinct()
+                ))
+                try:
+                    filters = parse_query(text[:500], filters, now, cities=known_cities)
+                except QueryParseError as error:
+                    return finish(BotReply(str(error), [[("К афише", "catalog")]]))
             return finish(catalog())

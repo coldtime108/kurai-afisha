@@ -4,7 +4,7 @@ import re
 import unicodedata
 from sqlalchemy import select
 from pydantic import ValidationError
-from .models import AuditEntry, Event, RawRecord
+from .models import AuditEntry, Event, RawRecord, record_publication
 from .schemas import EventInput
 
 
@@ -120,6 +120,7 @@ def import_rows(session, rows: list[dict], actor="moderator"):
                 existing.source_hash = source_hash
             elif conflict:
                 existing.status = "draft"
+            record_publication(existing, before["status"])
             existing.sources = sources
             session.add(
                 AuditEntry(
@@ -143,6 +144,7 @@ def import_rows(session, rows: list[dict], actor="moderator"):
                 source_hash=source_hash,
                 sources=[source],
             )
+            record_publication(target, None)
             session.add(target)
             session.flush()
             session.add(

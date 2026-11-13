@@ -5,7 +5,6 @@ from datetime import date, timedelta
 from difflib import get_close_matches
 from .ingestion import normalize
 from .catalog import LOCAL_TZ
-from .schemas import CATEGORIES
 from .subscriptions import period_bounds
 
 CITIES = [
@@ -28,13 +27,34 @@ ALIASES = {
     "туймазах": "Туймазы",
 }
 WORDS = {
-    "concert": ["концерт", "концерты", "музыка"],
-    "theatre": ["театр", "спектакль", "балет", "опера"],
-    "exhibition": ["выставка", "выставки"],
-    "festival": ["фестиваль", "фестивали"],
+    "concert": ["концерт", "концерты", "концертов", "музыка"],
+    "theatre": [
+        "театр", "спектакль", "спектакли", "спектаклей", "балет", "балеты", "опера", "оперы"
+    ],
+    "exhibition": ["выставка", "выставки", "выставок"],
+    "festival": ["фестиваль", "фестивали", "фестивалей"],
     "cinema": ["кино", "кинопоказ"],
     "excursion": ["экскурсия", "экскурсии"],
 }
+
+MONTHS = {
+    "января": 1,
+    "февраля": 2,
+    "марта": 3,
+    "апреля": 4,
+    "мая": 5,
+    "июня": 6,
+    "июля": 7,
+    "августа": 8,
+    "сентября": 9,
+    "октября": 10,
+    "ноября": 11,
+    "декабря": 12,
+}
+
+
+class QueryParseError(ValueError):
+    """An explicit invalid constraint must not silently turn into a broad search."""
 
 
 def parse_query(text: str, previous: dict, now, cities=None):
@@ -53,10 +73,22 @@ def parse_query(text: str, previous: dict, now, cities=None):
             for word in words:
                 working = re.sub(rf"\b{re.escape(word)}\b", " ", working)
             break
-    budget = re.search(r"до\s+(\d{1,7})(?:\s*(?:руб|₽))?", text.lower())
+    budget = re.search(
+        r"\bдо\s+(\d{1,3}(?:[ \u00a0\u202f]\d{3})+|\d{1,8})"
+        r"(?![\d:./-])(?:\s*(?:руб(?:лей|ля|ль)?\.?|₽))?",
+        text.lower(),
+    )
     if budget:
-        result["price_max"] = int(budget[1])
-        working = re.sub(r"до\s+\d+(?:\s+руб\w*)?", " ", working)
+        if re.match(
+            r"\s*(?:" + "|".join(MONTHS) + r")\b", text[budget.end(1):].lower()
+        ):
+            budget = None
+        else:
+            amount = int(re.sub(r"\s", "", budget[1]))
+            if amount > 10_000_000:
+                raise QueryParseError("Укажите бюджет до 10 000 000 рублей за один билет.")
+            result["price_max"] = amount
+            working = working.replace(normalize(budget[0]), " ")
     if "бесплат" in working:
         result["is_free"] = True
         working = re.sub(r"бесплат\w*", " ", working)
@@ -103,7 +135,21 @@ def parse_query(text: str, previous: dict, now, cities=None):
             result.update(date_from=chosen.isoformat(), date_to=chosen.isoformat())
             working = working.replace(normalize(explicit[1]), " ")
         except ValueError:
-            pass
+            raise QueryParseError("Такой даты нет в календаре. Укажите дату, например 14.11.2026.") from None
+    numeric_date = re.search(r"\b(\d{1,2})[./](\d{1,2})(?:[./](\d{4}))?\b", text)
+    named_date = re.search(
+        r"\b(\d{1,2})\s+(" + "|".join(MONTHS) + r")(?:\s+(\d{4}))?\b", text.lower()
+    )
+    human_date = numeric_date or named_date
+    if human_date and not explicit:
+        try:
+            month = int(human_date[2]) if numeric_date else MONTHS[human_date[2]]
+            year = int(human_date[3]) if human_date[3] else now.astimezone(LOCAL_TZ).year
+            chosen = date(year, month, int(human_date[1]))
+        except ValueError:
+            raise QueryParseError("Такой даты нет в календаре. Укажите дату, например 14.11.2026.") from None
+        result.update(date_from=chosen.isoformat(), date_to=chosen.isoformat())
+        working = working.replace(normalize(human_date[0]), " ")
     stop = {
         "найди",
         "найти",
@@ -138,6 +184,7 @@ def parse_query(text: str, previous: dict, now, cities=None):
         "а",
         "и",
         "в",
+        "во",
         "с",
         "по",
         "к",

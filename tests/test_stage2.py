@@ -307,6 +307,7 @@ def test_digest_queue_daily_dedup_and_excludes_cancelled(client, app):
         sub.next_digest_at = NOW - timedelta(seconds=1)
         for event in session.scalars(select(Event)):
             event.created_at = NOW - timedelta(hours=1)
+            event.published_at = NOW - timedelta(hours=1)
         cancelled = session.scalar(select(Event).order_by(Event.date_start))
         cancelled.status = "cancelled"
         session.commit()

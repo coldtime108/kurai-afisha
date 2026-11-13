@@ -83,6 +83,13 @@ class Event(Base):
         UTCDateTime(), default=utcnow, onupdate=utcnow
     )
     moderated_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    published_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), index=True)
+
+
+def record_publication(item: Event, previous_status: str | None, now=None):
+    """An old draft becomes new to subscribers when it enters the public catalog."""
+    if item.status == "published" and previous_status != "published":
+        item.published_at = now or utcnow()
 
 
 class RawRecord(Base):
