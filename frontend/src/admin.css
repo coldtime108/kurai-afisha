@@ -13,7 +13,7 @@
   margin-bottom: 30px;
 }
 .admin h1 {
-  font-family: Georgia, serif;
+  font-family: "Fira Sans", "Segoe UI", Arial, sans-serif;
   font-size: 36px;
   font-weight: 400;
 }
@@ -52,7 +52,7 @@
   border-bottom: 1px solid #d9ded1;
 }
 .admin h2 {
-  font-family: Georgia, serif;
+  font-family: "Fira Sans", "Segoe UI", Arial, sans-serif;
   font-size: 28px;
   font-weight: 400;
 }
@@ -109,4 +109,66 @@
 }
 .admin .admin-section-note {
   font-size: 11px;
+}
+dialog:has(.event-editor) {
+  width: min(760px, calc(100vw - 28px));
+}
+.event-editor {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+.event-editor > p {
+  grid-column: span 2;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #5e6d67;
+}
+.event-editor label {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.event-editor input,
+.event-editor select,
+.event-editor textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #b4c0ad;
+  border-radius: 4px;
+  background: #fffefa;
+  color: #173c36;
+  font: inherit;
+  margin: 0;
+}
+.event-editor textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+.event-editor .span-two {
+  grid-column: span 2;
+}
+.event-editor .editor-confirm {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.editor-confirm input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: #175746;
+}
+@media (max-width: 580px) {
+  .event-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .event-editor .span-two,
+  .event-editor > p {
+    grid-column: span 1;
+  }
 }

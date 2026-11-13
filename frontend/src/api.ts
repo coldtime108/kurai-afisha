@@ -6,5 +6,5 @@ export async function api<T>(path: string, options?: RequestInit): Promise<T> {
       body.error?.message || "Не удалось загрузить данные. Попробуйте ещё раз.",
     );
   }
-  return response.json();
+  return response.status === 204 ? (undefined as T) : response.json();
 }

@@ -20,6 +20,9 @@ export type CultureEvent = {
   verified_at: string | null;
   sources: { url: string; verified_at: string | null; type: string }[];
   status: "published" | "draft" | "cancelled";
+  updated_at: string;
+  lat: number | null;
+  lon: number | null;
 };
 export type Meta = {
   cities: string[];

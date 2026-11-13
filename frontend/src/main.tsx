@@ -16,8 +16,20 @@ import {
 import { api } from "./api";
 import { EventCard, EventDetail, KuraiMark, Modal } from "./components";
 import type { CultureEvent, EventPage, Meta } from "./types";
+import "@fontsource/fira-sans/latin-400.css";
+import "@fontsource/fira-sans/latin-500.css";
+import "@fontsource/fira-sans/latin-600.css";
+import "@fontsource/fira-sans/cyrillic-400.css";
+import "@fontsource/fira-sans/cyrillic-500.css";
+import "@fontsource/fira-sans/cyrillic-600.css";
+import "@fontsource/fira-sans/cyrillic-ext-400.css";
+import "@fontsource/fira-sans/cyrillic-ext-500.css";
+import "@fontsource/fira-sans/cyrillic-ext-600.css";
 import "./styles.css";
+import "./typography.css";
 import { Admin } from "./Admin";
+import { SubscriptionPanel } from "./SubscriptionPanel";
+import "./subscriptions.css";
 
 type FormFilters = {
   q: string;
@@ -688,6 +700,13 @@ function App() {
               </>
             )}
             {!widget && (
+              <SubscriptionPanel
+                meta={meta}
+                city={applied.city}
+                category={applied.category}
+              />
+            )}
+            {!widget && (
               <aside className="trust-panel">
                 <KuraiMark />
                 <div>
@@ -762,8 +781,8 @@ function App() {
             будут расширяться после проверки данных.
           </p>
           <p>
-            ИИ-помощник и Telegram-бот появятся на следующих этапах. Каталог
-            работает самостоятельно.
+            ИИ-помощник появится на следующем этапе. Каталог работает
+            самостоятельно.
           </p>
           <p className="fine-print">
             Это независимый проект, не официальный сервис министерства.

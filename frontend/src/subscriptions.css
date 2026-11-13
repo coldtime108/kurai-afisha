@@ -1,0 +1,159 @@
+.subscription-panel {
+  margin-top: 38px;
+  padding: 30px;
+  border: 1px solid #d5decd;
+  border-radius: 8px;
+  background: #edf2e6;
+}
+.subscription-intro {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.subscription-symbol {
+  color: #28644d;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid #9eb896;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.subscription-intro > div {
+  flex: 1;
+}
+.subscription-intro .eyebrow {
+  font-size: 9px;
+  margin-bottom: 10px;
+  color: #526c4d;
+}
+.subscription-intro h3 {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+.subscription-intro p:last-child {
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 590px;
+  margin: 0;
+  color: #53684e;
+}
+.subscription-intro .button {
+  white-space: nowrap;
+}
+.subscription-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.subscription-actions small {
+  font-size: 11px;
+  color: #53684e;
+}
+.subscription-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.subscription-form label {
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.subscription-form select {
+  padding: 12px;
+  border: 1px solid #b4c0ad;
+  border-radius: 4px;
+  background: white;
+  color: #173c36;
+  width: 100%;
+  font-size: 14px;
+}
+.subscription-form .confirm-subscription {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  font-size: 12px;
+  line-height: 1.7;
+  gap: 10px;
+}
+.confirm-subscription input {
+  margin-top: 5px;
+  accent-color: #175746;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+.subscription-events {
+  margin-top: 20px;
+  border-top: 1px solid #c9d5bf;
+}
+.subscription-events a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid #c9d5bf;
+  font-size: 14px;
+}
+.subscription-events a span {
+  flex: 1;
+}
+.subscription-events small {
+  font-size: 11px;
+  color: #53684e;
+}
+.subscription-events p {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 20px;
+}
+@media (max-width: 820px) {
+  .subscription-intro {
+    flex-wrap: wrap;
+  }
+  .subscription-intro > div {
+    min-width: 220px;
+  }
+  .subscription-intro > .button {
+    margin-left: 80px;
+  }
+}
+@media (max-width: 580px) {
+  .subscription-panel {
+    padding: 24px 20px;
+  }
+  .subscription-intro {
+    gap: 15px;
+  }
+  .subscription-symbol {
+    width: 43px;
+    height: 43px;
+  }
+  .subscription-intro > div {
+    min-width: 180px;
+  }
+  .subscription-intro h3 {
+    font-size: 24px;
+  }
+  .subscription-intro > .button {
+    margin: 0;
+    width: 100%;
+  }
+  .subscription-actions {
+    gap: 16px;
+  }
+  .subscription-events a {
+    flex-wrap: wrap;
+  }
+  .subscription-events a span {
+    flex-basis: 80%;
+  }
+}

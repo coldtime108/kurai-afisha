@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { api } from "./api";
 import { fmtDate, fmtTime, KuraiMark } from "./components";
 import type { CultureEvent } from "./types";
+import { EventEditor } from "./EventEditor";
 type Audit = {
   id: number;
   action: string;
@@ -33,6 +34,9 @@ export function Admin() {
     [messages, setMessages] = useState<Message[]>([]),
     [report, setReport] = useState<Report | null>(null),
     [json, setJson] = useState("");
+  const [editing, setEditing] = useState<CultureEvent | null | undefined>(
+    undefined,
+  );
   const headers = { Authorization: `Bearer ${token}` };
   async function refresh() {
     const [events, changes, feedback] = await Promise.all([
@@ -177,7 +181,15 @@ export function Admin() {
             </p>
           )}
           <section>
-            <h2>События · {rows.length}</h2>
+            <div className="admin-row">
+              <h2>События · {rows.length}</h2>
+              <button
+                className="button primary"
+                onClick={() => setEditing(null)}
+              >
+                Добавить событие
+              </button>
+            </div>
             <p className="admin-section-note">
               Черновики скрыты от посетителей. Отменённые исчезают из поиска и
               остаются по прямой ссылке с пометкой.
@@ -221,6 +233,9 @@ export function Admin() {
                         }
                       </td>
                       <td>
+                        <button onClick={() => setEditing(row)}>
+                          Редактировать
+                        </button>
                         {(["published", "draft", "cancelled"] as const)
                           .filter((s) => s !== row.status)
                           .map((s) => (
@@ -347,6 +362,14 @@ export function Admin() {
             </div>
           </section>
         </>
+      )}
+      {connected && editing !== undefined && (
+        <EventEditor
+          event={editing}
+          token={token}
+          onClose={() => setEditing(undefined)}
+          onSaved={refresh}
+        />
       )}
     </main>
   );
