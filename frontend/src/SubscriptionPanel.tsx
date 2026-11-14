@@ -3,24 +3,14 @@ import { Bell, ArrowUpRight, Check, Trash2 } from "lucide-react";
 import { api } from "./api";
 import { Modal, fmtDate } from "./components";
 import type { Meta, CultureEvent, EventPage } from "./types";
+import { deviceKey } from "./device";
 
 type Subscription = {
   id: string;
   filters: { city: string; category: string | null; period: string };
   expires_at: string;
 };
-const keyName = "kurai-subscription-key";
 const telegramUrl = "https://t.me/kurai_afisha_rb_bot";
-function deviceKey(create = false): string | null {
-  const existing = localStorage.getItem(keyName);
-  if (existing && /^[a-f0-9]{64}$/.test(existing)) return existing;
-  if (!create) return null;
-  const value = Array.from(crypto.getRandomValues(new Uint8Array(32)), (v) =>
-    v.toString(16).padStart(2, "0"),
-  ).join("");
-  localStorage.setItem(keyName, value);
-  return value;
-}
 
 export function SubscriptionPanel({
   meta,
@@ -41,17 +31,23 @@ export function SubscriptionPanel({
     [confirmed, setConfirmed] = useState(false),
     [events, setEvents] = useState<CultureEvent[] | null>(null);
   useEffect(() => {
-    try {
-      const key = deviceKey();
-      if (key)
-        api<Subscription[]>("/api/v1/subscriptions", {
-          headers: { Authorization: `Bearer ${key}` },
-        })
-          .then((rows) => setSubscription(rows[0] || null))
-          .catch(() => {});
-    } catch {
-      /* Storage can be unavailable in embedded pages. */
+    function refresh() {
+      try {
+        const key = deviceKey();
+        if (key)
+          api<Subscription[]>("/api/v1/subscriptions", {
+            headers: { Authorization: `Bearer ${key}` },
+          })
+            .then((rows) => setSubscription(rows[0] || null))
+            .catch(() => {});
+      } catch {
+        /* Storage can be unavailable in embedded pages. */
+      }
     }
+    refresh();
+    window.addEventListener("kurai-subscription-changed", refresh);
+    return () =>
+      window.removeEventListener("kurai-subscription-changed", refresh);
   }, []);
   function show() {
     setError("");
@@ -104,7 +100,7 @@ export function SubscriptionPanel({
         method: "DELETE",
         headers: { Authorization: `Bearer ${deviceKey()}` },
       });
-      localStorage.removeItem(keyName);
+      // The key also owns the assistant dialogue, so retain it after unsubscribing.
       setSubscription(null);
       setEvents(null);
     } catch (e) {

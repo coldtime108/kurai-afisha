@@ -7,8 +7,8 @@ import logging
 import os
 
 from aiogram import Bot
-from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats, MenuButtonCommands
+from .telegram_session import SystemNetworkSession
 
 
 async def configure(expected_username: str | None = None):
@@ -16,7 +16,7 @@ async def configure(expected_username: str | None = None):
     if not token:
         raise SystemExit("Задайте TELEGRAM_BOT_TOKEN в локальных настройках запуска.")
     logging.getLogger("aiogram").setLevel(logging.CRITICAL)
-    async with Bot(token, session=AiohttpSession(timeout=15)).context() as bot:
+    async with Bot(token, session=SystemNetworkSession(timeout=15)).context() as bot:
         identity = await bot.get_me()
         if expected_username and identity.username != expected_username.lstrip("@"):
             raise SystemExit("Токен принадлежит другому боту. Настройки не изменены.")
@@ -25,9 +25,16 @@ async def configure(expected_username: str | None = None):
         commands = [
             BotCommand(command="start", description="Начать и открыть главное меню"),
             BotCommand(command="catalog", description="Афиша и фильтры событий"),
-            BotCommand(command="subscribe", description="Подписаться на город и категорию"),
-            BotCommand(command="unsubscribe", description="Удалить подписку и её данные"),
-            BotCommand(command="feedback", description="Сообщить о событии или исправлении"),
+            BotCommand(command="new", description="Удалить диалог и начать заново"),
+            BotCommand(
+                command="subscribe", description="Подписаться на город и категорию"
+            ),
+            BotCommand(
+                command="unsubscribe", description="Удалить подписку и её данные"
+            ),
+            BotCommand(
+                command="feedback", description="Сообщить о событии или исправлении"
+            ),
             BotCommand(command="cancel", description="Отменить незавершённое действие"),
             BotCommand(command="help", description="Помощь и команды"),
         ]
@@ -55,12 +62,20 @@ async def configure(expected_username: str | None = None):
         ]:
             raise SystemExit("Telegram не подтвердил сохранение команд.")
         # A short poll verifies connectivity without acknowledging or printing updates.
-        await bot.get_updates(timeout=1, limit=1, allowed_updates=["message", "callback_query"])
-        return {"username": identity.username, "commands": len(registered), "polling_available": True}
+        await bot.get_updates(
+            timeout=1, limit=1, allowed_updates=["message", "callback_query"]
+        )
+        return {
+            "username": identity.username,
+            "commands": len(registered),
+            "polling_available": True,
+        }
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Настроить публичный профиль Telegram-бота")
+    parser = argparse.ArgumentParser(
+        description="Настроить публичный профиль Telegram-бота"
+    )
     parser.add_argument("--expected-username")
     args = parser.parse_args()
     try:

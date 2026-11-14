@@ -15,6 +15,7 @@ from .subscriptions import (
     period_bounds,
     save_subscription,
 )
+from .assistant import AssistantBusy
 
 
 @dataclass
@@ -39,8 +40,9 @@ def event_text(event):
 
 
 class BotController:
-    def __init__(self, sessions, clock=utcnow):
+    def __init__(self, sessions, clock=utcnow, assistant=None):
         self.sessions, self.clock = sessions, clock
+        self.assistant = assistant
 
     def handle(
         self, user_id: int, text: str | None = None, callback: str | None = None
@@ -63,6 +65,35 @@ class BotController:
                 state.expires_at = now + timedelta(days=1)
                 session.commit()
                 return reply
+
+            def assistant_reply(reply):
+                nonlocal filters
+                filters = dict(reply.filters)
+                parts = [reply.message]
+                buttons = []
+                for index, card in enumerate(reply.cards, 1):
+                    parts.append(
+                        event_text(card.event) + "\n" + " · ".join(card.reasons)
+                    )
+                    buttons.append(
+                        [
+                            (f"{index}. {card.event.title[:42]}", "e:" + card.event.id),
+                            ("Источник", "url:" + str(card.event.source_url)),
+                        ]
+                    )
+                parts.extend(reply.suggestions)
+                if reply.pending:
+                    parts.append(reply.pending.summary)
+                    buttons.append(
+                        [
+                            ("Подтвердить", "ai-yes:" + reply.pending.token),
+                            ("Отмена", "ai-no:" + reply.pending.token),
+                        ]
+                    )
+                if reply.has_more:
+                    buttons.append([("Показать ещё", "ai-more")])
+                buttons.append([("К афише", "catalog"), ("Новый диалог", "ai-reset")])
+                return BotReply("\n\n".join(parts), buttons)
 
             window = data.get("rate", {})
             if (
@@ -118,6 +149,8 @@ class BotController:
                         [("Подписаться", "subscribe"), ("Сбросить фильтры", "reset")],
                     ]
                 )
+                if self.assistant:
+                    buttons.append([("Подобрать с помощником", "assistant")])
                 return BotReply("\n\n".join(parts), buttons)
 
             def cities(subscribe=False):
@@ -160,10 +193,24 @@ class BotController:
                 data.pop("awaiting", None)
                 return finish(
                     BotReply(
-                        "Курай — культура Башкортостана рядом.\nВыбирайте кнопками или напишите: «концерт в Уфе в субботу до 1000 рублей».\nДанные берём из афиш учреждений. Это независимый проект.\n/help — помощь, /cancel — отмена, /unsubscribe — отписка, /feedback — обращение.",
+                        "Курай — культура Башкортостана рядом.\nВыбирайте кнопками или напишите: «концерт в Уфе в субботу до 1000 рублей».\nДанные берём из афиш учреждений. Это независимый проект.\nСвободный запрос разбирает модель NVIDIA: не указывайте личные данные и ключи. Память — 24 часа, диагностика — 7 дней. /new удалит диалог и его диагностику.\n/help — помощь, /cancel — отмена, /unsubscribe — отписка, /feedback — обращение.",
                         [
+                            [("Подобрать с помощником", "assistant")],
                             [("Открыть афишу", "catalog")],
                             [("Моя подписка", "subscription")],
+                        ],
+                    )
+                )
+            if callback == "assistant" and self.assistant:
+                data.pop("awaiting", None)
+                data.pop("pending", None)
+                data.pop("feedback_pending", None)
+                return finish(
+                    BotReply(
+                        "Помощник Курай\n\nНапишите пожелания обычным сообщением: город, дату, бюджет и возраст ребёнка, если идёте с ним. Например: «Спектакль в Стерлитамаке на выходных до 800 рублей».\n\nПотом можно уточнить: «подешевле», «только бесплатные» или «подробнее о первом». Модель NVIDIA разбирает условия, а факты берём из нашей базы.\n\nНе указывайте личные данные и ключи. /new — удалить диалог и начать заново.",
+                        [
+                            [("Попробовать пример", "ai-example")],
+                            [("К афише", "catalog")],
                         ],
                     )
                 )
@@ -181,6 +228,8 @@ class BotController:
                 data.pop("pending", None)
                 data.pop("awaiting", None)
                 data.pop("feedback_pending", None)
+                if self.assistant:
+                    self.assistant.reset(owner)
                 return finish(
                     BotReply(
                         "Действие отменено. Подписка не изменена.",
@@ -358,6 +407,64 @@ class BotController:
                 except ValueError:
                     page = 1
                 return finish(catalog(page))
+            if self.assistant and (text == "/new" or callback == "ai-reset"):
+                self.assistant.reset(owner)
+                filters = {}
+                return finish(
+                    BotReply(
+                        "Диалог и его диагностические записи удалены. Напишите новый запрос.",
+                        [[("К афише", "catalog")]],
+                    )
+                )
+            if (
+                self.assistant
+                and callback
+                and callback.startswith(("ai-yes:", "ai-no:"))
+            ):
+                try:
+                    token = callback.split(":", 1)[1]
+                    return finish(
+                        assistant_reply(
+                            self.assistant.confirm(
+                                owner,
+                                "telegram",
+                                token,
+                                callback.startswith("ai-yes:"),
+                                telegram_id=user_id,
+                            )
+                        )
+                    )
+                except AssistantBusy:
+                    return finish(
+                        BotReply(
+                            "Предыдущий запрос ещё обрабатывается. Подождите немного."
+                        )
+                    )
+            if self.assistant and (
+                text
+                and not text.startswith("/")
+                or callback in ("ai-more", "ai-example")
+            ):
+                try:
+                    reply = self.assistant.respond(
+                        owner,
+                        "telegram",
+                        text
+                        or (
+                            "Спектакль в Стерлитамаке на выходных до 800 рублей"
+                            if callback == "ai-example"
+                            else "Покажи ещё"
+                        ),
+                        telegram_id=user_id,
+                        initial_filters=filters,
+                    )
+                    return finish(assistant_reply(reply))
+                except AssistantBusy:
+                    return finish(
+                        BotReply(
+                            "Предыдущий запрос ещё обрабатывается. Подождите немного."
+                        )
+                    )
             if text:
                 if text.startswith("/"):
                     return finish(
@@ -366,9 +473,11 @@ class BotController:
                             [[("К афише", "catalog")]],
                         )
                     )
-                known_cities = set(CITIES) | set(session.scalars(
-                    select(Event.city).where(Event.status == "published").distinct()
-                ))
+                known_cities = set(CITIES) | set(
+                    session.scalars(
+                        select(Event.city).where(Event.status == "published").distinct()
+                    )
+                )
                 try:
                     filters = parse_query(text[:500], filters, now, cities=known_cities)
                 except QueryParseError as error:

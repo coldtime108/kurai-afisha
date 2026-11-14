@@ -14,7 +14,7 @@ try {
     $settingsPath = Join-Path $projectDirectory '.env'
     if (Test-Path -LiteralPath $settingsPath) {
         foreach ($line in [IO.File]::ReadAllLines($settingsPath)) {
-            if ($line -match '^\s*(TELEGRAM_BOT_TOKEN|DATABASE_URL)\s*=(.*)$') {
+            if ($line -match '^\s*(TELEGRAM_BOT_TOKEN|DATABASE_URL|NVIDIA_API_KEY|LLM_ENABLED|LLM_MODEL)\s*=(.*)$') {
                 [Environment]::SetEnvironmentVariable($Matches[1], $Matches[2].Trim(), 'Process')
             }
         }

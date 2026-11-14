@@ -29,7 +29,14 @@ ALIASES = {
 WORDS = {
     "concert": ["концерт", "концерты", "концертов", "музыка"],
     "theatre": [
-        "театр", "спектакль", "спектакли", "спектаклей", "балет", "балеты", "опера", "оперы"
+        "театр",
+        "спектакль",
+        "спектакли",
+        "спектаклей",
+        "балет",
+        "балеты",
+        "опера",
+        "оперы",
     ],
     "exhibition": ["выставка", "выставки", "выставок"],
     "festival": ["фестиваль", "фестивали", "фестивалей"],
@@ -80,22 +87,31 @@ def parse_query(text: str, previous: dict, now, cities=None):
     )
     if budget:
         if re.match(
-            r"\s*(?:" + "|".join(MONTHS) + r")\b", text[budget.end(1):].lower()
+            r"\s*(?:" + "|".join(MONTHS) + r")\b", text[budget.end(1) :].lower()
         ):
             budget = None
         else:
             amount = int(re.sub(r"\s", "", budget[1]))
             if amount > 10_000_000:
-                raise QueryParseError("Укажите бюджет до 10 000 000 рублей за один билет.")
+                raise QueryParseError(
+                    "Укажите бюджет до 10 000 000 рублей за один билет."
+                )
             result["price_max"] = amount
             working = working.replace(normalize(budget[0]), " ")
     if "бесплат" in working:
         result["is_free"] = True
         working = re.sub(r"бесплат\w*", " ", working)
-    child = re.search(r"(?:реб[её]н\w*|дет\w*)\s+(\d{1,2})\s*(?:лет|год)", text.lower())
-    if child and int(child[1]) <= 17:
+    child = re.search(
+        r"(?:реб[её]н\w*|дет\w*|подрост\w*|возраст\w*)\s+(\d{1,3})\s*(?:лет|год)",
+        text.lower(),
+    )
+    if child and int(child[1]) <= 120:
         result["age"] = int(child[1])
-        working = re.sub(r"(?:ребен\w*|дет\w*)\s+\d+\s+(?:лет|год\w*)", " ", working)
+        working = re.sub(
+            r"(?:ребен\w*|дет\w*|подрост\w*|возраст\w*)\s+\d+\s+(?:лет|год\w*)",
+            " ",
+            working,
+        )
     period = next(
         (
             p
@@ -135,7 +151,9 @@ def parse_query(text: str, previous: dict, now, cities=None):
             result.update(date_from=chosen.isoformat(), date_to=chosen.isoformat())
             working = working.replace(normalize(explicit[1]), " ")
         except ValueError:
-            raise QueryParseError("Такой даты нет в календаре. Укажите дату, например 14.11.2026.") from None
+            raise QueryParseError(
+                "Такой даты нет в календаре. Укажите дату, например 14.11.2026."
+            ) from None
     numeric_date = re.search(r"\b(\d{1,2})[./](\d{1,2})(?:[./](\d{4}))?\b", text)
     named_date = re.search(
         r"\b(\d{1,2})\s+(" + "|".join(MONTHS) + r")(?:\s+(\d{4}))?\b", text.lower()
@@ -144,10 +162,14 @@ def parse_query(text: str, previous: dict, now, cities=None):
     if human_date and not explicit:
         try:
             month = int(human_date[2]) if numeric_date else MONTHS[human_date[2]]
-            year = int(human_date[3]) if human_date[3] else now.astimezone(LOCAL_TZ).year
+            year = (
+                int(human_date[3]) if human_date[3] else now.astimezone(LOCAL_TZ).year
+            )
             chosen = date(year, month, int(human_date[1]))
         except ValueError:
-            raise QueryParseError("Такой даты нет в календаре. Укажите дату, например 14.11.2026.") from None
+            raise QueryParseError(
+                "Такой даты нет в календаре. Укажите дату, например 14.11.2026."
+            ) from None
         result.update(date_from=chosen.isoformat(), date_to=chosen.isoformat())
         working = working.replace(normalize(human_date[0]), " ")
     stop = {

@@ -17,6 +17,8 @@ from aiogram.types import (
     Message,
 )
 from .bot_controller import BotController, BotReply, event_text
+from .assistant import AssistantService
+from .telegram_session import SystemNetworkSession
 from .catalog import query_for
 from .db import make_engine, session_factory
 from .digests import enqueue_digests, pending_deliveries
@@ -97,10 +99,11 @@ def build_router(controller: BotController):
 
 
 async def dispatch_digests(bot, sessions):
+    now = utcnow()
     with sessions() as session:
-        cleanup(session)
-        enqueue_digests(session)
-        deliveries = pending_deliveries(session)
+        cleanup(session, now)
+        enqueue_digests(session, now)
+        deliveries = pending_deliveries(session, now)
     for identifier, chat_id, events in deliveries:
         try:
             # Recheck deletion/status immediately before delivery.
@@ -180,16 +183,16 @@ async def run():
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     token = os.getenv("TELEGRAM_BOT_TOKEN", "")
     if not token:
-        raise SystemExit(
-            "Задайте TELEGRAM_BOT_TOKEN в локальных настройках запуска."
-        )
+        raise SystemExit("Задайте TELEGRAM_BOT_TOKEN в локальных настройках запуска.")
     engine = make_engine()
     sessions = session_factory(engine)
     # Framework logs can contain Telegram IDs; only our content-free status logs are enabled.
     logging.getLogger("aiogram").setLevel(logging.CRITICAL)
-    bot = Bot(token=token)
+    bot = Bot(token=token, session=SystemNetworkSession())
     dispatcher = Dispatcher(events_isolation=SimpleEventIsolation(), disable_fsm=False)
-    dispatcher.include_router(build_router(BotController(sessions)))
+    dispatcher.include_router(
+        build_router(BotController(sessions, assistant=AssistantService(sessions)))
+    )
     async with bot.context(auto_close=True):
         info = await bot.get_webhook_info()
         if info.url:

@@ -36,6 +36,7 @@ from .catalog import Filters, LOCAL_TZ, search
 from .db import make_engine, session_factory
 from .ingestion import import_rows
 from .features import install_features
+from .assistant_api import install_assistant
 from .subscriptions import cleanup
 from .models import AuditEntry, Event, Feedback, record_publication
 from .schemas import (
@@ -52,7 +53,7 @@ ROOT = Path(__file__).resolve().parents[2]
 logger = logging.getLogger("kurai.access")
 
 
-def create_app(database_url=None, admin_token=None, web_dir=None):
+def create_app(database_url=None, admin_token=None, web_dir=None, llm_provider=None):
     engine = make_engine(database_url)
     sessions = session_factory(engine)
     secret = admin_token if admin_token is not None else os.getenv("ADMIN_TOKEN", "")
@@ -246,7 +247,7 @@ def create_app(database_url=None, admin_token=None, web_dir=None):
         try:
             with engine.connect() as connection:
                 connection.execute(select(Event.id).limit(1))
-            return {"status": "ok", "version": "0.2.0", "assistant": "not_connected"}
+            return {"status": "ok", "version": "0.2.0", "assistant": "configured" if app.state.assistant.provider.ready else "fallback"}
         except Exception:
             raise HTTPException(503, "База событий временно недоступна")
 
@@ -479,6 +480,7 @@ def create_app(database_url=None, admin_token=None, web_dir=None):
         ]
 
     install_features(app, db, admin, limit)
+    install_assistant(app, db, admin, limit, llm_provider)
 
     if (web / "assets").is_dir():
         app.mount("/assets", StaticFiles(directory=web / "assets"), name="assets")

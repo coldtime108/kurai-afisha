@@ -28,6 +28,7 @@ import "./styles.css";
 import "./typography.css";
 import { Admin } from "./Admin";
 import { SubscriptionPanel } from "./SubscriptionPanel";
+import { AssistantPanel } from "./AssistantPanel";
 import "./subscriptions.css";
 
 type FormFilters = {
@@ -402,6 +403,11 @@ function App() {
               <span>Время Башкортостана · UTC+5</span>
             </div>
           </>
+        )}
+        {!widget && (
+          <div hidden={pathname.startsWith("/events/")}>
+            <AssistantPanel onOpen={(id) => go(`/events/${id}`)} />
+          </div>
         )}
         {pathname.startsWith("/events/") ? (
           loading ? (

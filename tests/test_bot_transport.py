@@ -147,6 +147,9 @@ def test_delivery_failure_is_persisted_and_retried_without_losing_subscription(
 
 
 def test_queued_event_moved_to_other_city_is_not_sent(client, app, monkeypatch):
+    import kurai.telegram_worker as worker
+
+    monkeypatch.setattr(worker, "utcnow", lambda: NOW)
     _, event_id = setup_delivery(app)
     with app.state.sessions() as session:
         session.get(Event, event_id).city = "Другой город"

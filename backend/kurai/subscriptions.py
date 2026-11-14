@@ -4,7 +4,16 @@ import hashlib
 from datetime import datetime, time, timedelta, timezone
 from sqlalchemy import delete, select
 from .catalog import Filters, LOCAL_TZ
-from .models import BotDialog, DigestDelivery, Feedback, Subscription, utcnow
+from .models import (
+    AssistantDialog,
+    AssistantQuota,
+    AssistantTrace,
+    BotDialog,
+    DigestDelivery,
+    Feedback,
+    Subscription,
+    utcnow,
+)
 from .schemas import SubscriptionFilter
 
 
@@ -95,6 +104,12 @@ def delete_subscription(session, owner: str, channel: str):
         session.delete(item)
     if channel == "telegram":
         session.execute(delete(BotDialog).where(BotDialog.owner_hash == owner))
+        session.execute(
+            delete(AssistantDialog).where(AssistantDialog.owner_hash == owner)
+        )
+        session.execute(
+            delete(AssistantTrace).where(AssistantTrace.owner_hash == owner)
+        )
     session.commit()
 
 
@@ -106,6 +121,17 @@ def cleanup(session, now: datetime | None = None):
     )
     session.execute(delete(Subscription).where(Subscription.expires_at <= now))
     session.execute(delete(BotDialog).where(BotDialog.expires_at <= now))
+    session.execute(delete(AssistantDialog).where(AssistantDialog.expires_at <= now))
+    session.execute(
+        delete(AssistantTrace).where(
+            AssistantTrace.created_at < now - timedelta(days=7)
+        )
+    )
+    session.execute(
+        delete(AssistantQuota).where(
+            AssistantQuota.day < (now - timedelta(days=7)).date().isoformat()
+        )
+    )
     session.execute(
         delete(Feedback).where(Feedback.created_at < now - timedelta(days=30))
     )
