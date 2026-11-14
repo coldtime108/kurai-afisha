@@ -377,11 +377,13 @@ class CollectionService:
                     unchanged=0,
                     past=0,
                     errors=[],
+                    cities=[],
                 )
                 client = self.fetcher_factory(source)
                 try:
                     client.load_robots()
                     html = client.fetch(source["url"])
+                    listing_html = html
                     self.snapshot(source["id"], source["url"], html)
                     urls = links(source, html)
                     if not urls:
@@ -401,7 +403,9 @@ class CollectionService:
                         try:
                             html = client.fetch(url)
                             self.snapshot(source["id"], url, html)
-                            payload, issues = parse_event(source, url, html)
+                            payload, issues = parse_event(
+                                source, url, html, listing_html
+                            )
                             if (
                                 datetime.fromisoformat(payload["date_start"])
                                 <= self.clock()
@@ -409,6 +413,9 @@ class CollectionService:
                                 result["past"] += 1
                                 continue
                             result[self.store(source, url, payload, issues)] += 1
+                            result["cities"] = sorted(
+                                set(result["cities"]) | {payload["city"]}
+                            )
                         except (
                             httpx.HTTPError,
                             ValueError,

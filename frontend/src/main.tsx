@@ -30,6 +30,7 @@ import { Admin } from "./Admin";
 import { SubscriptionPanel } from "./SubscriptionPanel";
 import { AssistantPanel } from "./AssistantPanel";
 import { DayPlanner } from "./DayPlanner";
+import { AboutPage, OrganizersPage, PageLink } from "./InfoPages";
 import "./subscriptions.css";
 
 type FormFilters = {
@@ -94,13 +95,14 @@ function App() {
     [event, setEvent] = useState<CultureEvent | null>(null),
     [saved, setSaved] = useState(readSaved),
     [savedOnly, setSavedOnly] = useState(false);
-  const [modal, setModal] = useState<"about" | "feedback" | null>(null),
+  const [modal, setModal] = useState<"feedback" | null>(null),
     [feedback, setFeedback] = useState(""),
     [feedbackStatus, setFeedbackStatus] = useState(""),
     [busy, setBusy] = useState(false),
     [more, setMore] = useState(false),
     [retry, setRetry] = useState(0);
   const widget = pathname === "/widget";
+  const infoPage = pathname === "/about" || pathname === "/organizers";
   useEffect(() => {
     api<Meta>("/api/v1/meta")
       .then(setMeta)
@@ -125,6 +127,11 @@ function App() {
     const controller = new AbortController();
     setError("");
     setLoading(true);
+    if (pathname === "/about" || pathname === "/organizers") {
+      setEvent(null);
+      setLoading(false);
+      return () => controller.abort();
+    }
     if (pathname.startsWith("/events/")) {
       setEvent(null);
       api<CultureEvent>("/api/v1/events/" + pathname.split("/")[2], {
@@ -186,7 +193,23 @@ function App() {
     retry,
     savedOnly ? saved.join(",") : "",
   ]);
+  useEffect(() => {
+    document.title =
+      pathname === "/about"
+        ? "О проекте — Курай"
+        : pathname === "/organizers"
+          ? "Организаторам — Курай"
+          : "Курай — культура Башкортостана";
+    if (infoPage) {
+      const frame = requestAnimationFrame(() =>
+        document.querySelector<HTMLElement>("main h1")?.focus(),
+      );
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [pathname, infoPage]);
   function go(path: string) {
+    setModal(null);
+    setFeedbackStatus("");
     if (path === "/") {
       setFilters({ ...empty });
       setApplied({ ...empty });
@@ -261,7 +284,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          event_id: event?.id || null,
+          event_id: pathname.startsWith("/events/") ? event?.id || null : null,
           message: feedback,
           website: form.get("website") || "",
         }),
@@ -273,6 +296,42 @@ function App() {
     } finally {
       setBusy(false);
     }
+  }
+  function feedbackForm(id: string) {
+    return (
+      <form className="feedback-form" onSubmit={sendFeedback}>
+        <label htmlFor={id}>Ваше сообщение</label>
+        <textarea
+          id={id}
+          minLength={10}
+          maxLength={2000}
+          required
+          value={feedback}
+          onChange={(e) => setFeedback(e.target.value)}
+          placeholder="Что нужно добавить или исправить?"
+        />
+        <div className="honeypot" aria-hidden="true">
+          <label>
+            Ваш сайт
+            <input name="website" autoComplete="off" tabIndex={-1} />
+          </label>
+        </div>
+        <p className="fine-print">
+          Не указывайте телефон, домашний адрес и другие личные данные.
+          Обращение сохраняется для проверки и не публикуется автоматически.
+        </p>
+        <button
+          className="button primary"
+          disabled={busy || feedback.length < 10}
+        >
+          {busy ? "Сохраняем…" : "Отправить на проверку"}
+          <ArrowUpRight size={17} />
+        </button>
+        <p className="feedback-status" role="status">
+          {feedbackStatus}
+        </p>
+      </form>
+    );
   }
   const activeCount = Object.entries(applied).filter(
     ([k, v]) => v && k !== "sort",
@@ -308,8 +367,8 @@ function App() {
   ).filter((key) => applied[key]);
   return (
     <div className={widget ? "site-shell site-shell-widget" : "site-shell"}>
-      <a className="skip-link" href="#catalog">
-        Перейти к событиям
+      <a className="skip-link" href={infoPage ? "#page-content" : "#catalog"}>
+        Перейти к содержанию
       </a>
       {!widget && (
         <>
@@ -331,25 +390,30 @@ function App() {
               </span>
             </a>
             <nav aria-label="Основная навигация">
-              <a
-                className="active"
-                href="/#catalog"
-                onClick={() => {
-                  if (pathname !== "/") go("/");
-                }}
+              <PageLink
+                to="/"
+                onNavigate={go}
+                current={!infoPage}
+                className={!infoPage ? "active" : undefined}
               >
                 Афиша
-              </a>
-              <button onClick={() => setModal("about")}>О проекте</button>
-              <button
-                onClick={() => {
-                  setFeedbackStatus("");
-                  setModal("feedback");
-                }}
+              </PageLink>
+              <PageLink
+                to="/about"
+                onNavigate={go}
+                current={pathname === "/about"}
+                className={pathname === "/about" ? "active" : undefined}
               >
-                Организаторам
-                <ArrowUpRight size={14} />
-              </button>
+                О проекте
+              </PageLink>
+              <PageLink
+                to="/organizers"
+                onNavigate={go}
+                current={pathname === "/organizers"}
+                className={pathname === "/organizers" ? "active" : undefined}
+              >
+                Организаторам <ArrowUpRight size={14} />
+              </PageLink>
             </nav>
             <button
               className="favorites"
@@ -372,445 +436,467 @@ function App() {
           </header>
         </>
       )}
-      <main className={widget ? "widget wrap" : "wrap"}>
-        {!widget && !pathname.startsWith("/events/") && (
-          <>
-            <section className="hero">
-              <div className="hero-copy">
-                <p className="eyebrow">
-                  <span className="tiny-diamond" />
-                  Республика Башкортостан
-                </p>
-                <h1>
-                  Ближе к своим. <br />
-                  <em>Открытее</em> <br />к новому.
-                </h1>
-                <p className="hero-description">
-                  Найдите событие по городу, дате и бюджету.
-                  <br />
-                  Сведения — из афиш учреждений и организаторов.
-                </p>
-                <a className="button primary" href="#catalog">
-                  Найти своё событие
-                  <ArrowUpRight size={20} />
-                </a>
-              </div>
-              <figure className="hero-art">
-                <img
-                  src="/assets/bashkortostan-editorial.webp"
-                  alt="Художественная иллюстрация: горы, река, всадник и цветущий курай в синих, зелёных и золотых тонах"
-                />
-                <figcaption>
-                  <span>Башҡортостан</span>
-                  <span>Вдохновение рядом ↗</span>
-                </figcaption>
-                <span className="art-caption">
-                  Авторская иллюстрация по мотивам республики
-                </span>
-              </figure>
-            </section>
-            <div className="values-strip">
-              <span>События из афиш учреждений и организаторов</span>
-              <span>{coveredCities}</span>
-              <span>Время Башкортостана · UTC+5</span>
-            </div>
-          </>
-        )}
-        {!widget && (
-          <div hidden={pathname.startsWith("/events/")}>
-            <DayPlanner
-              meta={meta}
-              city={applied.city}
-              onOpen={(id) => go(`/events/${id}`)}
-            />
-            <AssistantPanel onOpen={(id) => go(`/events/${id}`)} />
-          </div>
-        )}
-        {pathname.startsWith("/events/") ? (
-          loading ? (
-            <div className="state-panel" role="status">
-              Загружаем карточку…
-            </div>
-          ) : error ? (
-            <div className="state-panel" role="alert">
-              <h2>{error}</h2>
-              <button className="button secondary" onClick={() => go("/")}>
-                К афише
-              </button>
-            </div>
-          ) : (
-            event && (
-              <EventDetail
-                event={event}
-                saved={saved.includes(event.id)}
-                onSave={() => save(event.id)}
-                onBack={() => go("/" + location.search)}
-                onFeedback={() => {
-                  setFeedbackStatus("");
-                  setModal("feedback");
-                }}
-              />
-            )
-          )
+      <main id="page-content" className={widget ? "widget wrap" : "wrap"}>
+        {pathname === "/about" ? (
+          <AboutPage meta={meta} onNavigate={go} />
+        ) : pathname === "/organizers" ? (
+          <OrganizersPage
+            onNavigate={go}
+            form={feedbackForm("proposal-message")}
+          />
         ) : (
-          <section
-            id="catalog"
-            className="catalog"
-            aria-labelledby="catalog-title"
-          >
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Культура республики</p>
-                <h2 id="catalog-title">
-                  {savedOnly ? "Сохранено для вас" : "Афиша Башкортостана"}
-                </h2>
-              </div>
-              <span className="section-note">
-                {savedOnly ? "На этом устройстве" : "По городу, дате и бюджету"}
-              </span>
-            </div>
-            {!savedOnly && (
+          <>
+            {!widget && !pathname.startsWith("/events/") && (
               <>
-                <form
-                  className="search-panel"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    apply();
-                    setMore(false);
-                    document
-                      .getElementById("catalog")
-                      ?.scrollIntoView({ behavior: "auto" });
-                  }}
-                >
-                  <div className="search-main">
-                    <label className="search-field">
-                      <span>Что ищем?</span>
-                      <div>
-                        <Search size={18} />
-                        <input
-                          placeholder="Название события"
-                          value={filters.q}
-                          onChange={(e) => field("q", e.target.value)}
-                          maxLength={200}
-                        />
-                      </div>
-                    </label>
-                    <label className="city-field">
-                      <span>Где</span>
-                      <div>
-                        <MapPin size={18} />
-                        <select
-                          value={filters.city}
-                          onChange={(e) => field("city", e.target.value)}
-                        >
-                          <option value="">Вся республика</option>
-                          {meta?.cities.map((c) => (
-                            <option key={c}>{c}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </label>
-                    <label>
-                      <span>С какого дня</span>
-                      <div>
-                        <CalendarDays size={18} />
-                        <input
-                          type="date"
-                          value={filters.date_from}
-                          onChange={(e) => field("date_from", e.target.value)}
-                        />
-                      </div>
-                    </label>
-                    <button
-                      className="button primary search-submit"
-                      type="submit"
-                    >
-                      Найти
-                      <ArrowRight size={18} />
-                    </button>
+                <section className="hero">
+                  <div className="hero-copy">
+                    <p className="eyebrow">
+                      <span className="tiny-diamond" />
+                      Республика Башкортостан
+                    </p>
+                    <h1>
+                      Ближе к своим. <br />
+                      <em>Открытее</em> <br />к новому.
+                    </h1>
+                    <p className="hero-description">
+                      Найдите событие по городу, дате и бюджету.
+                      <br />
+                      Сведения — из афиш учреждений и организаторов.
+                    </p>
+                    <a className="button primary" href="#catalog">
+                      Найти своё событие
+                      <ArrowUpRight size={20} />
+                    </a>
                   </div>
-                  <div className="search-bottom">
-                    <div className="quick-dates">
-                      <button
-                        type="button"
-                        aria-pressed={periodSelected("today")}
-                        onClick={() => period("today")}
-                      >
-                        Сегодня
-                      </button>
-                      <button
-                        type="button"
-                        aria-pressed={periodSelected("weekend")}
-                        onClick={() => period("weekend")}
-                      >
-                        В выходные
-                      </button>
-                      <button
-                        type="button"
-                        aria-pressed={periodSelected("week")}
-                        onClick={() => period("week")}
-                      >
-                        На неделе
-                      </button>
-                    </div>
-                    <button
-                      className="filter-toggle"
-                      type="button"
-                      onClick={() => setMore((v) => !v)}
-                      aria-expanded={more}
-                      aria-controls="extra-filters"
-                    >
-                      <SlidersHorizontal size={15} />
-                      {more ? "Свернуть фильтры" : "Все фильтры"}
-                      <ChevronDown size={14} />
-                    </button>
-                  </div>
-                  {more && (
-                    <div className="extra-filters" id="extra-filters">
-                      <label>
-                        <span>По какой день</span>
-                        <input
-                          type="date"
-                          value={filters.date_to}
-                          min={filters.date_from}
-                          onChange={(e) => field("date_to", e.target.value)}
-                        />
-                      </label>
-                      <label>
-                        <span>Бюджет на билет, ₽</span>
-                        <input
-                          type="number"
-                          min="0"
-                          max="10000000"
-                          placeholder="Без ограничения"
-                          value={filters.price_max}
-                          onChange={(e) => field("price_max", e.target.value)}
-                        />
-                      </label>
-                      <label>
-                        <span>Возраст ребёнка</span>
-                        <input
-                          type="number"
-                          min="0"
-                          max="17"
-                          placeholder="Не ограничивать"
-                          value={filters.age}
-                          onChange={(e) => field("age", e.target.value)}
-                        />
-                      </label>
-                      <label>
-                        <span>Площадка</span>
-                        <select
-                          value={filters.venue}
-                          onChange={(e) => field("venue", e.target.value)}
-                        >
-                          <option value="">Любая</option>
-                          {meta?.venues.map((v) => (
-                            <option key={v}>{v}</option>
-                          ))}
-                        </select>
-                      </label>
-                      <label className="checkbox">
-                        <input
-                          type="checkbox"
-                          checked={!!filters.is_free}
-                          onChange={(e) =>
-                            field("is_free", e.target.checked ? "true" : "")
-                          }
-                        />
-                        Только бесплатные
-                      </label>
-                      <p className="fine-print">
-                        Если цена или возраст не указаны источником, событие не
-                        проходит соответствующий фильтр.
-                      </p>
-                      <button
-                        className="button primary filter-apply"
-                        type="submit"
-                      >
-                        Применить фильтры <ArrowRight size={18} />
-                      </button>
-                    </div>
-                  )}
-                </form>
-                <div className="category-tabs" aria-label="Категории">
-                  <button
-                    className={!applied.category ? "selected" : ""}
-                    aria-pressed={!applied.category}
-                    onClick={() => apply({ ...filters, category: "" })}
-                  >
-                    Всё интересное
-                  </button>
-                  {meta?.categories.map((c) => (
-                    <button
-                      key={c.id}
-                      className={applied.category === c.id ? "selected" : ""}
-                      aria-pressed={applied.category === c.id}
-                      onClick={() => apply({ ...filters, category: c.id })}
-                    >
-                      {c.label}
-                    </button>
-                  ))}
+                  <figure className="hero-art">
+                    <img
+                      src="/assets/bashkortostan-editorial.webp"
+                      alt="Художественная иллюстрация: горы, река, всадник и цветущий курай в синих, зелёных и золотых тонах"
+                    />
+                    <figcaption>
+                      <span>Башҡортостан</span>
+                      <span>Вдохновение рядом ↗</span>
+                    </figcaption>
+                    <span className="art-caption">
+                      Авторская иллюстрация по мотивам республики
+                    </span>
+                  </figure>
+                </section>
+                <div className="values-strip">
+                  <span>События из афиш учреждений и организаторов</span>
+                  <span>{coveredCities}</span>
+                  <span>Время Башкортостана · UTC+5</span>
                 </div>
-                {activeFilters.length > 0 && (
-                  <div
-                    className="active-filters"
-                    aria-label="Применённые фильтры"
-                  >
-                    <span>Выбрано</span>
-                    {activeFilters.map((key) => (
-                      <button
-                        key={key}
-                        aria-label={`Убрать фильтр: ${filterLabels[key]}`}
-                        onClick={() => apply({ ...applied, [key]: "" })}
-                      >
-                        {filterLabels[key]} <X size={14} />
-                      </button>
-                    ))}
-                  </div>
-                )}
               </>
             )}
-            <div className="results-header">
-              <p aria-live="polite">
-                {loading
-                  ? "Ищем события…"
-                  : `${data?.total ?? 0} ${eventWord(data?.total ?? 0)}`}{" "}
-                {!!activeCount && !savedOnly && (
-                  <button
-                    className="clear-filters"
-                    onClick={() => apply(empty)}
-                  >
-                    Сбросить фильтры ×
-                  </button>
-                )}
-              </p>
-              {!savedOnly && (
-                <label className="sort">
-                  Порядок
-                  <select
-                    aria-label="Порядок событий"
-                    value={applied.sort}
-                    onChange={(e) =>
-                      apply({ ...filters, sort: e.target.value })
-                    }
-                  >
-                    <option value="date">Сначала ближайшие</option>
-                    <option value="price">Сначала дешевле</option>
-                  </select>
-                </label>
-              )}
-            </div>
-            {error ? (
-              <div className="state-panel" role="alert">
-                <h3>{error}</h3>
-                <button
-                  className="button secondary"
-                  onClick={() => setRetry((v) => v + 1)}
-                >
-                  Попробовать снова
-                </button>
+            {!widget && (
+              <div hidden={pathname.startsWith("/events/")}>
+                <DayPlanner
+                  meta={meta}
+                  city={applied.city}
+                  onOpen={(id) => go(`/events/${id}`)}
+                />
+                <AssistantPanel onOpen={(id) => go(`/events/${id}`)} />
               </div>
+            )}
+            {pathname.startsWith("/events/") ? (
+              loading ? (
+                <div className="state-panel" role="status">
+                  Загружаем карточку…
+                </div>
+              ) : error ? (
+                <div className="state-panel" role="alert">
+                  <h2>{error}</h2>
+                  <button className="button secondary" onClick={() => go("/")}>
+                    К афише
+                  </button>
+                </div>
+              ) : (
+                event && (
+                  <EventDetail
+                    event={event}
+                    saved={saved.includes(event.id)}
+                    onSave={() => save(event.id)}
+                    onBack={() => go("/" + location.search)}
+                    onFeedback={() => {
+                      setFeedbackStatus("");
+                      setModal("feedback");
+                    }}
+                  />
+                )
+              )
             ) : (
-              <>
-                {loading && page === 1 ? (
-                  <div
-                    className="skeleton-grid"
-                    aria-label="Загрузка событий"
-                    role="status"
-                  >
-                    {[1, 2, 3].map((n) => (
-                      <div className="skeleton" key={n} />
-                    ))}
+              <section
+                id="catalog"
+                className="catalog"
+                aria-labelledby="catalog-title"
+              >
+                <div className="section-heading">
+                  <div>
+                    <p className="eyebrow">Культура республики</p>
+                    <h2 id="catalog-title">
+                      {savedOnly ? "Сохранено для вас" : "Афиша Башкортостана"}
+                    </h2>
                   </div>
-                ) : data?.items.length ? (
-                  <div className="event-grid">
-                    {data.items.map((item) => (
-                      <EventCard
-                        key={item.id}
-                        event={item}
-                        saved={saved.includes(item.id)}
-                        onSave={() => save(item.id)}
-                        onOpen={() =>
-                          go(`/events/${item.id}` + location.search)
-                        }
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="state-panel">
-                    <Flower2 size={36} />
-                    <h3>
-                      {savedOnly
-                        ? "Здесь будут ваши планы"
-                        : "Пока не нашли совпадений"}
-                    </h3>
-                    <p>
-                      {savedOnly
-                        ? "Нажмите на закладку понравившегося события — оно появится здесь."
-                        : data?.suggestions.join(". ")}
-                    </p>
-                    {savedOnly ? (
+                  <span className="section-note">
+                    {savedOnly
+                      ? "На этом устройстве"
+                      : "По городу, дате и бюджету"}
+                  </span>
+                </div>
+                {!savedOnly && (
+                  <>
+                    <form
+                      className="search-panel"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        apply();
+                        setMore(false);
+                        document
+                          .getElementById("catalog")
+                          ?.scrollIntoView({ behavior: "auto" });
+                      }}
+                    >
+                      <div className="search-main">
+                        <label className="search-field">
+                          <span>Что ищем?</span>
+                          <div>
+                            <Search size={18} />
+                            <input
+                              placeholder="Название события"
+                              value={filters.q}
+                              onChange={(e) => field("q", e.target.value)}
+                              maxLength={200}
+                            />
+                          </div>
+                        </label>
+                        <label className="city-field">
+                          <span>Где</span>
+                          <div>
+                            <MapPin size={18} />
+                            <select
+                              value={filters.city}
+                              onChange={(e) => field("city", e.target.value)}
+                            >
+                              <option value="">Вся республика</option>
+                              {meta?.cities.map((c) => (
+                                <option key={c}>{c}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </label>
+                        <label>
+                          <span>С какого дня</span>
+                          <div>
+                            <CalendarDays size={18} />
+                            <input
+                              type="date"
+                              value={filters.date_from}
+                              onChange={(e) =>
+                                field("date_from", e.target.value)
+                              }
+                            />
+                          </div>
+                        </label>
+                        <button
+                          className="button primary search-submit"
+                          type="submit"
+                        >
+                          Найти
+                          <ArrowRight size={18} />
+                        </button>
+                      </div>
+                      <div className="search-bottom">
+                        <div className="quick-dates">
+                          <button
+                            type="button"
+                            aria-pressed={periodSelected("today")}
+                            onClick={() => period("today")}
+                          >
+                            Сегодня
+                          </button>
+                          <button
+                            type="button"
+                            aria-pressed={periodSelected("weekend")}
+                            onClick={() => period("weekend")}
+                          >
+                            В выходные
+                          </button>
+                          <button
+                            type="button"
+                            aria-pressed={periodSelected("week")}
+                            onClick={() => period("week")}
+                          >
+                            На неделе
+                          </button>
+                        </div>
+                        <button
+                          className="filter-toggle"
+                          type="button"
+                          onClick={() => setMore((v) => !v)}
+                          aria-expanded={more}
+                          aria-controls="extra-filters"
+                        >
+                          <SlidersHorizontal size={15} />
+                          {more ? "Свернуть фильтры" : "Все фильтры"}
+                          <ChevronDown size={14} />
+                        </button>
+                      </div>
+                      {more && (
+                        <div className="extra-filters" id="extra-filters">
+                          <label>
+                            <span>По какой день</span>
+                            <input
+                              type="date"
+                              value={filters.date_to}
+                              min={filters.date_from}
+                              onChange={(e) => field("date_to", e.target.value)}
+                            />
+                          </label>
+                          <label>
+                            <span>Бюджет на билет, ₽</span>
+                            <input
+                              type="number"
+                              min="0"
+                              max="10000000"
+                              placeholder="Без ограничения"
+                              value={filters.price_max}
+                              onChange={(e) =>
+                                field("price_max", e.target.value)
+                              }
+                            />
+                          </label>
+                          <label>
+                            <span>Возраст ребёнка</span>
+                            <input
+                              type="number"
+                              min="0"
+                              max="17"
+                              placeholder="Не ограничивать"
+                              value={filters.age}
+                              onChange={(e) => field("age", e.target.value)}
+                            />
+                          </label>
+                          <label>
+                            <span>Площадка</span>
+                            <select
+                              value={filters.venue}
+                              onChange={(e) => field("venue", e.target.value)}
+                            >
+                              <option value="">Любая</option>
+                              {meta?.venues.map((v) => (
+                                <option key={v}>{v}</option>
+                              ))}
+                            </select>
+                          </label>
+                          <label className="checkbox">
+                            <input
+                              type="checkbox"
+                              checked={!!filters.is_free}
+                              onChange={(e) =>
+                                field("is_free", e.target.checked ? "true" : "")
+                              }
+                            />
+                            Только бесплатные
+                          </label>
+                          <p className="fine-print">
+                            Если цена или возраст не указаны источником, событие
+                            не проходит соответствующий фильтр.
+                          </p>
+                          <button
+                            className="button primary filter-apply"
+                            type="submit"
+                          >
+                            Применить фильтры <ArrowRight size={18} />
+                          </button>
+                        </div>
+                      )}
+                    </form>
+                    <div className="category-tabs" aria-label="Категории">
                       <button
-                        className="button primary"
-                        onClick={() => {
-                          go("/");
-                          document.getElementById("catalog")?.scrollIntoView();
-                        }}
+                        className={!applied.category ? "selected" : ""}
+                        aria-pressed={!applied.category}
+                        onClick={() => apply({ ...filters, category: "" })}
                       >
-                        Выбрать событие <ArrowRight size={18} />
+                        Всё интересное
                       </button>
-                    ) : (
+                      {meta?.categories.map((c) => (
+                        <button
+                          key={c.id}
+                          className={
+                            applied.category === c.id ? "selected" : ""
+                          }
+                          aria-pressed={applied.category === c.id}
+                          onClick={() => apply({ ...filters, category: c.id })}
+                        >
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
+                    {activeFilters.length > 0 && (
+                      <div
+                        className="active-filters"
+                        aria-label="Применённые фильтры"
+                      >
+                        <span>Выбрано</span>
+                        {activeFilters.map((key) => (
+                          <button
+                            key={key}
+                            aria-label={`Убрать фильтр: ${filterLabels[key]}`}
+                            onClick={() => apply({ ...applied, [key]: "" })}
+                          >
+                            {filterLabels[key]} <X size={14} />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+                <div className="results-header">
+                  <p aria-live="polite">
+                    {loading
+                      ? "Ищем события…"
+                      : `${data?.total ?? 0} ${eventWord(data?.total ?? 0)}`}{" "}
+                    {!!activeCount && !savedOnly && (
                       <button
-                        className="button secondary"
+                        className="clear-filters"
                         onClick={() => apply(empty)}
                       >
-                        Посмотреть все события
+                        Сбросить фильтры ×
                       </button>
                     )}
-                  </div>
-                )}
-                {data && data.items.length < data.total && !savedOnly && (
-                  <div className="load-more">
+                  </p>
+                  {!savedOnly && (
+                    <label className="sort">
+                      Порядок
+                      <select
+                        aria-label="Порядок событий"
+                        value={applied.sort}
+                        onChange={(e) =>
+                          apply({ ...filters, sort: e.target.value })
+                        }
+                      >
+                        <option value="date">Сначала ближайшие</option>
+                        <option value="price">Сначала дешевле</option>
+                      </select>
+                    </label>
+                  )}
+                </div>
+                {error ? (
+                  <div className="state-panel" role="alert">
+                    <h3>{error}</h3>
                     <button
-                      disabled={loading}
                       className="button secondary"
-                      onClick={() => setPage((v) => v + 1)}
+                      onClick={() => setRetry((v) => v + 1)}
                     >
-                      {loading ? "Загружаем…" : "Показать ещё"}
-                      <ArrowRight size={18} />
+                      Попробовать снова
                     </button>
                   </div>
+                ) : (
+                  <>
+                    {loading && page === 1 ? (
+                      <div
+                        className="skeleton-grid"
+                        aria-label="Загрузка событий"
+                        role="status"
+                      >
+                        {[1, 2, 3].map((n) => (
+                          <div className="skeleton" key={n} />
+                        ))}
+                      </div>
+                    ) : data?.items.length ? (
+                      <div className="event-grid">
+                        {data.items.map((item) => (
+                          <EventCard
+                            key={item.id}
+                            event={item}
+                            saved={saved.includes(item.id)}
+                            onSave={() => save(item.id)}
+                            onOpen={() =>
+                              go(`/events/${item.id}` + location.search)
+                            }
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="state-panel">
+                        <Flower2 size={36} />
+                        <h3>
+                          {savedOnly
+                            ? "Здесь будут ваши планы"
+                            : "Пока не нашли совпадений"}
+                        </h3>
+                        <p>
+                          {savedOnly
+                            ? "Нажмите на закладку понравившегося события — оно появится здесь."
+                            : data?.suggestions.join(". ")}
+                        </p>
+                        {savedOnly ? (
+                          <button
+                            className="button primary"
+                            onClick={() => {
+                              go("/");
+                              document
+                                .getElementById("catalog")
+                                ?.scrollIntoView();
+                            }}
+                          >
+                            Выбрать событие <ArrowRight size={18} />
+                          </button>
+                        ) : (
+                          <button
+                            className="button secondary"
+                            onClick={() => apply(empty)}
+                          >
+                            Посмотреть все события
+                          </button>
+                        )}
+                      </div>
+                    )}
+                    {data && data.items.length < data.total && !savedOnly && (
+                      <div className="load-more">
+                        <button
+                          disabled={loading}
+                          className="button secondary"
+                          onClick={() => setPage((v) => v + 1)}
+                        >
+                          {loading ? "Загружаем…" : "Показать ещё"}
+                          <ArrowRight size={18} />
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
-              </>
+                {!widget && (
+                  <SubscriptionPanel
+                    meta={meta}
+                    city={applied.city}
+                    category={applied.category}
+                  />
+                )}
+                {!widget && (
+                  <aside className="trust-panel">
+                    <KuraiMark />
+                    <div>
+                      <h3>Сначала проверяем источник</h3>
+                      <p>
+                        У каждой карточки есть ссылка на афишу учреждения или
+                        организатора. Неизвестные цену, возраст и длительность
+                        отмечаем отдельно.
+                      </p>
+                    </div>
+                    <button
+                      className="text-button"
+                      onClick={() => go("/about")}
+                    >
+                      Как это работает
+                      <ArrowUpRight size={17} />
+                    </button>
+                  </aside>
+                )}
+              </section>
             )}
-            {!widget && (
-              <SubscriptionPanel
-                meta={meta}
-                city={applied.city}
-                category={applied.category}
-              />
-            )}
-            {!widget && (
-              <aside className="trust-panel">
-                <KuraiMark />
-                <div>
-                  <h3>Сначала проверяем источник</h3>
-                  <p>
-                    У каждой карточки есть ссылка на афишу учреждения.
-                    Неизвестные цену, возраст и длительность отмечаем отдельно.
-                  </p>
-                </div>
-                <button
-                  className="text-button"
-                  onClick={() => setModal("about")}
-                >
-                  Как это работает
-                  <ArrowUpRight size={17} />
-                </button>
-              </aside>
-            )}
-          </section>
+          </>
         )}
       </main>
       {!widget && (
@@ -831,14 +917,9 @@ function App() {
                 Открытый API ↗
               </a>
               <a href="/admin">Модератору ↗</a>
-              <button
-                onClick={() => {
-                  setFeedbackStatus("");
-                  setModal("feedback");
-                }}
-              >
+              <PageLink to="/organizers" onNavigate={go}>
                 Обратная связь ↗
-              </button>
+              </PageLink>
             </div>
           </div>
           <div className="footer-bottom">
@@ -850,32 +931,6 @@ function App() {
           </div>
         </footer>
       )}
-      {modal === "about" && (
-        <Modal
-          title="Афиша, которой можно доверять"
-          onClose={() => setModal(null)}
-        >
-          <p>
-            «Курай» помогает открывать культуру Башкортостана. Каждая карточка
-            связана с афишей учреждения, а неизвестные цена, возраст и
-            длительность явно отмечены.
-          </p>
-          <p>
-            Сейчас доступен первый каталог: поиск, фильтры, источники, избранное
-            на устройстве и обращения модератору. География и число событий
-            будут расширяться после проверки данных.
-          </p>
-          <p>
-            ИИ-помощник появится на следующем этапе. Каталог работает
-            самостоятельно.
-          </p>
-          <p className="fine-print">
-            Это независимый проект, не официальный сервис министерства.
-            Иллюстрация на главной создана с помощью ИИ и не является
-            документальной фотографией.
-          </p>
-        </Modal>
-      )}
       {modal === "feedback" && (
         <Modal
           title={event ? "Уточнить сведения" : "Организаторам и зрителям"}
@@ -885,36 +940,7 @@ function App() {
             Расскажите о событии или сообщите об изменениях. Добавьте ссылку на
             афишу, чтобы модератор мог проверить сведения.
           </p>
-          <form className="feedback-form" onSubmit={sendFeedback}>
-            <label htmlFor="feedback-message">Ваше сообщение</label>
-            <textarea
-              id="feedback-message"
-              minLength={10}
-              maxLength={2000}
-              required
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Что нужно добавить или исправить?"
-            />
-            <div className="honeypot" aria-hidden="true">
-              <label>
-                Ваш сайт
-                <input name="website" autoComplete="off" tabIndex={-1} />
-              </label>
-            </div>
-            <p className="fine-print">
-              Не указывайте телефон, домашний адрес и другие личные данные.
-              Обращение сохраняется для проверки и не публикуется автоматически.
-            </p>
-            <button
-              className="button primary"
-              disabled={busy || feedback.length < 10}
-            >
-              {busy ? "Сохраняем…" : "Отправить на проверку"}
-              <ArrowUpRight size={17} />
-            </button>
-            <p role="status">{feedbackStatus}</p>
-          </form>
+          {feedbackForm("feedback-message")}
         </Modal>
       )}
     </div>

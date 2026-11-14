@@ -462,66 +462,66 @@ def parse_party(value):
 
 
 def format_day_plan(result: DayPlanOut, index=0):
+    people = f"Взрослых: {result.input.adults}"
+    if result.input.children_ages:
+        people += " · дети: " + ", ".join(map(str, result.input.children_ages)) + " лет"
+    budget = (
+        f"Бюджет группы: {result.input.budget} ₽"
+        if result.input.budget is not None
+        else "Без ограничения бюджета"
+    )
     lines = [
-        "Культурный день · " + result.input.city,
-        f"{result.input.day:%d.%m.%Y} · {result.input.start_time:%H:%M}–{result.input.end_time:%H:%M} · время Башкортостана",
-        f"Участников: {result.people}. " + result.message,
-        f"Взрослых: {result.input.adults}. "
-        + (
-            "Возраст детей: " + ", ".join(map(str, result.input.children_ages)) + ". "
-            if result.input.children_ages
-            else ""
-        )
-        + (
-            f"Общий бюджет: {result.input.budget} ₽."
-            if result.input.budget is not None
-            else "Бюджет не задан."
-        ),
+        f"Культурный день · {result.input.city}\n{result.input.day:%d.%m.%Y} · {result.input.start_time:%H:%M}–{result.input.end_time:%H:%M} (РБ, UTC+5)\n{people}\n{budget}"
     ]
-    if result.routes:
-        route = result.routes[min(index, len(result.routes) - 1)]
-        for number, stop in enumerate(route.stops, 1):
-            local_start, local_end = stop.start.astimezone(
-                LOCAL_TZ
-            ), stop.end.astimezone(LOCAL_TZ)
-            lines.append(
-                f"{number}. {local_start:%H:%M}–{local_end:%H:%M} · {stop.event.title}\n{stop.event.venue}\nПрибыть к {stop.arrive_by.astimezone(LOCAL_TZ):%H:%M}; {stop.event.age_limit}+."
-            )
-            if stop.transfer_basis == "same_place":
-                lines.append("Та же площадка, переезд не нужен.")
-            elif stop.transfer_basis == "user_estimate":
-                lines.append(
-                    f"Переезд: {stop.transfer_before_min} мин по вашей оценке."
-                )
-            if stop.free_before_min:
-                lines.append(
-                    f"Свободное время между событиями: {stop.free_before_min} мин."
-                )
-        if route.cost_max is not None:
-            lines.append(
-                f"Билеты и заложенные переезды на группу: {route.cost_min}–{route.cost_max} ₽."
-            )
-        elif route.cost_min is not None:
-            lines.append(
-                f"На группу — от {route.cost_min} ₽; верхняя граница неизвестна."
-            )
-        else:
-            lines.append(
-                "Полная стоимость группы неизвестна."
-                + (
-                    f" Известная часть — от {route.known_cost_min} ₽."
-                    if route.known_cost_min
-                    else " Цены билетов нужно уточнить у организатора."
-                )
-            )
-        lines.extend(route.assumptions)
-    else:
+    if not result.routes:
+        lines.append(result.message)
         lines.extend(result.suggestions)
         if result.single_options:
             lines.append(
                 "По отдельности подходят: "
                 + ", ".join(e.title for e in result.single_options)
             )
-    if result.routes:
-        lines.extend(result.suggestions)
+        return "\n\n".join(lines)
+    route = result.routes[min(index, len(result.routes) - 1)]
+    for number, stop in enumerate(route.stops, 1):
+        start, end = stop.start.astimezone(LOCAL_TZ), stop.end.astimezone(LOCAL_TZ)
+        transfer = ""
+        if stop.transfer_basis == "same_place":
+            transfer = "Та же площадка. "
+        elif stop.transfer_basis == "user_estimate":
+            transfer = f"Переезд: {stop.transfer_before_min} мин по вашей оценке. "
+        if stop.free_before_min:
+            hours, minutes = divmod(stop.free_before_min, 60)
+            transfer += f"Свободно: {str(hours)+' ч ' if hours else ''}{minutes} мин."
+        if transfer:
+            lines.append(transfer.strip())
+        lines.append(
+            f"{number}. {start:%H:%M}–{end:%H:%M} · {stop.event.title}\n{stop.event.venue}\nПрибыть к {stop.arrive_by.astimezone(LOCAL_TZ):%H:%M} · {stop.event.age_limit}+"
+        )
+    if route.cost_max is not None:
+        total = (
+            f"{route.cost_min}–{route.cost_max}"
+            if route.cost_min != route.cost_max
+            else str(route.cost_max)
+        )
+        lines.append(f"На всю группу: {total} ₽, включая заложенные переезды.")
+    elif route.cost_min is not None:
+        lines.append(f"На группу — от {route.cost_min} ₽; верхняя граница неизвестна.")
+    else:
+        lines.append(
+            "Полная стоимость группы неизвестна. Цены нужно уточнить."
+            + (
+                f" Известная часть — от {route.known_cost_min} ₽."
+                if route.known_cost_min
+                else ""
+            )
+        )
+    if route.budget_status == "unconfirmed":
+        lines.append("Соответствие бюджету не подтверждено.")
+    if any(stop.transfer_basis == "user_estimate" for stop in route.stops):
+        lines.append("Переезды — по вашей оценке; дорожный маршрут не проверен.")
+    lines.append(
+        "Расчёт по обычному билету на каждого. Льготы и наличие мест — у организатора."
+    )
+    lines.extend(result.suggestions)
     return "\n\n".join(lines)

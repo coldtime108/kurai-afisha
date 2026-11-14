@@ -90,6 +90,10 @@ def text(node):
 
 
 def links(source, html):
+    if source["adapter"] in ("ufakoncert", "sibay", "kassy_venue"):
+        from .regional_adapters import regional_links
+
+        return regional_links(source, html)
     root = Tree(html).root
     if source["adapter"] == "bashgf":
         nodes = [n.first("a") for n in root.all(cls="entry-title")]
@@ -152,7 +156,11 @@ def prices(value):
     return lower, upper if upper is None or upper >= lower else None
 
 
-def parse_event(source, url, html):
+def parse_event(source, url, html, listing_html=None):
+    if source["adapter"] in ("ufakoncert", "sibay", "kassy_venue"):
+        from .regional_adapters import parse_regional
+
+        return parse_regional(source, url, html, listing_html)
     root = Tree(html).root
     issues = []
     if source["adapter"] == "bashgf":

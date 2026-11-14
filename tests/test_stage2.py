@@ -210,6 +210,14 @@ def test_bot_subscription_confirm_cancel_and_nonce_replay(client, app):
         saved = session.scalar(select(Subscription))
         assert saved.telegram_id == 102 and saved.filters["city"] == "Уфа"
     assert "устарело" in bot.handle(102, callback=action).text
+    edit = bot.handle(102, callback="subscription-edit")
+    select_salavat = next(
+        a for row in edit.buttons for label, a in row if label == "Салават"
+    )
+    assert "Подтвердить" in bot.handle(102, callback=select_salavat).text
+    bot.handle(102, text="/cancel")
+    with app.state.sessions() as session:
+        assert session.scalar(select(Subscription)).filters["city"] == "Уфа"
     bot.handle(102, text="Концерт в Салавате")
     bot.handle(102, text="/subscribe")
     bot.handle(102, text="/cancel")

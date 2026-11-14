@@ -141,6 +141,8 @@ def test_telegram_planner_wizard_uses_same_result_without_model(app, rows):
         and "Проверочное событие 2" in result.text
     )
     assert "800–1200 ₽" in result.text
+    notes = bot.handle(913, callback="dp:notes:0")
+    assert "включая детей" in notes.text and "по одному обычному билету" in notes.text
     assert all(
         len(action.encode()) <= 64
         for row in result.buttons

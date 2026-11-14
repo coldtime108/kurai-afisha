@@ -39,7 +39,7 @@ class FixtureClient:
 
 
 def collector(app):
-    definitions = sources()
+    definitions = [s for s in sources() if s["id"] in ("bashgf", "rusdram")]
     pages = {
         definitions[0][
             "url"

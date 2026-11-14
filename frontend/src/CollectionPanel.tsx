@@ -36,7 +36,7 @@ type Run = {
 type Status = {
   scheduled: boolean;
   interval_hours: number;
-  sources: { id: string; name: string; url: string }[];
+  sources: { id: string; name: string; url: string; cities?: string[] }[];
   latest: Run | null;
 };
 
@@ -129,9 +129,9 @@ export function CollectionPanel({
     failed: "Не удалось завершить сбор",
   };
   return (
-    <section className="collection-panel" aria-label="Сбор официальных афиш">
+    <section className="collection-panel" aria-label="Сбор афиш">
       <div className="admin-row">
-        <h2>Официальные источники</h2>
+        <h2>Источники афиши</h2>
         <button
           className="button primary"
           disabled={busy || Boolean(activeId)}
@@ -155,6 +155,9 @@ export function CollectionPanel({
           <a href={source.url} target="_blank" rel="noopener noreferrer">
             {source.name} ↗
           </a>
+          {source.cities?.length ? (
+            <span className="fine-print"> — {source.cities.join(" · ")}</span>
+          ) : null}
         </p>
       ))}
       {error && (
@@ -235,7 +238,7 @@ export function CollectionPanel({
               target="_blank"
               rel="noopener noreferrer"
             >
-              Открыть официальный источник ↗
+              Открыть источник ↗
             </a>
           </p>
           <button className="button secondary" onClick={() => onReview(item)}>

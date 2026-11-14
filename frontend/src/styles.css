@@ -54,9 +54,9 @@ body {
   top: 180px;
   left: 0;
   right: 0;
-  height: 760px;
+  bottom: 0;
   background: url("/assets/ural-contours.svg") center top / max(1440px, 100%)
-    auto no-repeat;
+    auto repeat-y;
   opacity: 0.13;
 }
 .site-shell::after {
@@ -1420,7 +1420,7 @@ p {
   }
   .site-shell::before {
     top: 300px;
-    height: 700px;
+    bottom: 0;
     background-size: 1200px auto;
     opacity: 0.09;
   }

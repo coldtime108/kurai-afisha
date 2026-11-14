@@ -122,8 +122,8 @@ async def dispatch_digests(bot, sessions):
                     session.commit()
                     continue
             text = (
-                "Новые события вашей афиши\n\n"
-                + "\n\n".join(event_text(item) for item in events)
+                "Новые события вашей афиши · время РБ (UTC+5)\n\n"
+                + "\n\n".join(event_text(item, compact=True) for item in events)
                 + "\n\n/unsubscribe — удалить подписку"
             )
             await bot.send_message(

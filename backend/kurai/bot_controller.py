@@ -25,19 +25,22 @@ class BotReply:
     buttons: list[list[tuple[str, str]]] = field(default_factory=list)
 
 
-def event_text(event):
+def event_text(event, compact=False):
     local = event.date_start.astimezone(LOCAL_TZ)
-    price = (
-        "Бесплатно"
-        if event.is_free
-        else (
-            "Цена уточняется у организатора"
-            if event.price_min is None
-            else f"от {event.price_min} ₽ за билет"
-        )
-    )
+    if event.is_free:
+        price = "Бесплатно"
+    elif event.price_min is None:
+        price = "Цена уточняется"
+    elif event.price_max == event.price_min:
+        price = f"{event.price_min} ₽ за билет"
+    elif event.price_max is not None:
+        price = f"{event.price_min}–{event.price_max} ₽ за билет"
+    else:
+        price = f"от {event.price_min} ₽ за билет"
     age = "Возраст не указан" if event.age_limit is None else f"{event.age_limit}+"
-    return f"{event.title}\n{local:%d.%m.%Y, %H:%M} · время Башкортостана\n{event.city} · {event.venue}\n{event.address}\n{price} · {age}"
+    if compact:
+        return f"{event.title}\n{local:%d.%m, %H:%M} · {event.venue}\n{event.city} · {price} · {age}"
+    return f"{event.title}\n{local:%d.%m.%Y, %H:%M} · время РБ (UTC+5)\n{event.city} · {event.venue}\n{event.address}\n{price} · {age}"
 
 
 class BotController:
@@ -77,7 +80,9 @@ class BotController:
                 buttons = []
                 for index, card in enumerate(reply.cards, 1):
                     parts.append(
-                        event_text(card.event) + "\n" + " · ".join(card.reasons)
+                        f"{index}. "
+                        + event_text(card.event, compact=True)
+                        + ("\n" + " · ".join(card.reasons[:2]) if card.reasons else "")
                     )
                     buttons.append(
                         [
@@ -137,7 +142,7 @@ class BotController:
                 "/subscribe",
                 "/unsubscribe",
                 "/feedback",
-            ) or callback in ("catalog", "cancel", "assistant"):
+            ) or callback in ("catalog", "cancel", "assistant", "help", "home"):
                 data.pop("planner_wizard", None)
                 if text == "/new":
                     data.pop("day_plan_request", None)
@@ -183,10 +188,10 @@ class BotController:
                     session, Filters(**allowed), page=page, size=3
                 )
                 context = f"Город: {filters.get('city','вся республика')} · {CATEGORIES.get(filters.get('category'),'все категории')}"
-                parts = [context, f"Найдено: {total}. Цена — за один билет."]
+                parts = [context, f"Найдено: {total} · время РБ (UTC+5)."]
                 buttons = []
                 for i, item in enumerate(items, 1):
-                    parts.append(event_text(item))
+                    parts.append(f"{i}. " + event_text(item, compact=True))
                     buttons.append([(f"{i}. {item.title[:45]}", "e:" + item.id)])
                 if not items:
                     parts.append("Нет подходящих данных. " + ". ".join(suggestions))
@@ -239,20 +244,33 @@ class BotController:
                     "expires": (now + timedelta(minutes=10)).isoformat(),
                 }
                 return BotReply(
-                    f"Подписка: {proposal['city']} · {CATEGORIES.get(proposal['category'],'все категории')}.\nНовые события на неделю, не чаще одного сообщения в день в 18:00 по времени Башкортостана.\nСрок — 180 дней. /unsubscribe удалит подписку. Подтвердить?",
+                    f"Подписка: {proposal['city']} · {CATEGORIES.get(proposal['category'],'все категории')}\n\nНовинки на неделю · до 1 сообщения в день, в 18:00 по времени РБ.\nСрок — 180 дней. Удаление: /unsubscribe.\n\nПодтвердить?",
                     [[("Подтвердить", f"confirm:{nonce}"), ("Не сохранять", "cancel")]],
                 )
 
-            if text in ("/start", "/help"):
+            if text == "/help" or callback == "help":
                 data.pop("awaiting", None)
                 return finish(
                     BotReply(
-                        "Курай — культура Башкортостана рядом.\nВыбирайте кнопками или напишите: «концерт в Уфе в субботу до 1000 рублей».\nДанные берём из афиш учреждений и организаторов. Это независимый проект.\nСвободный запрос разбирает модель NVIDIA: не указывайте личные данные и ключи. Память — 24 часа, диагностика — 7 дней. /new удалит диалог и его диагностику.\n/help — помощь, /cancel — отмена, /unsubscribe — отписка, /feedback — обращение.",
+                        "Курай · помощь\n\n/catalog — афиша и фильтры\n/plan — культурный день\n/subscribe — подписка\n/unsubscribe — удалить подписку\n/feedback — сообщить об изменении\n/cancel — отменить действие\n/new — удалить диалог помощника\n\nВремя событий — Башкортостан, UTC+5.\nСвободные запросы передаются NVIDIA. Память — 24 часа, диагностика — 7 дней. Не указывайте личные данные и ключи. /new удаляет диалог и его диагностику.\n\nНезависимый проект. Сведения и билеты можно проверить по ссылке в карточке.",
+                        [[("Открыть афишу", "catalog"), ("В начало", "home")]],
+                    )
+                )
+            if text == "/start" or callback == "home":
+                data.pop("awaiting", None)
+                return finish(
+                    BotReply(
+                        "Курай · Афиша Башкортостана\n\nНайдите событие или соберите культурный день. Выберите действие ниже — или напишите город, дату и пожелания.\n\nСвободный запрос передаётся NVIDIA. Не указывайте личные данные и ключи. /help — команды и сведения о данных.",
                         [
-                            [("Подобрать с помощником", "assistant")],
-                            [("Спланировать день", "planner")],
-                            [("Открыть афишу", "catalog")],
-                            [("Моя подписка", "subscription")],
+                            [
+                                ("Открыть афишу", "catalog"),
+                                ("Подобрать с помощником", "assistant"),
+                            ],
+                            [
+                                ("Спланировать день", "planner"),
+                                ("Моя подписка", "subscription"),
+                            ],
+                            [("О проекте и помощь", "help")],
                         ],
                     )
                 )
@@ -262,7 +280,7 @@ class BotController:
                 data.pop("feedback_pending", None)
                 return finish(
                     BotReply(
-                        "Помощник Курай\n\nНапишите пожелания обычным сообщением: город, дату, бюджет и возраст ребёнка, если идёте с ним. Например: «Спектакль в Стерлитамаке на выходных до 800 рублей».\n\nПотом можно уточнить: «подешевле», «только бесплатные» или «подробнее о первом». Модель NVIDIA разбирает условия, а факты берём из нашей базы.\n\nНе указывайте личные данные и ключи. /new — удалить диалог и начать заново.",
+                        "Помощник Курай\n\nНапишите город, дату, бюджет и возраст ребёнка, если идёте с ним. Например: «Спектакль в Стерлитамаке на выходных до 800 рублей».\n\nЗатем уточняйте: «подешевле» или «подробнее о первом». Факты — из каталога, разбор запроса — NVIDIA.\n/new — начать заново; /help — о данных.",
                         [
                             [("Попробовать пример", "ai-example")],
                             [("К афише", "catalog")],
@@ -293,6 +311,16 @@ class BotController:
                 )
             if text == "/subscribe" or callback == "subscribe":
                 return finish(subscription_preview())
+            if callback == "subscription-edit":
+                sub = session.scalar(
+                    select(Subscription).where(
+                        Subscription.owner_hash == owner,
+                        Subscription.channel == "telegram",
+                    )
+                )
+                if sub and sub.expires_at > now:
+                    filters = dict(sub.filters)
+                return finish(cities(subscribe=True))
             if text == "/feedback":
                 data["awaiting"] = "feedback"
                 return finish(
@@ -348,7 +376,12 @@ class BotController:
                     return finish(
                         BotReply(
                             f"Ваша подписка: {sub.filters['city']} · {CATEGORIES.get(sub.filters.get('category'),'все категории')}.\nОтписка одной командой: /unsubscribe",
-                            [[("Изменить", "cities"), ("К афише", "catalog")]],
+                            [
+                                [
+                                    ("Изменить город", "subscription-edit"),
+                                    ("К афише", "catalog"),
+                                ]
+                            ],
                         )
                     )
                 return finish(subscription_preview())
@@ -380,7 +413,7 @@ class BotController:
                         [[("К афише", "catalog")]],
                     )
                 )
-            if callback and callback.startswith("e:"):
+            if callback and callback.startswith(("e:", "d:")):
                 try:
                     item = session.get(Event, str(UUID(callback[2:])))
                 except ValueError:
@@ -395,24 +428,59 @@ class BotController:
                 cancelled = (
                     "МЕРОПРИЯТИЕ ОТМЕНЕНО\n\n" if item.status == "cancelled" else ""
                 )
-                description = item.description[:1400]
-                details = f"Категория: {CATEGORIES.get(item.category,'Событие')}\nПродолжительность: {str(item.duration_min)+' мин' if item.duration_min else 'не указана'}\nЯзык: {item.language or 'не указан'}"
-                sources = [
-                    [(f"Источник {i+1}", "url:" + s["url"])]
-                    for i, s in enumerate(item.sources[:5])
+                expanded = callback.startswith("d:")
+                description = item.description
+                limit = 1400 if expanded else 260
+                preview = (
+                    description
+                    if len(description) <= limit
+                    else description[:limit].rsplit(" ", 1)[0] + "…"
+                )
+                details = [
+                    CATEGORIES.get(item.category, "Событие"),
+                    (
+                        f"{item.duration_min} мин"
+                        if item.duration_min
+                        else "длительность уточняется"
+                    ),
                 ]
-                if item.org_link:
-                    sources.append([("Билеты / организатор", "url:" + item.org_link)])
+                if item.language:
+                    details.append(item.language)
+                buttons, seen = [], set()
+                for entry in item.sources[:5]:
+                    if entry["url"] not in seen:
+                        seen.add(entry["url"])
+                        buttons.append(
+                            [
+                                (
+                                    (
+                                        "Источник"
+                                        if len(item.sources) == 1
+                                        else f"Источник {len(buttons)+1}"
+                                    ),
+                                    "url:" + entry["url"],
+                                )
+                            ]
+                        )
+                if item.org_link and str(item.org_link) not in seen:
+                    buttons.append(
+                        [("Билеты / организатор", "url:" + str(item.org_link))]
+                    )
+                if len(description) > 260 and not expanded:
+                    buttons.insert(0, [("Читать описание", "d:" + item.id)])
+                if expanded:
+                    buttons.append([("К карточке", "e:" + item.id)])
+                buttons.append([("К афише", "catalog")])
                 return finish(
                     BotReply(
                         cancelled
                         + event_text(item)
                         + "\n\n"
-                        + details
+                        + " · ".join(details)
                         + "\n\n"
-                        + description
-                        + "\n\nПеред посещением сверьтесь с организатором.",
-                        sources + [[("К афише", "catalog")]],
+                        + preview
+                        + "\n\nИзменения программы и билеты — у организатора.",
+                        buttons,
                     )
                 )
             if callback == "cities":

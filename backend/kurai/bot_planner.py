@@ -38,6 +38,8 @@ def plan_reply(result, index=0):
         and result.diagnostics.get("unknown_price", 0)
     ):
         buttons.append([("Показать с неподтверждённой ценой", "dp:relax")])
+    if result.routes:
+        buttons.append([("Условия расчёта", f"dp:notes:{index}")])
     buttons.append([("Другой день / состав", "planner"), ("К афише", "catalog")])
     return format_day_plan(result, index), buttons
 
@@ -48,7 +50,7 @@ def handle_planner(session, data, text, callback, now):
         data.pop("awaiting", None)
         data.pop("pending", None)
         data.pop("feedback_pending", None)
-    elif callback and callback.startswith(("dp:alt:", "dp:relax")):
+    elif callback and callback.startswith(("dp:alt:", "dp:relax", "dp:notes:")):
         values = data.get("day_plan_request")
         if not values:
             return "План устарел. Начните заново: /plan.", [
@@ -59,7 +61,25 @@ def handle_planner(session, data, text, callback, now):
             values["allow_unconfirmed_cost"] = True
         result = build_day_plan(session, DayPlanInput.model_validate(values), now)
         data["day_plan_request"] = result.input.model_dump(mode="json")
-        index = int(callback.split(":")[-1]) if callback.startswith("dp:alt:") else 0
+        index = (
+            int(callback.split(":")[-1])
+            if callback.startswith(("dp:alt:", "dp:notes:"))
+            else 0
+        )
+        index = min(max(index, 0), max(len(result.routes) - 1, 0))
+        if callback.startswith("dp:notes:") and result.routes:
+            route = result.routes[index]
+            lines = [
+                f"Условия расчёта · {result.input.city} · {result.input.day:%d.%m.%Y}",
+                f"Участников: {result.people}. Запас на вход: {result.input.arrival_buffer_min} мин.",
+            ]
+            lines.extend("• " + line for line in route.assumptions)
+            lines.append(
+                "Время окончания — из источника или рассчитано по указанной в нём длительности. Перед посещением проверьте статус и билеты."
+            )
+            return "\n\n".join(lines), [
+                [("Вернуться к плану", f"dp:alt:{index}"), ("К афише", "catalog")]
+            ]
         return plan_reply(result, min(max(index, 0), max(len(result.routes) - 1, 0)))
     wizard = data.get("planner_wizard")
     if not wizard:

@@ -1,0 +1,199 @@
+{
+  "pages": {
+    "/": 200,
+    "/about": 200,
+    "/organizers": 200,
+    "/widget": 200,
+    "/api/docs": 200
+  },
+  "scheduled": true,
+  "sources": [
+    {
+      "id": "bashgf",
+      "name": "Башкирская государственная филармония им. Х. Ахметова",
+      "url": "https://bashgf.ru/afisha/",
+      "cities": [
+        "Уфа"
+      ]
+    },
+    {
+      "id": "rusdram",
+      "name": "Государственный русский драматический театр г. Стерлитамак",
+      "url": "https://rusdramteatr.ru/afisha/",
+      "cities": [
+        "Стерлитамак"
+      ]
+    },
+    {
+      "id": "ufakoncert",
+      "name": "УфаКонцерт · региональная афиша организатора",
+      "url": "https://ufakoncert.ru/",
+      "cities": [
+        "Белебей",
+        "Бирск",
+        "Ишимбай",
+        "Мелеуз",
+        "Нефтекамск",
+        "Октябрьский",
+        "Салават",
+        "Туймазы",
+        "Янаул"
+      ]
+    },
+    {
+      "id": "sibay",
+      "name": "Сибайское концертно-театральное объединение",
+      "url": "https://sibay-concert.ru/afisha/",
+      "cities": [
+        "Сибай"
+      ]
+    },
+    {
+      "id": "kumertau",
+      "name": "КТО Кумертау · афиша площадки на Кассы.ру",
+      "url": "https://ufa.kassy.ru/venue/mau-koncertno-teatralnoe-obedinenie-g-kumertau-212/",
+      "cities": [
+        "Кумертау"
+      ]
+    }
+  ],
+  "run": {
+    "id": "7edefd09-a862-48cb-9ec1-0464629cc4fe",
+    "status": "partial",
+    "summary": [
+      {
+        "source_id": "bashgf",
+        "name": "Башкирская государственная филармония им. Х. Ахметова",
+        "found": 12,
+        "added": 0,
+        "matched": 0,
+        "proposals": 0,
+        "unchanged": 11,
+        "past": 1,
+        "errors": [],
+        "cities": [
+          "Уфа"
+        ]
+      },
+      {
+        "source_id": "rusdram",
+        "name": "Государственный русский драматический театр г. Стерлитамак",
+        "found": 20,
+        "added": 0,
+        "matched": 0,
+        "proposals": 0,
+        "unchanged": 17,
+        "past": 1,
+        "errors": [
+          {
+            "url": "https://rusdramteatr.ru/afisha/gorgony-17-11-2026-g-meleuz",
+            "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+          },
+          {
+            "url": "https://rusdramteatr.ru/afisha/groza-18-11-2026-kumertau",
+            "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+          }
+        ],
+        "cities": [
+          "Стерлитамак"
+        ]
+      },
+      {
+        "source_id": "ufakoncert",
+        "name": "УфаКонцерт · региональная афиша организатора",
+        "found": 19,
+        "added": 0,
+        "matched": 18,
+        "proposals": 0,
+        "unchanged": 0,
+        "past": 1,
+        "errors": [],
+        "cities": [
+          "Белебей",
+          "Бирск",
+          "Ишимбай",
+          "Мелеуз",
+          "Нефтекамск",
+          "Октябрьский",
+          "Салават",
+          "Туймазы",
+          "Янаул"
+        ]
+      },
+      {
+        "source_id": "sibay",
+        "name": "Сибайское концертно-театральное объединение",
+        "found": 8,
+        "added": 2,
+        "matched": 3,
+        "proposals": 0,
+        "unchanged": 0,
+        "past": 0,
+        "errors": [
+          {
+            "url": "https://sibay-concert.ru/afisha/sibasjkaya-filarmoniya/",
+            "message": "Нет единственного сеанса на собственной площадке: гастроли или несколько дат требуют сверки"
+          },
+          {
+            "url": "https://sibay-concert.ru/afisha/ziliya-bahtieva-2/",
+            "message": "Нет единственного сеанса на собственной площадке: гастроли или несколько дат требуют сверки"
+          },
+          {
+            "url": "https://sibay-concert.ru/afisha/sibajskaya-filarmoniya/",
+            "message": "Нет единственного сеанса на собственной площадке: гастроли или несколько дат требуют сверки"
+          }
+        ],
+        "cities": [
+          "Сибай"
+        ]
+      },
+      {
+        "source_id": "kumertau",
+        "name": "КТО Кумертау · афиша площадки на Кассы.ру",
+        "found": 2,
+        "added": 0,
+        "matched": 2,
+        "proposals": 0,
+        "unchanged": 0,
+        "past": 0,
+        "errors": [],
+        "cities": [
+          "Кумертау"
+        ]
+      }
+    ],
+    "started_at": "2026-11-14T14:40:33.541735+00:00",
+    "finished_at": "2026-11-14T14:41:14.478317+00:00"
+  },
+  "checked_cities": [
+    "Белебей",
+    "Бирск",
+    "Ишимбай",
+    "Кумертау",
+    "Мелеуз",
+    "Нефтекамск",
+    "Октябрьский",
+    "Салават",
+    "Сибай",
+    "Стерлитамак",
+    "Туймазы",
+    "Уфа",
+    "Янаул"
+  ],
+  "declared_cities": [
+    "Белебей",
+    "Бирск",
+    "Ишимбай",
+    "Кумертау",
+    "Мелеуз",
+    "Нефтекамск",
+    "Октябрьский",
+    "Салават",
+    "Сибай",
+    "Стерлитамак",
+    "Туймазы",
+    "Уфа",
+    "Янаул"
+  ],
+  "all_declared_cities_checked": true
+}

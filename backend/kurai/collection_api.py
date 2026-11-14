@@ -41,7 +41,12 @@ def install_collection(app, db, admin, limit):
             "scheduled": os.getenv("COLLECTION_ENABLED", "false").lower() == "true",
             "interval_hours": 6,
             "sources": [
-                {"id": s["id"], "name": s["name"], "url": s["url"]}
+                {
+                    "id": s["id"],
+                    "name": s["name"],
+                    "url": s["url"],
+                    "cities": s.get("cities", [s.get("city")]),
+                }
                 for s in service.definitions
             ],
             "latest": run_out(latest),
