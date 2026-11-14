@@ -14,6 +14,7 @@ def reviewed_rows():
             "reviewed-events.json",
             "reviewed-events-extra.json",
             "reviewed-events-collected.json",
+            "reviewed-events-regions.json",
         )
         for row in json.loads((directory / filename).read_text(encoding="utf-8"))
     ]

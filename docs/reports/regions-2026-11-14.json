@@ -1,0 +1,107 @@
+{
+  "checked_at": "2026-11-14T13:28:52.704394+00:00",
+  "import": {
+    "added": 30,
+    "updated": 0,
+    "skipped": 0,
+    "rejected": 0,
+    "errors": []
+  },
+  "repeat_import": {
+    "added": 0,
+    "updated": 0,
+    "skipped": 30,
+    "rejected": 0,
+    "errors": []
+  },
+  "old_events_unchanged": 33,
+  "subscriptions_preserved": 2,
+  "status_counts": {
+    "draft": 19,
+    "published": 44
+  },
+  "city_counts": {
+    "Белебей": 1,
+    "Бирск": 2,
+    "Ишимбай": 2,
+    "Кумертау": 2,
+    "Мелеуз": 3,
+    "Нефтекамск": 6,
+    "Октябрьский": 3,
+    "Салават": 2,
+    "Сибай": 3,
+    "Стерлитамак": 3,
+    "Туймазы": 3,
+    "Уфа": 11,
+    "Янаул": 3
+  },
+  "archived_regional_pages": 39,
+  "live_http": {
+    "Белебей": {
+      "status": 200,
+      "found": 1
+    },
+    "Бирск": {
+      "status": 200,
+      "found": 2
+    },
+    "Ишимбай": {
+      "status": 200,
+      "found": 2
+    },
+    "Кумертау": {
+      "status": 200,
+      "found": 2
+    },
+    "Мелеуз": {
+      "status": 200,
+      "found": 3
+    },
+    "Нефтекамск": {
+      "status": 200,
+      "found": 6
+    },
+    "Октябрьский": {
+      "status": 200,
+      "found": 3
+    },
+    "Салават": {
+      "status": 200,
+      "found": 2
+    },
+    "Сибай": {
+      "status": 200,
+      "found": 3
+    },
+    "Стерлитамак": {
+      "status": 200,
+      "found": 3
+    },
+    "Туймазы": {
+      "status": 200,
+      "found": 3
+    },
+    "Уфа": {
+      "status": 200,
+      "found": 10
+    },
+    "Янаул": {
+      "status": 200,
+      "found": 3
+    }
+  },
+  "health": {
+    "status": "ok",
+    "version": "0.2.0",
+    "assistant": "configured"
+  },
+  "assistant_example": {
+    "mode": "model",
+    "elapsed_ms": 3688,
+    "city": "Сибай",
+    "titles": [
+      "Марсель Кутуев"
+    ]
+  },
+  "own_test_dialog_removed": true
+}

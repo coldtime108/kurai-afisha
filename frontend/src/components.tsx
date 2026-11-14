@@ -314,7 +314,7 @@ export function EventDetail({
           <div className="detail-source">
             <Check size={18} />
             <div>
-              <strong>Факты из афиши учреждения</strong>
+              <strong>Факты из источника</strong>
               <p>
                 Сведения проверены{" "}
                 {event.verified_at ? fmtDate(event.verified_at) : "—"}. Перед

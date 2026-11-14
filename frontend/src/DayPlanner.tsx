@@ -185,7 +185,7 @@ export function DayPlanResults({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Официальный источник <ArrowUpRight size={12} />
+                    Источник события <ArrowUpRight size={12} />
                   </a>
                 </div>
               </li>

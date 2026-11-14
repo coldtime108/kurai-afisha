@@ -277,8 +277,19 @@ function App() {
   const activeCount = Object.entries(applied).filter(
     ([k, v]) => v && k !== "sort",
   ).length;
+  const cityCount = meta?.cities.length || 0;
+  const cityWord = {
+    zero: "городов",
+    one: "город",
+    two: "города",
+    few: "города",
+    many: "городов",
+    other: "городов",
+  }[new Intl.PluralRules("ru").select(cityCount)];
   const coveredCities =
-    meta?.cities.slice(0, 3).join(" · ") || "Афиша республики";
+    cityCount > 3
+      ? `${cityCount} ${cityWord} Башкортостана`
+      : meta?.cities.join(" · ") || "Афиша республики";
   const filterLabels: Partial<Record<keyof FormFilters, string>> = {
     q: `Поиск: ${applied.q}`,
     city: applied.city,
@@ -377,7 +388,7 @@ function App() {
                 <p className="hero-description">
                   Найдите событие по городу, дате и бюджету.
                   <br />
-                  Сведения — из афиш учреждений.
+                  Сведения — из афиш учреждений и организаторов.
                 </p>
                 <a className="button primary" href="#catalog">
                   Найти своё событие
@@ -399,7 +410,7 @@ function App() {
               </figure>
             </section>
             <div className="values-strip">
-              <span>События из афиш учреждений</span>
+              <span>События из афиш учреждений и организаторов</span>
               <span>{coveredCities}</span>
               <span>Время Башкортостана · UTC+5</span>
             </div>

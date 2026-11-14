@@ -1,0 +1,503 @@
+{
+  "checked_at": "2026-11-14T13:24:10.891419+00:00",
+  "method": "Manual review of live public detail pages and venue/listing metadata; no invented dates, discounts or duration",
+  "events": [
+    {
+      "source_url": "https://ufakoncert.ru/event/muncha-tashy-g-neftekamsk/",
+      "title": "Мунча Ташы, г. Нефтекамск",
+      "city": "Нефтекамск",
+      "date_start": "2026-11-14T14:00:00+00:00",
+      "sha256_html": "1140223aafc491961cd0dfbd5db9b29d9c41faf4280bc890ca9a08d06b8ed6d9",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/danir-sabirov-g-oktjabrskij/",
+      "title": "Данир Сабиров г. Октябрьский",
+      "city": "Октябрьский",
+      "date_start": "2026-11-15T14:00:00+00:00",
+      "sha256_html": "387f26b657ef12d1dec6831cc5e5bfed9b551278841f60ffa3d0714046e641b0",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/muncha-tashy-g-janaul/",
+      "title": "Мунча Ташы, г. Янаул",
+      "city": "Янаул",
+      "date_start": "2026-11-15T14:00:00+00:00",
+      "sha256_html": "7a9f61c8dede384bfa078e6f3ae98b17851ff98459d66181ab443de8c174dbb4",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/danir-sabirov-g-belebej/",
+      "title": "Данир Сабиров г. Белебей",
+      "city": "Белебей",
+      "date_start": "2026-11-18T14:00:00+00:00",
+      "sha256_html": "66f39cda66da05d09018cccfe18d1548f8e96a1142e8afdf129930fc68e7bdd4",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/lena-vasiljok-g-neftekamsk/",
+      "title": "Лена Василёк г. Нефтекамск",
+      "city": "Нефтекамск",
+      "date_start": "2026-11-20T14:00:00+00:00",
+      "sha256_html": "5fb384558b1c3f0cf61ccf784afa15340f4d56e6f3f80ef80b7a97d066bbc108",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/danir-sabirov-g-meleuz/",
+      "title": "Данир Сабиров г. Мелеуз",
+      "city": "Мелеуз",
+      "date_start": "2026-11-23T14:00:00+00:00",
+      "sha256_html": "211fcdea3be92537c5d9e7c68a3bc2fd504b59f0be914794e673a23ce43bfae7",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/firdus-tjamaev-g-oktjabrskij/",
+      "title": "Фирдус Тямаев г. Октябрьский",
+      "city": "Октябрьский",
+      "date_start": "2026-11-24T14:00:00+00:00",
+      "sha256_html": "19fd690f9c3deb711a58fa9f0d79f1dded914957efff194e4e3f48f95bba2162",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/danir-sabirov-g-ishimbaj/",
+      "title": "Данир Сабиров г. Ишимбай",
+      "city": "Ишимбай",
+      "date_start": "2026-11-24T14:00:00+00:00",
+      "sha256_html": "f09b4160482da186f819b804eba86f9e11b4f65d2cdd07f7cee20bfa04f26336",
+      "supporting_sources": [
+        "https://ufakoncert.ru/",
+        "https://ufa.kassy.ru/venue/mau-ishimbajjskijj-dvorec-kultury-g-ishimbajj-190/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/danir-sabirov-g-neftekamsk/",
+      "title": "Данир Сабиров г. Нефтекамск",
+      "city": "Нефтекамск",
+      "date_start": "2026-11-29T14:00:00+00:00",
+      "sha256_html": "073bcaf7ecfab755a9f02583cbbe9adae1f06fe038a02ec823277d8ffbe523e6",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/danir-sabirov-g-neftekamsk-2/",
+      "title": "Данир Сабиров г. Нефтекамск",
+      "city": "Нефтекамск",
+      "date_start": "2026-11-30T14:00:00+00:00",
+      "sha256_html": "fede1ffb553b87cc53364637fd85a3988fff563e31331df2acd2b2a0d9fdd645",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/danir-sabirov-g-janaul/",
+      "title": "Данир Сабиров г. Янаул",
+      "city": "Янаул",
+      "date_start": "2026-12-01T14:00:00+00:00",
+      "sha256_html": "570066c4f4cd9ece4b29b14561a7f1157dbe664b0e4c6cbe9e2cda47ca7ab7eb",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/balet-shhelkunchik-g-birsk/",
+      "title": "Балет Щелкунчик г. Бирск",
+      "city": "Бирск",
+      "date_start": "2026-12-11T14:00:00+00:00",
+      "sha256_html": "30b72091cd90cd014e9d8616c983a8920f0a2dda25612a716f45c35155dca882",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/balet-shhelkunchik-g-neftekamsk/",
+      "title": "Балет Щелкунчик г. Нефтекамск",
+      "city": "Нефтекамск",
+      "date_start": "2026-12-13T13:00:00+00:00",
+      "sha256_html": "977c27c08e0814edad8c4e2f623530a4b730af83b049c857426b4a8b9d292bb7",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/balet-shhelkunchik-g-meleuz/",
+      "title": "Балет Щелкунчик г. Мелеуз",
+      "city": "Мелеуз",
+      "date_start": "2026-12-17T14:00:00+00:00",
+      "sha256_html": "c249ed8aa7015b8470b47badd8b764b2c9af70e84e6c0c0c71697b6fba100883",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/balet-shhelkunchik-g-oktjabrskij/",
+      "title": "Балет Щелкунчик г. Октябрьский",
+      "city": "Октябрьский",
+      "date_start": "2026-12-18T14:00:00+00:00",
+      "sha256_html": "196e287655a2ade61b138ba9c3410b88764d7969bae8ac4c009e7e06ece05b10",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/alhimik-v-birske/",
+      "title": "«АЛХИМИК» в Бирске",
+      "city": "Бирск",
+      "date_start": "2027-01-08T13:00:00+00:00",
+      "sha256_html": "20c151ed36922880b3cc0ded87e35c7fbe67b3495cbc39497c15b76670e73431",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/novye-russkie-babki-g-janaul/",
+      "title": "НОВЫЕ РУССКИЕ БАБКИ, г. Янаул",
+      "city": "Янаул",
+      "date_start": "2027-02-04T14:00:00+00:00",
+      "sha256_html": "930ab03e6fe2e989116db0493f6553adb2e101729ee78f07b62b84015d8cefe1",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/anvar-nurgaliev-g-salavat-2/",
+      "title": "Анвар Нургалиев г. Салават",
+      "city": "Салават",
+      "date_start": "2027-02-10T14:00:00+00:00",
+      "sha256_html": "a906b55fc84157e9fdd34d9972ab5e533bfe7766fe272792f873eed1c2adab9f",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufakoncert.ru/event/sergej-trofimov-g-tujmazy/",
+      "title": "Сергей Трофимов, г. Туймазы",
+      "city": "Туймазы",
+      "date_start": "2027-03-17T14:00:00+00:00",
+      "sha256_html": "808c39ccb20e6bd882035be60c27902011c708d5f8f9e92277822eacd84dde3d",
+      "supporting_sources": [
+        "https://ufakoncert.ru/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufa.kassy.ru/events/teatr/2-25357/",
+      "title": "\"Горгоны\"",
+      "city": "Мелеуз",
+      "date_start": "2026-11-17T14:00:00+00:00",
+      "sha256_html": "65bf8f87f75d51ae1cd83df9645c27b677a024fa2524216b05188dcbd4abfe71",
+      "supporting_sources": [
+        "https://ufa.kassy.ru/venue/mau-gorodskojj-dvorec-kultury-g-meleuz-204/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufa.kassy.ru/events/teatr/2-25494/",
+      "title": "\"Гроза\"",
+      "city": "Кумертау",
+      "date_start": "2026-11-18T08:30:00+00:00",
+      "sha256_html": "abf643afd680d0599bf6e82a5a554386fcedc373ae7b56902f8aaca03205bc69",
+      "supporting_sources": [
+        "https://ufa.kassy.ru/venue/mau-koncertno-teatralnoe-obedinenie-g-kumertau-212/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufa.kassy.ru/events/teatr/2-25488/",
+      "title": "\"Гроза\"",
+      "city": "Кумертау",
+      "date_start": "2026-11-18T14:00:00+00:00",
+      "sha256_html": "175763a0e345a3fbed6656bcb9f39e1e798b8094c1870256ea2ea534496707f2",
+      "supporting_sources": [
+        "https://ufa.kassy.ru/venue/mau-koncertno-teatralnoe-obedinenie-g-kumertau-212/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufa.kassy.ru/events/teatr/2-25485/",
+      "title": "Женихи",
+      "city": "Ишимбай",
+      "date_start": "2026-11-18T14:00:00+00:00",
+      "sha256_html": "ae3c3d034e3f478746a8ed8d8e927de5ab58c3aad6986e82a60d6a9dfaeafa7d",
+      "supporting_sources": [
+        "https://ufa.kassy.ru/venue/mau-ishimbajjskijj-dvorec-kultury-g-ishimbajj-190/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://ufa.kassy.ru/events/teatr/2-25496/",
+      "title": "Спектакль \"Человек из Мумбаи\"",
+      "city": "Нефтекамск",
+      "date_start": "2026-11-26T14:00:00+00:00",
+      "sha256_html": "72afa914903596b027a1b99723a336c8877377479a7ca3f2ddd207e7d2579267",
+      "supporting_sources": [
+        "https://ufa.kassy.ru/venue/gaukii-neftekamskaya-gosudarstvennaya-filarmoniya-162/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://dinkoncert.ru/event/almaz-i-ajdar-yunusovy-2/",
+      "title": "Алмаз и Айдар Юнусовы",
+      "city": "Туймазы",
+      "date_start": "2026-12-01T14:00:00+00:00",
+      "sha256_html": "761ee7d163e9ce00bb2b5aa3b3dcc602a62e65deda3338a75abaad04f6959e1c",
+      "supporting_sources": [
+        "https://dinkoncert.ru/",
+        "https://dinkoncert.ru/zaly/tujmazinskij-gosudarstvennyj-tatarskij-dramaticheskij-teatr/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://dinkoncert.ru/event/landysh-nigmatzhanova/",
+      "title": "Ландыш Нигматжанова",
+      "city": "Туймазы",
+      "date_start": "2026-12-11T14:00:00+00:00",
+      "sha256_html": "ca4c8c6fc4d09efe099b9215868cf97febb6cddd5e936f4f0679497f12e61485",
+      "supporting_sources": [
+        "https://dinkoncert.ru/",
+        "https://dinkoncert.ru/zaly/tujmazinskij-gosudarstvennyj-tatarskij-dramaticheskij-teatr/"
+      ],
+      "unknown_fields": [
+        "duration_min",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://sibay-concert.ru/afisha/marsel-kutuev/",
+      "title": "Марсель Кутуев",
+      "city": "Сибай",
+      "date_start": "2026-11-24T14:00:00+00:00",
+      "sha256_html": "f025b06e5899c6a68959b780106346c8be4bcc010616db3ac10ec1372b16280e",
+      "supporting_sources": [
+        "https://sibay-concert.ru/afisha/"
+      ],
+      "unknown_fields": [
+        "price_max",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://sibay-concert.ru/afisha/blagotvoritelnyj-konczert/",
+      "title": "Благотворительный концерт «Музыка, которая помогает»",
+      "city": "Сибай",
+      "date_start": "2026-11-25T14:00:00+00:00",
+      "sha256_html": "7a02f5952f7a3ab0121d45fc87fd2014fd7655e140e6adf45e680f309b6c3f58",
+      "supporting_sources": [
+        "https://sibay-concert.ru/afisha/"
+      ],
+      "unknown_fields": [
+        "price_max",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://sibay-concert.ru/detskij-teatr-sulpan-2/spektakl-pochtalon-iz-nikolaevki/",
+      "title": "Спектакль «Почтальон из Николаевки»",
+      "city": "Сибай",
+      "date_start": "2026-11-18T09:00:00+00:00",
+      "sha256_html": "38512c9d9c7f46c90615b8301ca495fa2c4317a862d83531fe529327a101e7ea",
+      "supporting_sources": [
+        "https://sibay-concert.ru/afisha/"
+      ],
+      "unknown_fields": [
+        "price_max",
+        "language",
+        "lat",
+        "lon"
+      ]
+    },
+    {
+      "source_url": "https://quicktickets.ru/salavat-teatr-dramy/s567",
+      "title": "Близнецы",
+      "city": "Салават",
+      "date_start": "2026-12-03T14:00:00+00:00",
+      "sha256_html": "4885671d8280dcb287bb982712de19e1a361755fddb87097d4ca255d0f785b05",
+      "supporting_sources": [
+        "https://quicktickets.ru/salavat-teatr-dramy/e61"
+      ],
+      "unknown_fields": [
+        "price_min",
+        "price_max",
+        "lat",
+        "lon"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "url": "https://quicktickets.ru/salavat-teatr-dramy/s558",
+      "reason": "The address is Isyangulovo, not Salavat; rescheduled session"
+    },
+    {
+      "url": "https://quicktickets.ru/salavat-teatr-dramy/s547",
+      "reason": "The address is Arkhangelskoye, not Salavat"
+    },
+    {
+      "url": "https://ufa.ticketland.ru/doma-kultury/sibayskoe-kto/",
+      "reason": "Detail access returned HTTP 403; Sibay data taken from its accessible official institution website"
+    }
+  ]
+}
