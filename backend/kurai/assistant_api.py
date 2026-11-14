@@ -42,7 +42,6 @@ def install_assistant(app, db, admin, limit, provider=None):
         response: Response,
         identity=Depends(owner),
     ):
-        limit(request, "assistant", 6)
         private(response)
         try:
             return service.respond(identity, "web", data.message)
@@ -56,7 +55,6 @@ def install_assistant(app, db, admin, limit, provider=None):
         response: Response,
         identity=Depends(owner),
     ):
-        limit(request, "assistant-confirm", 10)
         private(response)
         try:
             return service.confirm(identity, "web", data.token, data.accept)
@@ -65,7 +63,6 @@ def install_assistant(app, db, admin, limit, provider=None):
 
     @app.delete("/api/v1/assistant/dialog", status_code=204)
     def reset(request: Request, response: Response, identity=Depends(owner)):
-        limit(request, "assistant-reset", 10)
         private(response)
         try:
             service.reset(identity)

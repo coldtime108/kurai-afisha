@@ -431,3 +431,19 @@ def test_telegram_assistant_entry_and_example_button_route_to_model(client, app)
         assert session.scalar(
             select(AssistantTrace).where(AssistantTrace.channel == "telegram")
         )
+
+
+def test_assistant_has_no_default_frequency_or_daily_quota(client, app):
+    provider = FakeProvider(*[call("search_events", {"city": "Уфа"}) for _ in range(7)])
+    provider.settings = LLMSettings(enabled=True, api_key="test-only")
+    app.state.assistant.provider = provider
+    app.state.assistant.clock = lambda: NOW
+    with app.state.sessions() as session:
+        session.add(AssistantQuota(day="2026-11-13", calls=500, tokens=900_000))
+        session.commit()
+    for _ in range(7):
+        response = client.post(
+            "/api/v1/assistant/messages", headers=AUTH, json={"message": "Уфа"}
+        )
+        assert response.status_code == 200 and response.json()["mode"] == "model"
+    assert len(provider.inputs) == 7

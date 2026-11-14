@@ -123,13 +123,16 @@ class AssistantService:
                 except IntegrityError:
                     session.rollback()
             settings = self.provider.settings
+            conditions = [AssistantQuota.day == day]
+            if settings.daily_calls is not None:
+                conditions.append(AssistantQuota.calls < settings.daily_calls)
+            if settings.daily_tokens is not None:
+                conditions.append(
+                    AssistantQuota.tokens + amount <= settings.daily_tokens
+                )
             changed = session.execute(
                 update(AssistantQuota)
-                .where(
-                    AssistantQuota.day == day,
-                    AssistantQuota.calls < settings.daily_calls,
-                    AssistantQuota.tokens + amount <= settings.daily_tokens,
-                )
+                .where(*conditions)
                 .values(
                     calls=AssistantQuota.calls + 1,
                     tokens=AssistantQuota.tokens + amount,
@@ -513,14 +516,7 @@ class AssistantService:
                 )  # Reject explicit impossible dates before using the model.
                 if not self.provider.ready:
                     raise ProviderError("disabled")
-                recent = [
-                    stamp
-                    for stamp in data.get("model_rate", [])
-                    if now.timestamp() - stamp < 60
-                ]
-                if len(recent) >= 6:
-                    raise ProviderError("owner_rate_limit")
-                data["model_rate"] = recent + [now.timestamp()]
+                data.pop("model_rate", None)
                 cities = sorted(
                     set(CITIES)
                     | set(

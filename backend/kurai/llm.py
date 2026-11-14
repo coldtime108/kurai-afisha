@@ -22,8 +22,8 @@ class LLMSettings:
     api_key: str = field(default="", repr=False)
     model: str = MODEL
     timeout: float = 7.0
-    daily_calls: int = 200
-    daily_tokens: int = 300_000
+    daily_calls: int | None = None
+    daily_tokens: int | None = None
 
     @classmethod
     def from_env(cls):

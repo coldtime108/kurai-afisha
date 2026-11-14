@@ -6,6 +6,7 @@ from sqlalchemy import (
     Float,
     Integer,
     BigInteger,
+    LargeBinary,
     String,
     Text,
     ForeignKey,
@@ -191,3 +192,45 @@ class AssistantQuota(Base):
     day: Mapped[str] = mapped_column(String(10), primary_key=True)
     calls: Mapped[int] = mapped_column(Integer, default=0)
     tokens: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class CollectionRun(Base):
+    __tablename__ = "collection_runs"
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid4())
+    )
+    status: Mapped[str] = mapped_column(String(16), index=True)
+    summary: Mapped[list] = mapped_column(JSON, default=list)
+    started_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+
+
+class SourcePage(Base):
+    __tablename__ = "source_pages"
+    __table_args__ = (UniqueConstraint("url", "content_hash"),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    source_id: Mapped[str] = mapped_column(String(40), index=True)
+    url: Mapped[str] = mapped_column(String(1000))
+    content_hash: Mapped[str] = mapped_column(String(64))
+    body_gzip: Mapped[bytes] = mapped_column(LargeBinary)
+    fetched_at: Mapped[datetime] = mapped_column(
+        UTCDateTime(), default=utcnow, index=True
+    )
+
+
+class CollectedItem(Base):
+    __tablename__ = "collected_items"
+    __table_args__ = (UniqueConstraint("source_id", "external_id"),)
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid4())
+    )
+    source_id: Mapped[str] = mapped_column(String(40), index=True)
+    external_id: Mapped[str] = mapped_column(String(1000))
+    event_id: Mapped[str | None] = mapped_column(
+        ForeignKey("events.id", ondelete="SET NULL")
+    )
+    payload: Mapped[dict] = mapped_column(JSON)
+    issues: Mapped[list] = mapped_column(JSON, default=list)
+    fingerprint: Mapped[str] = mapped_column(String(64))
+    reviewed_hash: Mapped[str | None] = mapped_column(String(64))
+    last_seen_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utcnow)

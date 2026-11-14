@@ -3,6 +3,25 @@
   margin: auto;
   padding: 35px 24px;
 }
+.source-proposal {
+  padding: 14px 0;
+  border-top: 1px solid #d9ded1;
+  font-size: 14px;
+}
+.source-proposal summary {
+  cursor: pointer;
+  color: #194c3e;
+}
+.source-proposal ul,
+.collection-panel li {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.collection-panel h3 {
+  font-size: 17px;
+  font-weight: 500;
+  margin-top: 22px;
+}
 .admin header {
   display: flex;
   align-items: center;

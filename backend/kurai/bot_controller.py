@@ -96,8 +96,19 @@ class BotController:
                 return BotReply("\n\n".join(parts), buttons)
 
             window = data.get("rate", {})
+            assistant_interaction = self.assistant and (
+                (
+                    text
+                    and not text.startswith("/")
+                    and data.get("awaiting") != "feedback"
+                )
+                or text == "/new"
+                or callback in ("assistant", "ai-example", "ai-more", "ai-reset")
+                or (callback and callback.startswith(("ai-yes:", "ai-no:")))
+            )
             if (
                 window
+                and not assistant_interaction
                 and now.timestamp() - window.get("start", 0) < 60
                 and window.get("count", 0) >= 30
                 and text != "/unsubscribe"
@@ -107,11 +118,12 @@ class BotController:
                         "Слишком много запросов. Попробуйте через минуту. /unsubscribe доступна всегда."
                     )
                 )
-            data["rate"] = (
-                {"start": window["start"], "count": window["count"] + 1}
-                if window and now.timestamp() - window.get("start", 0) < 60
-                else {"start": now.timestamp(), "count": 1}
-            )
+            if not assistant_interaction:
+                data["rate"] = (
+                    {"start": window["start"], "count": window["count"] + 1}
+                    if window and now.timestamp() - window.get("start", 0) < 60
+                    else {"start": now.timestamp(), "count": 1}
+                )
 
             def catalog(page=1):
                 data["page"] = page

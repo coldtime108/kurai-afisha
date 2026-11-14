@@ -37,6 +37,7 @@ from .db import make_engine, session_factory
 from .ingestion import import_rows
 from .features import install_features
 from .assistant_api import install_assistant
+from .collection_api import install_collection
 from .subscriptions import cleanup
 from .models import AuditEntry, Event, Feedback, record_publication
 from .schemas import (
@@ -78,9 +79,15 @@ def create_app(database_url=None, admin_token=None, web_dir=None, llm_provider=N
                 await asyncio.sleep(3600)
 
         task = asyncio.create_task(maintenance())
+        collection_task = asyncio.create_task(app.state.collection.schedule())
         try:
             yield
         finally:
+            collection_task.cancel()
+            try:
+                await collection_task
+            except asyncio.CancelledError:
+                pass
             task.cancel()
             try:
                 await task
@@ -481,6 +488,7 @@ def create_app(database_url=None, admin_token=None, web_dir=None, llm_provider=N
 
     install_features(app, db, admin, limit)
     install_assistant(app, db, admin, limit, llm_provider)
+    install_collection(app, db, admin, limit)
 
     if (web / "assets").is_dir():
         app.mount("/assets", StaticFiles(directory=web / "assets"), name="assets")

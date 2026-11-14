@@ -7,7 +7,7 @@ try {
     $settingsPath = Join-Path $projectDirectory '.env'
     if (Test-Path -LiteralPath $settingsPath) {
         foreach ($line in [IO.File]::ReadAllLines($settingsPath)) {
-            if ($line -match '^\s*(ADMIN_TOKEN|DATABASE_URL|NVIDIA_API_KEY|LLM_ENABLED|LLM_MODEL)\s*=(.*)$') {
+            if ($line -match '^\s*(ADMIN_TOKEN|DATABASE_URL|NVIDIA_API_KEY|LLM_ENABLED|LLM_MODEL|COLLECTION_ENABLED)\s*=(.*)$') {
                 [Environment]::SetEnvironmentVariable($Matches[1], $Matches[2].Trim(), 'Process')
             }
         }

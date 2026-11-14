@@ -1,0 +1,28 @@
+[
+  {
+    "id": "bashgf",
+    "name": "Башкирская государственная филармония им. Х. Ахметова",
+    "adapter": "bashgf",
+    "url": "https://bashgf.ru/afisha/",
+    "hosts": ["bashgf.ru"],
+    "path_prefix": "/afisha/",
+    "city": "Уфа",
+    "venue": "Башкирская филармония им. Х. Ахметова",
+    "address": "Уфа, ул. Гоголя, 58",
+    "max_events": 30,
+    "use_system_proxy": false
+  },
+  {
+    "id": "rusdram",
+    "name": "Государственный русский драматический театр г. Стерлитамак",
+    "adapter": "rusdram",
+    "url": "https://rusdramteatr.ru/afisha/",
+    "hosts": ["rusdramteatr.ru"],
+    "path_prefix": "/afisha/",
+    "city": "Стерлитамак",
+    "venue": "Государственный русский драматический театр г. Стерлитамак",
+    "address": "Стерлитамак, ул. Худайбердина, 18",
+    "max_events": 30,
+    "use_system_proxy": false
+  }
+]

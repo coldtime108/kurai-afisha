@@ -1,0 +1,200 @@
+{
+  "reported_at": "2026-11-14T09:31:31.678583+00:00",
+  "scope": "Development collection checkpoint, not final level-4 acceptance or 50-card manual evaluation",
+  "sources_config_sha256": "faf256eb015f41b8fc7d8f0c9fc829d4b954e0c93f69fb81584ab2b7a6653082",
+  "runs": [
+    {
+      "id": "68266179-b27b-4641-8f05-48a3d9744d02",
+      "status": "partial",
+      "started_at": "2026-11-14T09:02:05.132134+00:00",
+      "finished_at": "2026-11-14T09:02:15.757202+00:00",
+      "sources": [
+        {
+          "source_id": "bashgf",
+          "name": "Башкирская государственная филармония им. Х. Ахметова",
+          "found": 0,
+          "added": 0,
+          "matched": 0,
+          "proposals": 0,
+          "unchanged": 0,
+          "past": 0,
+          "errors": [
+            {
+              "url": "https://bashgf.ru/afisha/",
+              "message": "Загрузка запрещена robots.txt"
+            }
+          ]
+        },
+        {
+          "source_id": "rusdram",
+          "name": "Государственный русский драматический театр г. Стерлитамак",
+          "found": 20,
+          "added": 17,
+          "matched": 0,
+          "proposals": 1,
+          "unchanged": 0,
+          "past": 0,
+          "errors": [
+            {
+              "url": "https://rusdramteatr.ru/afisha/gorgony-17-11-2026-g-meleuz",
+              "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+            },
+            {
+              "url": "https://rusdramteatr.ru/afisha/groza-18-11-2026-kumertau",
+              "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "31807449-6100-4d63-91f6-e928fbf88437",
+      "status": "partial",
+      "started_at": "2026-11-14T09:05:22.324245+00:00",
+      "finished_at": "2026-11-14T09:05:36.299720+00:00",
+      "sources": [
+        {
+          "source_id": "bashgf",
+          "name": "Башкирская государственная филармония им. Х. Ахметова",
+          "found": 12,
+          "added": 4,
+          "matched": 0,
+          "proposals": 8,
+          "unchanged": 0,
+          "past": 0,
+          "errors": []
+        },
+        {
+          "source_id": "rusdram",
+          "name": "Государственный русский драматический театр г. Стерлитамак",
+          "found": 20,
+          "added": 0,
+          "matched": 0,
+          "proposals": 0,
+          "unchanged": 18,
+          "past": 0,
+          "errors": [
+            {
+              "url": "https://rusdramteatr.ru/afisha/gorgony-17-11-2026-g-meleuz",
+              "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+            },
+            {
+              "url": "https://rusdramteatr.ru/afisha/groza-18-11-2026-kumertau",
+              "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6222b4be-f094-40a5-a38d-ea7dd288edda",
+      "status": "partial",
+      "started_at": "2026-11-14T09:27:20.774611+00:00",
+      "finished_at": "2026-11-14T09:27:35.950839+00:00",
+      "sources": [
+        {
+          "source_id": "bashgf",
+          "name": "Башкирская государственная филармония им. Х. Ахметова",
+          "found": 12,
+          "added": 0,
+          "matched": 0,
+          "proposals": 0,
+          "unchanged": 12,
+          "past": 0,
+          "errors": []
+        },
+        {
+          "source_id": "rusdram",
+          "name": "Государственный русский драматический театр г. Стерлитамак",
+          "found": 20,
+          "added": 0,
+          "matched": 1,
+          "proposals": 15,
+          "unchanged": 2,
+          "past": 0,
+          "errors": [
+            {
+              "url": "https://rusdramteatr.ru/afisha/gorgony-17-11-2026-g-meleuz",
+              "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+            },
+            {
+              "url": "https://rusdramteatr.ru/afisha/groza-18-11-2026-kumertau",
+              "message": "Выездной спектакль: площадка и адрес требуют отдельной проверки"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "inventory": {
+    "events": 33,
+    "published": 14,
+    "drafts": 19,
+    "collected_items": 30,
+    "source_snapshots": 76,
+    "preserved_subscriptions": 2
+  },
+  "reviewed_public_additions": [
+    {
+      "title": "Царевна - Лягушка",
+      "category": "theatre",
+      "tags": [
+        "для детей",
+        "сказка"
+      ],
+      "date_start": "2026-11-15T07:00:00Z",
+      "date_end": null,
+      "duration_min": 60,
+      "city": "Стерлитамак",
+      "venue": "Государственный русский драматический театр г. Стерлитамак",
+      "address": "Стерлитамак, ул. Худайбердина, 18",
+      "lat": null,
+      "lon": null,
+      "description": "Царевна - Лягушка. Государственный русский драматический театр г. Стерлитамак. Дата и место взяты из официальной афиши. Подробности программы и наличие билетов — у организатора.",
+      "price_min": null,
+      "price_max": null,
+      "is_free": null,
+      "age_limit": 0,
+      "language": null,
+      "org_link": null,
+      "source_url": "https://rusdramteatr.ru/afisha/tsarevna-lyagushka-15-11-2026",
+      "source_type": "manual",
+      "verified_at": "2026-11-14T09:29:46.128015Z",
+      "confidence": 1.0,
+      "status": "published"
+    },
+    {
+      "title": "Ужин с дураком",
+      "category": "theatre",
+      "tags": [
+        "комедия"
+      ],
+      "date_start": "2026-11-15T13:00:00Z",
+      "date_end": null,
+      "duration_min": 150,
+      "city": "Стерлитамак",
+      "venue": "Государственный русский драматический театр г. Стерлитамак",
+      "address": "Стерлитамак, ул. Худайбердина, 18",
+      "lat": null,
+      "lon": null,
+      "description": "Ужин с дураком. Государственный русский драматический театр г. Стерлитамак. Дата и место взяты из официальной афиши. Подробности программы и наличие билетов — у организатора.",
+      "price_min": null,
+      "price_max": null,
+      "is_free": null,
+      "age_limit": 16,
+      "language": null,
+      "org_link": null,
+      "source_url": "https://rusdramteatr.ru/afisha/uzhin-s-durakom-15-11-2026",
+      "source_type": "manual",
+      "verified_at": "2026-11-14T09:29:46.175961Z",
+      "confidence": 1.0,
+      "status": "published"
+    }
+  ],
+  "notes": [
+    "New source events start as drafts; known reviewed facts are not overwritten by unknown fields.",
+    "Two touring sessions require separate venue/address verification; their original pages were retained and errors are visible in the run.",
+    "No live model evaluation was repeated; own assistant frequency and daily caps were removed at user request.",
+    "Raw source HTML remains in the private runtime database, not in this report or Git."
+  ]
+}

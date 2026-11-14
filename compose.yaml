@@ -18,6 +18,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://kurai:${POSTGRES_PASSWORD:-kurai-local}@db:5432/kurai
       ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      COLLECTION_ENABLED: ${COLLECTION_ENABLED:-false}
       LLM_ENABLED: ${LLM_ENABLED:-false}
       LLM_MODEL: ${LLM_MODEL:-nvidia/nemotron-3.5-super-vl-120b-a12b}
       NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}

@@ -10,7 +10,11 @@ def reviewed_rows():
     directory = Path(__file__).resolve().parents[2] / "data"
     return [
         row
-        for filename in ("reviewed-events.json", "reviewed-events-extra.json")
+        for filename in (
+            "reviewed-events.json",
+            "reviewed-events-extra.json",
+            "reviewed-events-collected.json",
+        )
         for row in json.loads((directory / filename).read_text(encoding="utf-8"))
     ]
 
@@ -21,7 +25,8 @@ def main():
         with session_factory(engine)() as session:
             print(
                 json.dumps(
-                    import_rows(session, reviewed_rows(), actor="reviewed_seed"), ensure_ascii=False
+                    import_rows(session, reviewed_rows(), actor="reviewed_seed"),
+                    ensure_ascii=False,
                 )
             )
     finally:

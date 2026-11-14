@@ -3,6 +3,7 @@ import { api } from "./api";
 import { fmtDate, fmtTime, KuraiMark } from "./components";
 import type { CultureEvent } from "./types";
 import { EventEditor } from "./EventEditor";
+import { CollectionPanel, type SourceProposal } from "./CollectionPanel";
 type Audit = {
   id: number;
   action: string;
@@ -37,6 +38,8 @@ export function Admin() {
   const [editing, setEditing] = useState<CultureEvent | null | undefined>(
     undefined,
   );
+  const [sourceReview, setSourceReview] = useState<SourceProposal | null>(null);
+  const [collectionVersion, setCollectionVersion] = useState(0);
   const headers = { Authorization: `Bearer ${token}` };
   async function refresh() {
     const [events, changes, feedback] = await Promise.all([
@@ -118,6 +121,43 @@ export function Admin() {
       setBusy(false);
     }
   }
+  function reviewSource(item: SourceProposal) {
+    const current = rows.find((row) => row.id === item.event_id);
+    if (!current) {
+      setError("Карточка не найдена. Обновите кабинет.");
+      return;
+    }
+    const known = Object.fromEntries(
+      Object.entries(item.payload).filter(
+        ([, value]) => value !== null && value !== undefined,
+      ),
+    );
+    const proposal = {
+      ...current,
+      ...known,
+      status: current.status,
+    } as CultureEvent;
+    if (
+      new Date(proposal.date_start).getTime() !==
+        new Date(current.date_start).getTime() &&
+      item.payload.date_end == null
+    )
+      proposal.date_end = null;
+    setSourceReview(item);
+    setEditing(proposal);
+  }
+  async function saved() {
+    await refresh();
+    if (sourceReview) {
+      await api(`/api/v1/admin/collection/items/${sourceReview.id}/reviewed`, {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ fingerprint: sourceReview.fingerprint }),
+      });
+      setSourceReview(null);
+      setCollectionVersion((v) => v + 1);
+    }
+  }
   return (
     <main className="admin">
       <header>
@@ -180,6 +220,12 @@ export function Admin() {
               {error}
             </p>
           )}
+          <CollectionPanel
+            token={token}
+            version={collectionVersion}
+            onReview={reviewSource}
+            onChanged={refresh}
+          />
           <section>
             <div className="admin-row">
               <h2>События · {rows.length}</h2>
@@ -367,8 +413,11 @@ export function Admin() {
         <EventEditor
           event={editing}
           token={token}
-          onClose={() => setEditing(undefined)}
-          onSaved={refresh}
+          onClose={() => {
+            setEditing(undefined);
+            setSourceReview(null);
+          }}
+          onSaved={saved}
         />
       )}
     </main>

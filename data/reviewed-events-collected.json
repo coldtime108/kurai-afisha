@@ -1,0 +1,57 @@
+[
+  {
+    "title": "Царевна - Лягушка",
+    "category": "theatre",
+    "tags": [
+      "для детей",
+      "сказка"
+    ],
+    "date_start": "2026-11-15T07:00:00Z",
+    "date_end": null,
+    "duration_min": 60,
+    "city": "Стерлитамак",
+    "venue": "Государственный русский драматический театр г. Стерлитамак",
+    "address": "Стерлитамак, ул. Худайбердина, 18",
+    "lat": null,
+    "lon": null,
+    "description": "Царевна - Лягушка. Государственный русский драматический театр г. Стерлитамак. Дата и место взяты из официальной афиши. Подробности программы и наличие билетов — у организатора.",
+    "price_min": null,
+    "price_max": null,
+    "is_free": null,
+    "age_limit": 0,
+    "language": null,
+    "org_link": null,
+    "source_url": "https://rusdramteatr.ru/afisha/tsarevna-lyagushka-15-11-2026",
+    "source_type": "manual",
+    "verified_at": "2026-11-14T09:29:46.128015Z",
+    "confidence": 1.0,
+    "status": "published"
+  },
+  {
+    "title": "Ужин с дураком",
+    "category": "theatre",
+    "tags": [
+      "комедия"
+    ],
+    "date_start": "2026-11-15T13:00:00Z",
+    "date_end": null,
+    "duration_min": 150,
+    "city": "Стерлитамак",
+    "venue": "Государственный русский драматический театр г. Стерлитамак",
+    "address": "Стерлитамак, ул. Худайбердина, 18",
+    "lat": null,
+    "lon": null,
+    "description": "Ужин с дураком. Государственный русский драматический театр г. Стерлитамак. Дата и место взяты из официальной афиши. Подробности программы и наличие билетов — у организатора.",
+    "price_min": null,
+    "price_max": null,
+    "is_free": null,
+    "age_limit": 16,
+    "language": null,
+    "org_link": null,
+    "source_url": "https://rusdramteatr.ru/afisha/uzhin-s-durakom-15-11-2026",
+    "source_type": "manual",
+    "verified_at": "2026-11-14T09:29:46.175961Z",
+    "confidence": 1.0,
+    "status": "published"
+  }
+]
