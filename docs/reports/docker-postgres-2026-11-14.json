@@ -1,0 +1,89 @@
+{
+  "checked_at": "2026-11-14T15:19:03.018854+00:00",
+  "scope": "isolated Docker PostgreSQL 16; no production failover",
+  "backup_restore": {
+    "passed": true,
+    "tables": [
+      {
+        "table": "alembic_version",
+        "rows": "1",
+        "content_md5": "c173c57f8625a865cf845bbc055c242e"
+      },
+      {
+        "table": "assistant_dialogs",
+        "rows": "20",
+        "content_md5": "32116f807c7798fde4efa6c7b61bdbf9"
+      },
+      {
+        "table": "assistant_quotas",
+        "rows": "0",
+        "content_md5": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "assistant_traces",
+        "rows": "20",
+        "content_md5": "86131efef366a5a407ff202c772cf6dd"
+      },
+      {
+        "table": "audit_entries",
+        "rows": "48",
+        "content_md5": "61be784fdcf1696f846ec09c3302a041"
+      },
+      {
+        "table": "bot_dialogs",
+        "rows": "0",
+        "content_md5": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "collected_items",
+        "rows": "0",
+        "content_md5": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "collection_runs",
+        "rows": "0",
+        "content_md5": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "digest_deliveries",
+        "rows": "0",
+        "content_md5": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "events",
+        "rows": "45",
+        "content_md5": "6267e3b9579b6531de742ec4db95b569"
+      },
+      {
+        "table": "feedback",
+        "rows": "1",
+        "content_md5": "162529761e684559993562ac2d44d3f8"
+      },
+      {
+        "table": "raw_records",
+        "rows": "46",
+        "content_md5": "6477dc3894b96b94e8aeadb93ab4b4a5"
+      },
+      {
+        "table": "source_pages",
+        "rows": "0",
+        "content_md5": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "subscriptions",
+        "rows": "0",
+        "content_md5": "d41d8cd98f00b204e9800998ecf8427e"
+      }
+    ],
+    "method": "pg_dump custom + createdb isolated restore + pg_restore + row counts and ordered content digest"
+  },
+  "app_process_recovery": {
+    "passed": true,
+    "restart_count_before": 0,
+    "restart_count_after": 1,
+    "recovery_seconds": 9.23,
+    "events_after": 45
+  },
+  "cold_launch_10_minutes": "not timed; initial fresh volume and image build succeeded",
+  "telegram_container": "not started to avoid a second live poller"
+}

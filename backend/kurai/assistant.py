@@ -220,6 +220,7 @@ class AssistantService:
                 owner_hash=state.owner_hash,
                 channel=trace.pop("channel"),
                 details=trace,
+                created_at=self.clock(),
             )
         )
         session.commit()

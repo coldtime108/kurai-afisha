@@ -7,5 +7,10 @@ frontend/dist
 **/__pycache__
 *.db*
 .env
+.env.*
+!.env.example
+data/runtime
+outputs
+*.log
 work
 tests

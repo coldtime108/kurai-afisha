@@ -1,0 +1,19 @@
+{
+  "second_launcher_blocked": true,
+  "checks": [
+    {
+      "passed": true,
+      "logical_instances": 1,
+      "recovery_seconds": 7.38,
+      "service": "web"
+    },
+    {
+      "passed": true,
+      "logical_instances": 1,
+      "recovery_seconds": 12.67,
+      "service": "telegram"
+    }
+  ],
+  "scope": "local Windows scripts; computer must remain awake; no autostart after OS reboot",
+  "checked_at": "2026-11-14T15:23:22.0889820Z"
+}

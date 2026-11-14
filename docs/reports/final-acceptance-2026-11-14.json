@@ -1,0 +1,105 @@
+{
+  "checked_at": "2026-11-14T15:28:43.816932+00:00",
+  "scope": "final local prototype handoff; not full level-4 acceptance",
+  "tests": {
+    "passed": 95,
+    "total": 95,
+    "command": ".venv/Scripts/python.exe -m pytest --basetemp=work/pytest-final-parser-fixed --tb=short -q"
+  },
+  "frontend_build": "TypeScript and Vite passed in Docker image build",
+  "live": {
+    "routes": {
+      "/": 200,
+      "/about": 200,
+      "/organizers": 200,
+      "/admin": 200,
+      "/api/docs": 200,
+      "/widget": 200,
+      "/api/openapi.json": 200
+    },
+    "health": {
+      "status": "ok",
+      "version": "0.2.0",
+      "assistant": "configured"
+    },
+    "assistant_enabled": true,
+    "events_by_status": {
+      "draft": 21,
+      "published": 44
+    },
+    "published_cities": [
+      "Белебей",
+      "Бирск",
+      "Ишимбай",
+      "Кумертау",
+      "Мелеуз",
+      "Нефтекамск",
+      "Октябрьский",
+      "Салават",
+      "Сибай",
+      "Стерлитамак",
+      "Туймазы",
+      "Уфа",
+      "Янаул"
+    ],
+    "digest_jobs_by_status": {
+      "sent": 1
+    }
+  },
+  "docker": {
+    "image": "sha256:b2e0b7d6852452bd90a986f996d5ba8ff550917663addace7e9dd0396a482d90",
+    "fresh_postgres_volume_and_build_passed": true,
+    "private_runtime_and_env_excluded": true,
+    "final_parser_fallback_http_passed": true,
+    "http_checks": 60,
+    "backup_restore_tables": 14,
+    "app_recovery_seconds": 9.23,
+    "initial_launch_10_minutes": "not timed",
+    "test_stack": "isolated, no real model key or Telegram sender"
+  },
+  "local_recovery": {
+    "second_launcher_blocked": true,
+    "checks": [
+      {
+        "passed": true,
+        "logical_instances": 1,
+        "recovery_seconds": 7.38,
+        "service": "web"
+      },
+      {
+        "passed": true,
+        "logical_instances": 1,
+        "recovery_seconds": 12.67,
+        "service": "telegram"
+      }
+    ],
+    "scope": "local Windows scripts; computer must remain awake; no autostart after OS reboot",
+    "checked_at": "2026-11-14T15:23:22.0889820Z"
+  },
+  "sqlite_restore": true,
+  "assistant": {
+    "passed": 47,
+    "total": 60,
+    "p95_ms": 7047.0,
+    "cost_rub": 0,
+    "final_acceptance": false,
+    "outcome_assertions_passed": 60,
+    "model_expected": 58,
+    "unexpected_fallbacks": 13,
+    "reported_total_tokens": 206039
+  },
+  "secret_scan": {
+    "current_files_passed": true,
+    "actual_env_secrets_compared": 3,
+    "values_recorded": false
+  },
+  "open_items": [
+    "10 independent prompts not obtained; user declined additional collection",
+    "50-card extraction precision and full cumulative metrics not measured",
+    "13 provider timeouts; p95 exceeds level-4 6-second threshold",
+    "AI per-user frequency/daily quotas disabled at user request",
+    "actual daily digest receipt not independently confirmed",
+    "360px keyboard/visual acceptance and reserve video not completed",
+    "public HTTPS host, OS boot startup, production failover not configured"
+  ]
+}

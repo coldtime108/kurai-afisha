@@ -1,5 +1,6 @@
 param(
-    [switch]$Configure
+    [switch]$Configure,
+    [switch]$KeepRunning
 )
 
 $ErrorActionPreference = 'Stop'
@@ -10,7 +11,10 @@ if (-not (Test-Path -LiteralPath $pythonPath)) {
 }
 
 Push-Location -LiteralPath $projectDirectory
+$runnerLock = $null
 try {
+    New-Item -ItemType Directory -Path 'data/runtime' -Force | Out-Null
+    $runnerLock = [IO.File]::Open((Join-Path $projectDirectory 'data/runtime/telegram-runner.lock'), 'OpenOrCreate', 'ReadWrite', 'None')
     $settingsPath = Join-Path $projectDirectory '.env'
     if (Test-Path -LiteralPath $settingsPath) {
         foreach ($line in [IO.File]::ReadAllLines($settingsPath)) {
@@ -34,9 +38,18 @@ try {
         & $pythonPath -m kurai.telegram_setup
         if ($LASTEXITCODE -ne 0) { throw 'Не удалось настроить профиль Telegram.' }
     }
-    & $pythonPath -m kurai.telegram_worker
-    if ($LASTEXITCODE -ne 0) { throw 'Бот остановлен. Проверьте подключение и локальные настройки.' }
+    do {
+        & $pythonPath -m kurai.telegram_worker
+        if ($KeepRunning) {
+            Write-Warning 'Бот остановился. Повторный запуск через пять секунд.'
+            Start-Sleep -Seconds 5
+        }
+        elseif ($LASTEXITCODE -ne 0) {
+            throw 'Бот остановлен. Проверьте подключение и локальные настройки.'
+        }
+    } while ($KeepRunning)
 }
 finally {
+    if ($runnerLock) { $runnerLock.Dispose() }
     Pop-Location
 }

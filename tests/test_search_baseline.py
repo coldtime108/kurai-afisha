@@ -4,11 +4,26 @@ from sqlalchemy import select
 from kurai.bot_controller import BotController
 from kurai.evaluate import evaluate
 from kurai.models import Event
+from kurai.query_parser import parse_query
 
 NOW = datetime(2026, 11, 13, 9, tzinfo=timezone.utc)
 
 
-def test_reviewed_baseline_uses_isolated_database_even_with_database_env(monkeypatch, tmp_path):
+def test_fallback_city_phrase_does_not_become_title_query():
+    filters = parse_query("Концерты в городе Нефтекамск 20.11.2026", {}, NOW)
+    assert filters == {
+        "city": "Нефтекамск",
+        "category": "concert",
+        "date_from": "2026-11-20",
+        "date_to": "2026-11-20",
+        "q": "",
+    }
+    assert parse_query("В городе мастеров", {}, NOW)["q"] == "городе мастеров"
+
+
+def test_reviewed_baseline_uses_isolated_database_even_with_database_env(
+    monkeypatch, tmp_path
+):
     untouched = tmp_path / "not-the-evaluation-database.db"
     monkeypatch.setenv("DATABASE_URL", "sqlite:///" + untouched.as_posix())
     result = evaluate()
@@ -22,12 +37,16 @@ def test_bot_understands_city_added_to_catalog(client, app):
         event = session.scalar(select(Event).where(Event.title == "Травиата"))
         event.city = "Ишимбай"
         session.commit()
-    reply = BotController(app.state.sessions, clock=lambda: NOW).handle(803, text="Травиата в Ишимбае")
+    reply = BotController(app.state.sessions, clock=lambda: NOW).handle(
+        803, text="Травиата в Ишимбае"
+    )
     assert "Ишимбай" in reply.text and "Найдено: 1" in reply.text
 
 
 def test_empty_results_explain_venue_and_free_entry_filters(client):
-    missing_venue = client.get("/api/v1/events", params={"venue": "Неизвестная площадка"}).json()
+    missing_venue = client.get(
+        "/api/v1/events", params={"venue": "Неизвестная площадка"}
+    ).json()
     assert any("площадках" in message for message in missing_venue["suggestions"])
     free = client.get("/api/v1/events", params={"is_free": True}).json()
     assert any("бесплатного" in message for message in free["suggestions"])

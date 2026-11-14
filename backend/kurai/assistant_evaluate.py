@@ -23,8 +23,8 @@ from .subscriptions import owner_hash
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def evaluate(output):
-    suite_path = ROOT / "data/evaluation/assistant-smoke.json"
+def evaluate(output, suite_path=None):
+    suite_path = suite_path or ROOT / "data/evaluation/assistant-smoke.json"
     suite = json.loads(suite_path.read_text(encoding="utf-8"))
     provider = NvidiaProvider()
     if not provider.ready:
@@ -56,9 +56,12 @@ def evaluate(output):
         sessions = session_factory(engine)
         try:
             with sessions() as session:
-                for filename in (
-                    "data/reviewed-events.json",
-                    "data/reviewed-events-extra.json",
+                for filename in suite.get(
+                    "corpora",
+                    (
+                        "data/reviewed-events.json",
+                        "data/reviewed-events-extra.json",
+                    ),
                 ):
                     content = (ROOT / filename).read_bytes()
                     report["corpus_sha256"][filename] = hashlib.sha256(
@@ -77,14 +80,22 @@ def evaluate(output):
                 try:
                     if case.get("surface") == "telegram-controller":
                         user_id = 8_000_000 + sum(ord(c) for c in case["dialog"])
-                        result = bot.handle(user_id, text=case["text"])
                         owner = owner_hash("telegram", user_id)
                         with sessions() as session:
-                            trace_row = session.scalar(
+                            previous_ids = set(
+                                session.scalars(
+                                    select(AssistantTrace.id).where(
+                                        AssistantTrace.owner_hash == owner
+                                    )
+                                )
+                            )
+                        result = bot.handle(user_id, text=case["text"])
+                        with sessions() as session:
+                            trace_row = session.execute(
                                 select(AssistantTrace)
                                 .where(AssistantTrace.owner_hash == owner)
-                                .order_by(AssistantTrace.created_at.desc())
-                            )
+                                .where(AssistantTrace.id.not_in(previous_ids))
+                            ).scalar_one()
                             trace = trace_row.details
                             ids = [
                                 action[2:]
@@ -165,6 +176,22 @@ def evaluate(output):
     report["summary"] = {
         "passed": sum(r["passed"] for r in report["results"]),
         "total": len(report["results"]),
+        "outcome_assertions_passed": sum(
+            all(v for k, v in r["checks"].items() if k not in ("mode", "tool"))
+            for r in report["results"]
+        ),
+        "model_expected": sum(
+            c.get("mode", "model") == "model" for c in suite["cases"]
+        ),
+        "unexpected_fallbacks": sum(
+            c.get("mode", "model") == "model" and r["mode"] == "fallback"
+            for c, r in zip(suite["cases"], report["results"], strict=True)
+        ),
+        "reported_total_tokens": sum(
+            usage.get("total_tokens", 0)
+            for r in report["results"]
+            for usage in r["trace"].get("usage", [])
+        ),
         "p95_ms": durations[math.ceil(len(durations) * 0.95) - 1],
         "cost_rub": 0,
         "final_acceptance": False,
@@ -181,5 +208,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output", type=Path, default=ROOT / "work/assistant-smoke.json"
     )
+    parser.add_argument("--suite", type=Path)
     args = parser.parse_args()
-    print(json.dumps(evaluate(args.output), ensure_ascii=False))
+    print(json.dumps(evaluate(args.output, args.suite), ensure_ascii=False))

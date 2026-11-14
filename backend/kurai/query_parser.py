@@ -88,6 +88,8 @@ def parse_query(text: str, previous: dict, now, cities=None):
             result["city"] = aliases[match[0]]
             working = working.replace(word, " ")
             break
+    if result.get("city"):
+        working = re.sub(r"\b(?:в|во)\s+городе\b", " ", working)
     for category, words in WORDS.items():
         if any(re.search(rf"\b{re.escape(word)}\b", working) for word in words):
             result["category"] = category

@@ -246,6 +246,7 @@ def test_private_api_and_retention(client, app, admin):
     assert client.get("/api/v1/admin/assistant/traces").status_code == 401
     assert len(client.get("/api/v1/admin/assistant/traces", headers=admin).json()) == 1
     with app.state.sessions() as session:
+        assert session.scalar(select(AssistantTrace)).created_at == NOW
         cleanup(session, NOW + timedelta(days=8))
         assert not session.scalar(select(AssistantDialog))
         assert not session.scalar(select(AssistantTrace))

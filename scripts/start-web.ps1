@@ -1,9 +1,15 @@
-param([int]$Port = 8001)
+param([int]$Port = 8001, [switch]$KeepRunning)
 $ErrorActionPreference = 'Stop'
 $projectDirectory = Split-Path -Parent $PSScriptRoot
 $pythonPath = Join-Path $projectDirectory '.venv/Scripts/python.exe'
 Push-Location -LiteralPath $projectDirectory
+$runnerLock = $null
 try {
+    New-Item -ItemType Directory -Path 'data/runtime' -Force | Out-Null
+    $runnerLock = [IO.File]::Open((Join-Path $projectDirectory 'data/runtime/web-runner.lock'), 'OpenOrCreate', 'ReadWrite', 'None')
+    if (Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue) {
+        throw "Порт $Port уже занят. Сначала остановите предыдущий сайт."
+    }
     $settingsPath = Join-Path $projectDirectory '.env'
     if (Test-Path -LiteralPath $settingsPath) {
         foreach ($line in [IO.File]::ReadAllLines($settingsPath)) {
@@ -20,6 +26,15 @@ try {
     $env:PYTHONUTF8 = '1'
     & $pythonPath -m alembic upgrade head
     if ($LASTEXITCODE -ne 0) { throw 'Не удалось подготовить базу данных.' }
-    & $pythonPath -m uvicorn kurai.main:app --host 127.0.0.1 --port $Port --no-access-log
+    do {
+        & $pythonPath -m uvicorn kurai.main:app --host 127.0.0.1 --port $Port --no-access-log
+        if ($KeepRunning) {
+            Write-Warning 'Сайт остановился. Повторный запуск через пять секунд.'
+            Start-Sleep -Seconds 5
+        }
+    } while ($KeepRunning)
 }
-finally { Pop-Location }
+finally {
+    if ($runnerLock) { $runnerLock.Dispose() }
+    Pop-Location
+}

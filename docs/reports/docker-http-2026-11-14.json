@@ -1,0 +1,354 @@
+{
+  "checked_at": "2026-11-14T15:16:26.400753+00:00",
+  "scope": "isolated Docker/PostgreSQL; no Telegram sender or live database",
+  "checks": [
+    {
+      "name": "health_postgresql",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "page_/",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "page_/about",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "page_/organizers",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "page_/admin",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "page_/api/docs",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "page_/widget?city=%D0%A3%D1%84%D0%B0",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "openapi",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "admin_unauthorized",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "admin_wrong_key",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "seed_44_in_13_cities",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Белебей",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Бирск",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Ишимбай",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Кумертау",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Мелеуз",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Нефтекамск",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Октябрьский",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Салават",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Сибай",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Стерлитамак",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Туймазы",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Уфа",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "public_city_Янаул",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "repeat_import_100_without_duplicates",
+      "passed": true,
+      "details": {
+        "added": 0,
+        "updated": 0,
+        "skipped": 100,
+        "rejected": 0,
+        "errors": []
+      }
+    },
+    {
+      "name": "create_isolated_draft",
+      "passed": true,
+      "details": 201
+    },
+    {
+      "name": "draft_hidden",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "publish",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "published_visible",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "cancel",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "cancelled_marked_on_permalink",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "cancelled_hidden_from_search",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "feedback_and_private_queue",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "subscription_confirmed",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "subscription_owner_isolated",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "subscription_delete",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "model_disabled_for_fallback",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_2",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_3",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_4",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_5",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_6",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_8",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "fallback_request_20",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "planner_two_stops_unknown_price_explicit",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "planner_strict_budget_no_plan",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "moderator_metrics",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "seed": {
+    "total": 44,
+    "published": 44,
+    "cities": [
+      "Белебей",
+      "Бирск",
+      "Ишимбай",
+      "Кумертау",
+      "Мелеуз",
+      "Нефтекамск",
+      "Октябрьский",
+      "Салават",
+      "Сибай",
+      "Стерлитамак",
+      "Туймазы",
+      "Уфа",
+      "Янаул"
+    ]
+  },
+  "fallback_statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "passed": true
+}
