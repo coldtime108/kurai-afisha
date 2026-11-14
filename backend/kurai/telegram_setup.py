@@ -25,6 +25,7 @@ async def configure(expected_username: str | None = None):
         commands = [
             BotCommand(command="start", description="Начать и открыть главное меню"),
             BotCommand(command="catalog", description="Афиша и фильтры событий"),
+            BotCommand(command="plan", description="Спланировать культурный день"),
             BotCommand(command="new", description="Удалить диалог и начать заново"),
             BotCommand(
                 command="subscribe", description="Подписаться на город и категорию"

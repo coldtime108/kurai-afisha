@@ -29,6 +29,7 @@ import "./typography.css";
 import { Admin } from "./Admin";
 import { SubscriptionPanel } from "./SubscriptionPanel";
 import { AssistantPanel } from "./AssistantPanel";
+import { DayPlanner } from "./DayPlanner";
 import "./subscriptions.css";
 
 type FormFilters = {
@@ -406,6 +407,11 @@ function App() {
         )}
         {!widget && (
           <div hidden={pathname.startsWith("/events/")}>
+            <DayPlanner
+              meta={meta}
+              city={applied.city}
+              onOpen={(id) => go(`/events/${id}`)}
+            />
             <AssistantPanel onOpen={(id) => go(`/events/${id}`)} />
           </div>
         )}

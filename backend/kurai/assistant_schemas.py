@@ -7,6 +7,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .schemas import Category, EventOut, SubscriptionFilter
+from .planner import DayPlanInput, DayPlanOut
 
 
 class SearchArgs(BaseModel):
@@ -55,10 +56,16 @@ class FeedbackArgs(BaseModel):
 
 class ClarifyArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    field: Literal["city", "date", "age", "location", "event", "scope"]
+    field: Literal[
+        "city", "date", "age", "location", "event", "scope", "party", "window"
+    ]
 
 
 TOOL_TYPES = {
+    "plan_day": (
+        DayPlanInput,
+        "Составить культурный день из 2–4 событий. Бюджет — общий на всю группу, не на билет. day — точная дата, start_time/end_time — местное HH:MM. Неподтверждённые цены допускаются только по просьбе пользователя. transfer_minutes заполняй только по оценке пользователя; без неё — одна площадка. При изменении плана передай полный актуальный ввод из context.day_plan.",
+    ),
     "search_events": (
         SearchArgs,
         "Поиск. Аргументы — изменения текущих фильтров, пропущенное сохраняется; null удаляет условие. more=true — следующая страница. sort=price — дешевле. q — только название или содержательная тема, без слов запроса.",
@@ -136,3 +143,4 @@ class AssistantReply(BaseModel):
     has_more: bool = False
     suggestions: list[str] = Field(default_factory=list)
     pending: PendingAction | None = None
+    plan: DayPlanOut | None = None

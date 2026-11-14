@@ -11,6 +11,7 @@ import { fmtDate, fmtTime, price, KuraiMark } from "./components";
 import { deviceKey } from "./device";
 import type { CultureEvent } from "./types";
 import "./assistant.css";
+import { DayPlanResults, type DayPlanResult } from "./DayPlanner";
 
 type Reply = {
   request_id: string;
@@ -22,6 +23,7 @@ type Reply = {
   has_more: boolean;
   suggestions: string[];
   pending: { token: string; kind: string; summary: string } | null;
+  plan?: DayPlanResult | null;
 };
 type Turn = { user?: string; reply?: Reply };
 
@@ -179,77 +181,84 @@ export function AssistantPanel({ onOpen }: { onOpen: (id: string) => void }) {
                         : "Курай"}
                     </small>
                     <p>{turn.reply.message}</p>
-                    {turn.reply.cards.map(({ event, reasons }) => (
-                      <article className="assistant-event" key={event.id}>
-                        <div className="assistant-event-date">
-                          <b>
-                            {new Date(event.date_start).toLocaleDateString(
-                              "ru-RU",
-                              {
-                                day: "numeric",
-                                timeZone: "Asia/Yekaterinburg",
-                              },
+                    {turn.reply.plan && (
+                      <DayPlanResults
+                        result={turn.reply.plan}
+                        onOpen={onOpen}
+                      />
+                    )}
+                    {!turn.reply.plan &&
+                      turn.reply.cards.map(({ event, reasons }) => (
+                        <article className="assistant-event" key={event.id}>
+                          <div className="assistant-event-date">
+                            <b>
+                              {new Date(event.date_start).toLocaleDateString(
+                                "ru-RU",
+                                {
+                                  day: "numeric",
+                                  timeZone: "Asia/Yekaterinburg",
+                                },
+                              )}
+                            </b>
+                            <span>
+                              {new Date(event.date_start).toLocaleDateString(
+                                "ru-RU",
+                                {
+                                  month: "short",
+                                  timeZone: "Asia/Yekaterinburg",
+                                },
+                              )}
+                            </span>
+                          </div>
+                          <div>
+                            <a
+                              className="assistant-event-title"
+                              href={`/events/${event.id}`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                onOpen(event.id);
+                              }}
+                            >
+                              {event.title}
+                              <ArrowUpRight size={16} />
+                            </a>
+                            {event.status === "cancelled" && (
+                              <strong>Событие отменено</strong>
                             )}
-                          </b>
-                          <span>
-                            {new Date(event.date_start).toLocaleDateString(
-                              "ru-RU",
-                              {
-                                month: "short",
-                                timeZone: "Asia/Yekaterinburg",
-                              },
+                            <p>
+                              {event.city} · {event.venue}
+                            </p>
+                            <p>
+                              {fmtDate(event.date_start)} ·{" "}
+                              {fmtTime(event.date_start)} · UTC+5
+                            </p>
+                            <p>
+                              {price(event)} ·{" "}
+                              {event.age_limit === null
+                                ? "Возраст не указан"
+                                : `${event.age_limit}+`}
+                            </p>
+                            {reasons.length > 0 && (
+                              <details>
+                                <summary>Почему подходит</summary>
+                                <ul>
+                                  {reasons.map((r) => (
+                                    <li key={r}>{r}</li>
+                                  ))}
+                                </ul>
+                              </details>
                             )}
-                          </span>
-                        </div>
-                        <div>
-                          <a
-                            className="assistant-event-title"
-                            href={`/events/${event.id}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              onOpen(event.id);
-                            }}
-                          >
-                            {event.title}
-                            <ArrowUpRight size={16} />
-                          </a>
-                          {event.status === "cancelled" && (
-                            <strong>Событие отменено</strong>
-                          )}
-                          <p>
-                            {event.city} · {event.venue}
-                          </p>
-                          <p>
-                            {fmtDate(event.date_start)} ·{" "}
-                            {fmtTime(event.date_start)} · UTC+5
-                          </p>
-                          <p>
-                            {price(event)} ·{" "}
-                            {event.age_limit === null
-                              ? "Возраст не указан"
-                              : `${event.age_limit}+`}
-                          </p>
-                          {reasons.length > 0 && (
-                            <details>
-                              <summary>Почему подходит</summary>
-                              <ul>
-                                {reasons.map((r) => (
-                                  <li key={r}>{r}</li>
-                                ))}
-                              </ul>
-                            </details>
-                          )}
-                          <a
-                            className="assistant-source"
-                            href={event.source_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Источник события <ArrowUpRight size={12} />
-                          </a>
-                        </div>
-                      </article>
-                    ))}
+                            <a
+                              className="assistant-source"
+                              href={event.source_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Источник события <ArrowUpRight size={12} />
+                            </a>
+                          </div>
+                        </article>
+                      ))}
                     {turn.reply.suggestions.length > 0 && (
                       <ul className="assistant-suggestions">
                         {turn.reply.suggestions.map((suggestion) => (

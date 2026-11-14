@@ -38,6 +38,7 @@ from .ingestion import import_rows
 from .features import install_features
 from .assistant_api import install_assistant
 from .collection_api import install_collection
+from .planner_api import install_planner
 from .subscriptions import cleanup
 from .models import AuditEntry, Event, Feedback, record_publication
 from .schemas import (
@@ -254,7 +255,13 @@ def create_app(database_url=None, admin_token=None, web_dir=None, llm_provider=N
         try:
             with engine.connect() as connection:
                 connection.execute(select(Event.id).limit(1))
-            return {"status": "ok", "version": "0.2.0", "assistant": "configured" if app.state.assistant.provider.ready else "fallback"}
+            return {
+                "status": "ok",
+                "version": "0.2.0",
+                "assistant": (
+                    "configured" if app.state.assistant.provider.ready else "fallback"
+                ),
+            }
         except Exception:
             raise HTTPException(503, "База событий временно недоступна")
 
@@ -489,6 +496,7 @@ def create_app(database_url=None, admin_token=None, web_dir=None, llm_provider=N
     install_features(app, db, admin, limit)
     install_assistant(app, db, admin, limit, llm_provider)
     install_collection(app, db, admin, limit)
+    install_planner(app, db, limit)
 
     if (web / "assets").is_dir():
         app.mount("/assets", StaticFiles(directory=web / "assets"), name="assets")

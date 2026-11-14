@@ -1,0 +1,407 @@
+{
+  "checked_at": "2026-11-14T10:43:19.466093+00:00",
+  "scope": "Local development checks, not final acceptance",
+  "cases": [
+    {
+      "name": "two_adults_no_budget",
+      "http": 200,
+      "status": "provisional",
+      "input": {
+        "city": "Стерлитамак",
+        "day": "2026-11-15",
+        "start_time": "10:00:00",
+        "end_time": "22:00:00",
+        "adults": 2,
+        "children_ages": [],
+        "budget": null,
+        "max_events": 3,
+        "arrival_buffer_min": 15,
+        "max_transfer_min": 45,
+        "transfer_minutes": null,
+        "transfer_cost": 0,
+        "allow_unconfirmed_cost": false
+      },
+      "people": 2,
+      "search_complete": true,
+      "diagnostics": {
+        "in_catalog": 2,
+        "unknown_duration": 0,
+        "unknown_age": 0,
+        "age_restricted": 0,
+        "outside_window": 0,
+        "unknown_price": 2,
+        "overlap": 0,
+        "unknown_transfer": 0,
+        "transfer_too_long": 0,
+        "budget_rejected": 0
+      },
+      "suggestions": [],
+      "routes": [
+        {
+          "status": "provisional",
+          "cost_min": null,
+          "cost_max": null,
+          "budget_status": "not_set",
+          "stops": [
+            {
+              "title": "Царевна - Лягушка",
+              "start": "2026-11-15T07:00:00Z",
+              "end": "2026-11-15T08:00:00Z",
+              "arrive_by": "2026-11-15T06:45:00Z",
+              "source_url": "https://rusdramteatr.ru/afisha/tsarevna-lyagushka-15-11-2026",
+              "transfer_basis": "first"
+            },
+            {
+              "title": "Ужин с дураком",
+              "start": "2026-11-15T13:00:00Z",
+              "end": "2026-11-15T15:30:00Z",
+              "arrive_by": "2026-11-15T12:45:00Z",
+              "source_url": "https://rusdramteatr.ru/afisha/uzhin-s-durakom-15-11-2026",
+              "transfer_basis": "same_place"
+            }
+          ]
+        }
+      ],
+      "single_options": []
+    },
+    {
+      "name": "strict_group_budget",
+      "http": 200,
+      "status": "no_plan",
+      "input": {
+        "city": "Стерлитамак",
+        "day": "2026-11-15",
+        "start_time": "10:00:00",
+        "end_time": "22:00:00",
+        "adults": 2,
+        "children_ages": [],
+        "budget": 2000,
+        "max_events": 3,
+        "arrival_buffer_min": 15,
+        "max_transfer_min": 45,
+        "transfer_minutes": null,
+        "transfer_cost": 0,
+        "allow_unconfirmed_cost": false
+      },
+      "people": 2,
+      "search_complete": true,
+      "diagnostics": {
+        "in_catalog": 2,
+        "unknown_duration": 0,
+        "unknown_age": 0,
+        "age_restricted": 0,
+        "outside_window": 0,
+        "unknown_price": 2,
+        "overlap": 0,
+        "unknown_transfer": 0,
+        "transfer_too_long": 0,
+        "budget_rejected": 1
+      },
+      "suggestions": [
+        "Уточните цены у организаторов или явно разрешите варианты с неподтверждённой стоимостью."
+      ],
+      "routes": [],
+      "single_options": []
+    },
+    {
+      "name": "explicit_unconfirmed_cost",
+      "http": 200,
+      "status": "provisional",
+      "input": {
+        "city": "Стерлитамак",
+        "day": "2026-11-15",
+        "start_time": "10:00:00",
+        "end_time": "22:00:00",
+        "adults": 2,
+        "children_ages": [],
+        "budget": 2000,
+        "max_events": 3,
+        "arrival_buffer_min": 15,
+        "max_transfer_min": 45,
+        "transfer_minutes": null,
+        "transfer_cost": 0,
+        "allow_unconfirmed_cost": true
+      },
+      "people": 2,
+      "search_complete": true,
+      "diagnostics": {
+        "in_catalog": 2,
+        "unknown_duration": 0,
+        "unknown_age": 0,
+        "age_restricted": 0,
+        "outside_window": 0,
+        "unknown_price": 2,
+        "overlap": 0,
+        "unknown_transfer": 0,
+        "transfer_too_long": 0,
+        "budget_rejected": 0
+      },
+      "suggestions": [],
+      "routes": [
+        {
+          "status": "provisional",
+          "cost_min": null,
+          "cost_max": null,
+          "budget_status": "unconfirmed",
+          "stops": [
+            {
+              "title": "Царевна - Лягушка",
+              "start": "2026-11-15T07:00:00Z",
+              "end": "2026-11-15T08:00:00Z",
+              "arrive_by": "2026-11-15T06:45:00Z",
+              "source_url": "https://rusdramteatr.ru/afisha/tsarevna-lyagushka-15-11-2026",
+              "transfer_basis": "first"
+            },
+            {
+              "title": "Ужин с дураком",
+              "start": "2026-11-15T13:00:00Z",
+              "end": "2026-11-15T15:30:00Z",
+              "arrive_by": "2026-11-15T12:45:00Z",
+              "source_url": "https://rusdramteatr.ru/afisha/uzhin-s-durakom-15-11-2026",
+              "transfer_basis": "same_place"
+            }
+          ]
+        }
+      ],
+      "single_options": []
+    },
+    {
+      "name": "child_age_8",
+      "http": 200,
+      "status": "no_plan",
+      "input": {
+        "city": "Стерлитамак",
+        "day": "2026-11-15",
+        "start_time": "10:00:00",
+        "end_time": "22:00:00",
+        "adults": 1,
+        "children_ages": [
+          8
+        ],
+        "budget": null,
+        "max_events": 3,
+        "arrival_buffer_min": 15,
+        "max_transfer_min": 45,
+        "transfer_minutes": null,
+        "transfer_cost": 0,
+        "allow_unconfirmed_cost": false
+      },
+      "people": 2,
+      "search_complete": true,
+      "diagnostics": {
+        "in_catalog": 2,
+        "unknown_duration": 0,
+        "unknown_age": 0,
+        "age_restricted": 1,
+        "outside_window": 0,
+        "unknown_price": 1,
+        "overlap": 0,
+        "unknown_transfer": 0,
+        "transfer_too_long": 0,
+        "budget_rejected": 0
+      },
+      "suggestions": [
+        "Часть событий не подходит по возрастной маркировке самого младшего участника. Выберите другой день с подходящими событиями."
+      ],
+      "routes": [],
+      "single_options": [
+        "Царевна - Лягушка"
+      ]
+    }
+  ],
+  "health_http": 200,
+  "web_http": 200,
+  "widget_http": 200,
+  "openapi_planner": true,
+  "invalid_window_http": 422,
+  "assistant": [
+    {
+      "message": "Составь план культурного дня на 15 ноября 2026 в Стерлитамаке: 2 взрослых, с 10:00 до 22:00, бюджет не задаю, только одна площадка.",
+      "http": 200,
+      "elapsed_ms": 3422,
+      "mode": "model",
+      "has_plan": true,
+      "plan": {
+        "status": "provisional",
+        "input": {
+          "city": "Стерлитамак",
+          "day": "2026-11-15",
+          "start_time": "10:00:00",
+          "end_time": "22:00:00",
+          "adults": 2,
+          "children_ages": [],
+          "budget": null,
+          "max_events": 3,
+          "arrival_buffer_min": 15,
+          "max_transfer_min": 45,
+          "transfer_minutes": null,
+          "transfer_cost": 0,
+          "allow_unconfirmed_cost": false
+        },
+        "people": 2,
+        "search_complete": true,
+        "diagnostics": {
+          "in_catalog": 2,
+          "unknown_duration": 0,
+          "unknown_age": 0,
+          "age_restricted": 0,
+          "outside_window": 0,
+          "unknown_price": 2,
+          "overlap": 0,
+          "unknown_transfer": 0,
+          "transfer_too_long": 0,
+          "budget_rejected": 0
+        },
+        "suggestions": [],
+        "routes": [
+          {
+            "status": "provisional",
+            "cost_min": null,
+            "cost_max": null,
+            "budget_status": "not_set",
+            "stops": [
+              {
+                "title": "Царевна - Лягушка",
+                "start": "2026-11-15T07:00:00Z",
+                "end": "2026-11-15T08:00:00Z",
+                "arrive_by": "2026-11-15T06:45:00Z",
+                "source_url": "https://rusdramteatr.ru/afisha/tsarevna-lyagushka-15-11-2026",
+                "transfer_basis": "first"
+              },
+              {
+                "title": "Ужин с дураком",
+                "start": "2026-11-15T13:00:00Z",
+                "end": "2026-11-15T15:30:00Z",
+                "arrive_by": "2026-11-15T12:45:00Z",
+                "source_url": "https://rusdramteatr.ru/afisha/uzhin-s-durakom-15-11-2026",
+                "transfer_basis": "same_place"
+              }
+            ]
+          }
+        ],
+        "single_options": []
+      },
+      "tools": [
+        {
+          "name": "plan_day",
+          "status": "ok",
+          "arguments": {
+            "city": "Стерлитамак",
+            "day": "2026-11-15",
+            "start_time": "10:00:00",
+            "end_time": "22:00:00",
+            "adults": 2,
+            "max_events": 3,
+            "transfer_minutes": null
+          }
+        }
+      ],
+      "usage": [
+        {
+          "prompt_tokens": 4282,
+          "completion_tokens": 118,
+          "total_tokens": 4400
+        }
+      ]
+    },
+    {
+      "message": "Теперь свободны только с 17:00 до 22:00. Остальные условия сохрани.",
+      "http": 200,
+      "elapsed_ms": 4782,
+      "mode": "model",
+      "has_plan": true,
+      "plan": {
+        "status": "no_plan",
+        "input": {
+          "city": "Стерлитамак",
+          "day": "2026-11-15",
+          "start_time": "17:00:00",
+          "end_time": "22:00:00",
+          "adults": 2,
+          "children_ages": [],
+          "budget": null,
+          "max_events": 3,
+          "arrival_buffer_min": 15,
+          "max_transfer_min": 45,
+          "transfer_minutes": null,
+          "transfer_cost": 0,
+          "allow_unconfirmed_cost": false
+        },
+        "people": 2,
+        "search_complete": true,
+        "diagnostics": {
+          "in_catalog": 2,
+          "unknown_duration": 0,
+          "unknown_age": 0,
+          "age_restricted": 0,
+          "outside_window": 1,
+          "unknown_price": 1,
+          "overlap": 0,
+          "unknown_transfer": 0,
+          "transfer_too_long": 0,
+          "budget_rejected": 0
+        },
+        "suggestions": [
+          "Попробуйте расширить свободное окно или выбрать другой день."
+        ],
+        "routes": [],
+        "single_options": [
+          "Ужин с дураком"
+        ]
+      },
+      "tools": [
+        {
+          "name": "plan_day",
+          "status": "ok",
+          "arguments": {
+            "city": "Стерлитамак",
+            "day": "2026-11-15",
+            "start_time": "17:00:00",
+            "end_time": "22:00:00",
+            "adults": 2,
+            "children_ages": [],
+            "budget": null,
+            "max_events": 3,
+            "arrival_buffer_min": 15,
+            "max_transfer_min": 45,
+            "transfer_minutes": null,
+            "transfer_cost": 0,
+            "allow_unconfirmed_cost": false
+          }
+        }
+      ],
+      "usage": [
+        {
+          "prompt_tokens": 4648,
+          "completion_tokens": 193,
+          "total_tokens": 4841
+        }
+      ]
+    }
+  ],
+  "own_test_dialog_removed": true,
+  "window_relaxation": {
+    "checked_at": "2026-11-14T10:49:28.987520+00:00",
+    "http": 200,
+    "input": {
+      "city": "Стерлитамак",
+      "day": "2026-11-15",
+      "start_time": "17:00:00",
+      "end_time": "22:00:00",
+      "adults": 2,
+      "children_ages": [],
+      "budget": null,
+      "max_events": 3,
+      "arrival_buffer_min": 15,
+      "max_transfer_min": 45,
+      "transfer_minutes": null,
+      "transfer_cost": 0,
+      "allow_unconfirmed_cost": false
+    },
+    "status": "no_plan",
+    "suggestions": [
+      "Минимальное найденное расширение окна — до 11:45–22:00. Оно позволяет соединить два события с прежним составом и условиями стоимости/переезда."
+    ]
+  },
+  "telegram_wizard_confirmed_by_user": true
+}

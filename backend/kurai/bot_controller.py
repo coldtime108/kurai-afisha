@@ -16,6 +16,7 @@ from .subscriptions import (
     save_subscription,
 )
 from .assistant import AssistantBusy
+from .bot_planner import handle_planner, plan_reply
 
 
 @dataclass
@@ -69,6 +70,9 @@ class BotController:
             def assistant_reply(reply):
                 nonlocal filters
                 filters = dict(reply.filters)
+                if reply.plan:
+                    data["day_plan_request"] = reply.plan.input.model_dump(mode="json")
+                    return BotReply(*plan_reply(reply.plan))
                 parts = [reply.message]
                 buttons = []
                 for index, card in enumerate(reply.cards, 1):
@@ -124,6 +128,44 @@ class BotController:
                     if window and now.timestamp() - window.get("start", 0) < 60
                     else {"start": now.timestamp(), "count": 1}
                 )
+            if text in (
+                "/start",
+                "/help",
+                "/cancel",
+                "/new",
+                "/catalog",
+                "/subscribe",
+                "/unsubscribe",
+                "/feedback",
+            ) or callback in ("catalog", "cancel", "assistant"):
+                data.pop("planner_wizard", None)
+                if text == "/new":
+                    data.pop("day_plan_request", None)
+            if (
+                text == "/plan"
+                or callback == "planner"
+                or (callback and callback.startswith("dp:"))
+                or (data.get("planner_wizard") and text and not text.startswith("/"))
+            ):
+                try:
+                    planned = handle_planner(session, data, text, callback, now)
+                    if planned:
+                        if data.get("day_plan_request"):
+                            values = data["day_plan_request"]
+                            filters = {
+                                "city": values["city"],
+                                "date_from": values["day"],
+                                "date_to": values["day"],
+                            }
+                        return finish(BotReply(*planned))
+                except ValueError:
+                    data.pop("planner_wizard", None)
+                    return finish(
+                        BotReply(
+                            "Условия устарели или не удалось разобрать ввод. Начните план заново: /plan.",
+                            [[("Спланировать день", "planner")]],
+                        )
+                    )
 
             def catalog(page=1):
                 data["page"] = page
@@ -208,6 +250,7 @@ class BotController:
                         "Курай — культура Башкортостана рядом.\nВыбирайте кнопками или напишите: «концерт в Уфе в субботу до 1000 рублей».\nДанные берём из афиш учреждений. Это независимый проект.\nСвободный запрос разбирает модель NVIDIA: не указывайте личные данные и ключи. Память — 24 часа, диагностика — 7 дней. /new удалит диалог и его диагностику.\n/help — помощь, /cancel — отмена, /unsubscribe — отписка, /feedback — обращение.",
                         [
                             [("Подобрать с помощником", "assistant")],
+                            [("Спланировать день", "planner")],
                             [("Открыть афишу", "catalog")],
                             [("Моя подписка", "subscription")],
                         ],

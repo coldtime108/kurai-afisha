@@ -32,9 +32,10 @@ from .models import (
 from .query_parser import CITIES, WORDS, QueryParseError, parse_query
 from .ingestion import normalize
 from .schemas import CATEGORIES, EventOut, SubscriptionFilter
+from .planner import DayPlanInput, build_day_plan
 from .subscriptions import save_subscription
 
-PROMPT_VERSION = "kurai-tools-v1"
+PROMPT_VERSION = "kurai-tools-v2-plan"
 QUESTIONS = {
     "city": "В каком городе ищем событие?",
     "date": "На какую дату или период ищем событие?",
@@ -42,6 +43,8 @@ QUESTIONS = {
     "location": "Какую площадку или район вы имеете в виду? Геолокация и расчёт расстояний пока не подключены; могу подобрать события по городу и площадке.",
     "event": "Какое событие вы имеете в виду? Откройте карточку или напишите название.",
     "scope": "Я помогаю найти культурные события Башкортостана. Напишите город, дату и пожелания к афише.",
+    "party": "Сколько взрослых и сколько лет каждому ребёнку? Например: «2 взрослых, дети 8 и 12».",
+    "window": "В какое свободное окно нужно уложить весь день? Например: «10:00–22:00» по времени Башкортостана.",
 }
 SYSTEM = """Ты — маршрутизатор афиши Курай. Отвечай только вызовом инструмента, без прозы.
 Факты о событиях выдаёт сервер. Не придумывай события, ID, даты, цены и время.
@@ -64,6 +67,13 @@ get_event/find_similar: UUID только из last_events. Если ссылк�
 save_feedback.message копируй из текущего пользовательского сообщения, без дополнений.
 Не передавай личность, секреты, confirmed или токены в аргументах инструментов.
 Не делай несколько вызовов параллельно. Если инструмент вернул ошибку аргументов, исправь один раз.
+Для маршрута, выходного дня или нескольких событий по расписанию используй plan_day.
+В plan_day budget — общий бюджет всей группы. Не дели его на число людей и не выдумывай цены.
+Если время не задано, допустимо окно 10:00–22:00; если состав не назван — один взрослый.
+Ребёнок без возраста требует вопроса age. Если дата или город не определены, уточни их.
+Не включай allow_unconfirmed_cost, пока пользователь не разрешил неподтверждённые цены.
+Не придумывай время переезда: transfer_minutes=null, если пользователь не дал своей оценки.
+Уточнения к существующему маршруту применяй к context.day_plan, сохраняя состав группы и остальные условия.
 """
 
 
@@ -165,6 +175,15 @@ class AssistantService:
         }
 
     def _save(self, session, state, data, trace, reply, message=None):
+        if reply.plan:
+            trace["planner"] = {
+                "input": reply.plan.input.model_dump(mode="json"),
+                "status": reply.plan.status,
+                "route_ids": [
+                    [stop.event.id for stop in route.stops]
+                    for route in reply.plan.routes
+                ],
+            }
         if message is not None:
             data["history"] = (
                 data.get("history", [])
@@ -294,6 +313,57 @@ class AssistantService:
                 message=QUESTIONS["scope"],
                 filters=data.get("filters", {}),
             )
+        if name == "plan_day":
+            no_children = re.search(r"без\s+детей|детей\s+нет", message.lower())
+            if (
+                re.search(r"реб[её]н|дет[ьи]", message.lower())
+                and not args.children_ages
+                and not no_children
+            ):
+                return AssistantReply(
+                    request_id=request_id, mode=mode, message=QUESTIONS["age"]
+                )
+            values = args.model_dump(mode="json")
+            explicit = parse_query(message, {}, now)
+            if explicit.get("city"):
+                values["city"] = explicit["city"]
+            if explicit.get("date_from") == explicit.get("date_to") and explicit.get(
+                "date_from"
+            ):
+                values["day"] = explicit["date_from"]
+            if "price_max" in explicit:
+                values["budget"] = explicit["price_max"]
+            adults = re.search(r"\b(\d{1,2})\s*взросл", message.lower())
+            if adults:
+                values["adults"] = int(adults[1])
+            if no_children:
+                values["children_ages"] = []
+            args = DayPlanInput.model_validate(values)
+            result = build_day_plan(session, args, now)
+            data["planner_input"] = args.model_dump(mode="json")
+            data["filters"] = {
+                "city": args.city,
+                "date_from": args.day.isoformat(),
+                "date_to": args.day.isoformat(),
+            }
+            events = (
+                [stop.event for stop in result.routes[0].stops]
+                if result.routes
+                else result.single_options
+            )
+            data["last_ids"] = [event.id for event in events]
+            return AssistantReply(
+                request_id=request_id,
+                mode=mode,
+                message=result.message,
+                cards=[
+                    {"event": event, "reasons": ["Результат планировщика дня"]}
+                    for event in events
+                ],
+                filters=data["filters"],
+                total=len(events),
+                plan=result,
+            )
         if name in (
             "search_events",
             "get_venue_schedule",
@@ -323,6 +393,7 @@ class AssistantService:
                 filters=data.get("filters", {}),
             )
         if name in ("search_events", "get_venue_schedule"):
+            data.pop("planner_input", None)
             if re.search(
                 r"поближе|ближе\s+(?:ко?\s+)?мне|рядом\s+со\s+мной", message.lower()
             ):
@@ -544,6 +615,7 @@ class AssistantService:
                     events, key=lambda event: data["last_ids"].index(event.id)
                 )
                 context = {
+                    "day_plan": data.get("planner_input"),
                     "today": now.astimezone(LOCAL_TZ).date().isoformat(),
                     "timezone": "Asia/Yekaterinburg",
                     "filters": data.get("filters", {}),
